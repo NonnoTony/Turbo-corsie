@@ -1308,7 +1308,7 @@ function tick(dt){
   const r=race;if(!r)return;
   if(rotateNeed&&!r.online){resetInput();return;}
   r.acc+=dt;const H=1/120;
-  while(r.acc>=H){r.acc-=H;
+  while(r.acc>=H*.5){r.acc-=H;
     const prevT=r.t;r.t+=H;if(r.t>=0)r.clock+=H;
     if(prevT<0){const n=Math.ceil(-r.t);if(n<r.lastBeep){r.lastBeep=n;beep(n===0?880:440,n===0?.3:.12);}}
     for(const c of r.cars){if(c.isRemote&&c.state!=='out')netStepRemote(c,H,r);else stepCar(c,H,r);
@@ -1724,7 +1724,7 @@ function drawCarsWorld(ctx,r,mode,markRot,v){
     ctx.save();ctx.translate(c.x+(3+lift*.5)*sc,c.y+(4+lift*.6)*sc);ctx.rotate(c.h+c.yaw+c.rot);ctx.scale(sc,sc);rr(ctx,-17,-13.5,36,27,6);ctx.fill();ctx.restore();
     ctx.globalAlpha=c.alpha;
     ctx.save();ctx.translate(c.x,c.y);
-    const jit=c.state==='run'?(Math.random()-.5)*Math.min(1,c.wobble)*.35:0;
+    const jit=c.state==='run'?Math.sin(r.clock*14+c.lane*1.7)*Math.max(0,Math.min(1,c.wobble)-.4)*.1:0;
     ctx.rotate(c.h+c.yaw+c.rot+jit);ctx.scale(sc,sc);
     drawCar(ctx,c.color,c.eq.roller,{turbo:c.turbo&&c.state==='run',look:c.look});
     ctx.restore();
@@ -2287,7 +2287,7 @@ function render3D(r,rects,hs){
     const ground=c.state==='out'?0:trackHeight(tr,c.s);
     const y=c.state==='out'?c.z*.9:ground+c.z*.9;
     const pitch=c.state==='out'?0:Math.atan2(trackHeight(tr,(c.s+6)%tr.L)-trackHeight(tr,(c.s-6+tr.L)%tr.L),12);
-    const jit=c.state==='run'?(Math.random()-.5)*Math.min(1,c.wobble)*.3:0;
+    const jit=c.state==='run'?Math.sin(r.clock*14+c.lane*1.7)*Math.max(0,Math.min(1,c.wobble)-.4)*.08:0;
     o.g.position.set(c.x,y,c.y);o.g.rotation.set(c.state==='out'?c.rot*.5:jit*.5,-(c.h+c.yaw+c.rot+jit),pitch+(c.air>0?.08:0));
     o.flame.visible=c.turbo&&c.state==='run';if(o.flame.visible)o.flame.scale.set(.8+Math.random()*.5,1,1);
     o.sh.position.set(c.x+2,ground+1.2,c.y+2);o.sh.rotation.z=-(c.h+c.yaw+c.rot);o.sh.material.opacity=.18*c.alpha/(1+c.z/40);
