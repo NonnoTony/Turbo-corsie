@@ -1024,25 +1024,33 @@ const INTERNAL=['motor','gear','battery','bearing','shaft','terminal','pinion','
 const gv={inside:false,shellY:0,shell:null,shellOp:1,r:null,scene:null,cam:null,car:null,yaw:-.75,pitch:.42,dist:92,drag:null,idle:9,raf:0,last:0,failed:false,need:false};
 function makeEnv(renderer){const T=THREE;try{const pm=new T.PMREMGenerator(renderer);const env=new T.Scene();
   const sph=new T.Mesh(new T.SphereGeometry(100,32,16),new T.MeshBasicMaterial({side:T.BackSide,vertexColors:true}));
-  const pos=sph.geometry.attributes.position,cols=[];for(let i=0;i<pos.count;i++){const y=pos.getY(i)/100;const c=y>0?new T.Color().setRGB(.55+.4*y,.62+.35*y,.6+.38*y):new T.Color().setRGB(.08,.2,.15);cols.push(c.r,c.g,c.b);}
+  const pos=sph.geometry.attributes.position,cols=[];for(let i=0;i<pos.count;i++){const y=pos.getY(i)/100;const c=y>0?new T.Color().setRGB(.55+.4*y,.62+.35*y,.6+.38*y):new T.Color().setRGB(.08,.2,.15);c.multiplyScalar(.42);cols.push(c.r,c.g,c.b);}
   sph.geometry.setAttribute('color',new T.Float32BufferAttribute(cols,3));env.add(sph);
-  const box=new T.Mesh(new T.PlaneGeometry(80,40),new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}));box.position.set(-30,70,20);box.lookAt(0,0,0);env.add(box);
+  for(const [w,h,x,y,z,k] of [[90,46,-20,78,10,1.7],[26,90,-80,30,-20,1.1],[26,90,80,26,30,.8],[120,10,0,40,-90,1.2]]){
+    const box=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:new T.Color(k,k,k),side:T.DoubleSide}));box.position.set(x,y,z);box.lookAt(0,0,0);env.add(box);}
   const t=pm.fromScene(env,.02).texture;pm.dispose();return t;}catch(e){return null;}}
+// resa fotografica nel garage: colori in spazio lineare con correzione dei toni
+function linearize(root){const T=THREE;root.traverse(o=>{const ms=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];
+  for(const mt of ms){if(mt.userData.lin)continue;mt.userData.lin=1;if(mt.color)mt.color.convertSRGBToLinear();if(mt.emissive)mt.emissive.convertSRGBToLinear();
+    if(mt.map){mt.map.encoding=T.sRGBEncoding;mt.map.needsUpdate=true;}mt.needsUpdate=true;}});}
 async function garage3D(){
   if(gv.r||gv.failed)return;const ok=await loadThree();if(!ok){gv.failed=true;return;}
   const T=THREE;let r;try{r=new T.WebGLRenderer({canvas:$('gv'),antialias:true});}catch(e){gv.failed=true;return;}
-  r.shadowMap.enabled=save.gfx!=='leggera';r.shadowMap.type=T.PCFShadowMap;r.setPixelRatio(gfxPR3());
-  const sc=new T.Scene();sc.background=new T.Color('#1a3d31');sc.fog=new T.Fog('#1a3d31',220,420);sc.environment=makeEnv(r);
-  sc.add(new T.HemisphereLight(0xeaf6ff,0x1f3d31,.55));
-  const sun=new T.DirectionalLight(0xfff1dc,.9);sun.position.set(-60,120,50);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
+  r.shadowMap.enabled=save.gfx!=='leggera';r.shadowMap.type=T.PCFSoftShadowMap;r.setPixelRatio(gfxPR3());
+  r.outputEncoding=T.sRGBEncoding;r.toneMapping=T.ACESFilmicToneMapping;r.toneMappingExposure=.95;
+  const sc=new T.Scene();sc.background=new T.Color('#1a3d31').convertSRGBToLinear();sc.fog=new T.Fog(new T.Color('#1a3d31').convertSRGBToLinear(),220,420);sc.environment=makeEnv(r);
+  sc.add(new T.HemisphereLight(0xeaf6ff,0x1f3d31,.5));
+  const rim=new T.DirectionalLight(0xffffff,1.1);rim.position.set(30,70,-120);sc.add(rim);
+  const sun=new T.DirectionalLight(0xfff1dc,2.1);sun.position.set(-60,120,50);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
   Object.assign(sun.shadow.camera,{left:-50,right:50,top:50,bottom:-50,near:10,far:300});sun.shadow.bias=-.0006;sc.add(sun);
-  const fill=new T.DirectionalLight(0xbfd8ff,.35);fill.position.set(70,40,-60);sc.add(fill);
+  const fill=new T.DirectionalLight(0xbfd8ff,.6);fill.position.set(70,40,-60);sc.add(fill);
   // pedana girevole d'asfalto con cordolo
   const base=new T.Mesh(new T.CylinderGeometry(46,48,3,64),new T.MeshStandardMaterial({color:0x2b2f36,roughness:.7}));base.position.y=-1.5;base.receiveShadow=true;sc.add(base);
   const top=new T.Mesh(new T.CircleGeometry(44,64),new T.MeshStandardMaterial({color:0x44484f,roughness:.85}));top.rotation.x=-Math.PI/2;top.position.y=.05;top.receiveShadow=true;sc.add(top);
   for(let i=0;i<32;i++){const a=i/32*Math.PI*2,m=new T.Mesh(new T.BoxGeometry(8.4,.6,2.4),new T.MeshStandardMaterial({color:i%2?0xd23a2a:0xf2f2ee,roughness:.6}));
     m.position.set(Math.cos(a)*45,.2,Math.sin(a)*45);m.rotation.y=-a+Math.PI/2;sc.add(m);}
   const floor=new T.Mesh(new T.CircleGeometry(600,48),new T.MeshStandardMaterial({color:0x1d4436,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-3;sc.add(floor);
+  linearize(sc);
   gv.r=r;gv.scene=sc;gv.cam=new T.PerspectiveCamera(34,16/11,1,2000);
   const cv=$('gv');cv.hidden=false;$('preview').hidden=true;$('vhint').hidden=false;
   cv.addEventListener('pointerdown',e=>{gv.drag={x:e.clientX,y:e.clientY,id:e.pointerId};gv.idle=0;try{cv.setPointerCapture(e.pointerId)}catch(_){}});
@@ -1061,7 +1069,7 @@ function garageRebuild(){gv.need=true;}
 function garageDoRebuild(){
   if(!gv.r)return;gv.need=false;
   if(gv.car){gv.scene.remove(gv.car);gv.car.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});});}
-  const o=carMesh({look:playerLook(),eq:save.eq,color:save.color});o.g.position.set(1,0,0);gv.car=o.g;gv.scene.add(o.g);gv.shell=o.shell;gv.shellOp=-1;
+  const o=carMesh({look:playerLook(),eq:save.eq,color:save.color});linearize(o.g);o.g.position.set(1,0,0);gv.car=o.g;gv.scene.add(o.g);gv.shell=o.shell;gv.shellOp=-1;
 }
 function garageLoop(){
   cancelAnimationFrame(gv.raf);gv.last=performance.now();
@@ -2221,7 +2229,14 @@ function liveryTex(L,side,num){
     ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(-14,.08,32,.05);}
   const t=new T.CanvasTexture(cv);t.anisotropy=8;return t;
 }
-let BODY_GEO=null,TAIL_GEO=null,TREAD_TEX=null;
+let BODY_GEO=null,TAIL_GEO=null,TREAD_TEX=null,WALL_TEX=null;
+// anello piatto con coordinate polari (u = giro, v = raggio): serve per le scritte sul fianco della gomma
+function polarRing(r0,r1,seg){const T=THREE,pos=[],uv=[],idx=[];for(let i=0;i<=seg;i++){const a=i/seg*Math.PI*2,c=Math.cos(a),s=Math.sin(a);pos.push(c*r0,s*r0,0,c*r1,s*r1,0);uv.push(i/seg,0,i/seg,1);}
+  for(let i=0;i<seg;i++){const a=i*2;idx.push(a,a+2,a+1,a+1,a+2,a+3);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return g;}
+function wallTex(){if(WALL_TEX)return WALL_TEX;const c=document.createElement('canvas');c.width=1024;c.height=64;const x=c.getContext('2d');x.clearRect(0,0,1024,64);
+  x.fillStyle='#ffffff';x.font='700 34px "Chakra Petch", Arial, sans-serif';x.textBaseline='middle';
+  const txt='TURBO CORSIE  ·  RACING  ·  ';let px=6;while(px<1024){x.fillText(txt,px,34);px+=x.measureText(txt).width;}
+  x.fillRect(0,2,1024,3);x.fillRect(0,59,1024,3);WALL_TEX=new THREE.CanvasTexture(c);WALL_TEX.anisotropy=8;return WALL_TEX;}
 const SHELL_DY=1.8;  // scocca abbassata: i parafanghi coprono la parte alta delle ruote
 const ARCH=1.75,ARW=5.4;
 function archK(x){let a=0;for(const wx of [9,-9]){const d=Math.abs(x-wx);if(d<ARW)a=Math.max(a,.5+.5*Math.cos(Math.PI*d/ARW));}return a;}
@@ -2357,13 +2372,15 @@ function carMesh(c,race){
   const rg=new T.CylinderGeometry(RR,RR,tw+.3,24);rg.rotateX(Math.PI/2);
   const tm=S(tire==='t2'?0x3a3c42:0x1b1c20,{r:.92,map:TREAD_TEX}),rm=S(K.rim,{r:.3,m:.55}),sp=new T.BoxGeometry(ry==='y1'?.35:.6,RR*1.5,.45);
   const sideRing=new T.TorusGeometry(WR-.72,.1,6,40),tm2=S(tire==='t2'?0x4a4c52:0x2a2b30,{r:.85}),nut=new T.CylinderGeometry(.5,.5,.5,6).rotateX(Math.PI/2),steelN=S(0xd0d5db,{r:.2,m:.9});
+  const wallG=polarRing(RR+.35,WR-.62,48),wallM=new T.MeshStandardMaterial({color:0xb9bec5,roughness:.7,map:wallTex(),transparent:true,alphaTest:.35,depthWrite:true});
   const lip=new T.TorusGeometry(RR+.02,.22,8,32),disc=new T.CylinderGeometry(RR-.1,RR-.1,.3,28).rotateX(Math.PI/2);
   for(const [wx,wz] of [[9,9.5],[9,-9.5],[-9,9.5],[-9,-9.5]]){add(tg,tm,wx,WR,wz);add(rg,rm,wx,WR,wz);
     const oz=wz+(wz>0?1:-1)*(tw/2+.2);
     if(ry==='y2')add(disc,rm,wx,WR,oz);else{const n=ry==='y1'?6:5;for(let k=0;k<n;k++){const m=add(sp,rm,wx,WR,oz);m.rotation.z=k*Math.PI*2/n;}}
     add(new T.CylinderGeometry(.8,.8,tw+.8,12).rotateX(Math.PI/2),dk,wx,WR,wz);add(lip,rm,wx,WR,oz);
     const sgz=wz>0?1:-1;add(sideRing,tm2,wx,WR,wz+sgz*(tw/2-.02));
-    add(nut,steelN,wx,WR,oz+sgz*.35);}
+    add(nut,steelN,wx,WR,oz+sgz*.35);
+    {const wr=add(wallG,wallM,wx,WR,wz+sgz*(tw/2+.03));if(sgz<0)wr.rotation.y=Math.PI;wr.castShadow=false;}}
   const inner0=g.children.length;
   // ---- interno: assi, cuscinetti, ingranaggi, albero, batterie, contatti, interruttore ----
   const gearG=(rad,teeth,th=.8)=>{const sh=new T.Shape();for(let i=0;i<teeth*4;i++){const a=i/(teeth*4)*Math.PI*2,rr=(i%4<2)?rad:rad+.32;i?sh.lineTo(Math.cos(a)*rr,Math.sin(a)*rr):sh.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);}sh.closePath();
