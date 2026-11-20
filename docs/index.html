@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="5f5db88e3e";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="db7de1c2d7";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -2218,6 +2218,20 @@ function drawHudBox(ctx,R,c,idx,r){
   if(c.state==='out'||c.state==='done'){ctx.fillStyle=c.state==='out'?'rgba(239,74,47,.95)':'rgba(255,210,63,.95)';ctx.font=`${Math.min(34,R.w/12)}px Bungee, Impact, sans-serif`;ctx.textAlign='center';
     ctx.fillText(T(c.state==='out'?'COURSE OUT!':`ARRIVATO ${pos}°`),R.x+R.w/2,R.y+R.h/2);}
 }
+// inseguimento: la pista (che non cambia) viene disegnata una volta a riquadri e poi solo copiata
+const TILE={key:null,map:new Map(),px:512,spare:[]};
+function drawTrackTiles(ctx,tr,scale,pxw,cx,cy,rad){
+  const key=tr.def.id+'|'+NLof(tr)+'|'+scale.toFixed(3)+'|'+save.style+'|'+LANG;
+  if(TILE.key!==key){TILE.key=key;for(const t of TILE.map.values())TILE.spare.push(t);TILE.map.clear();}
+  const W=TILE.px/scale,x0=Math.floor((cx-rad)/W),x1=Math.floor((cx+rad)/W),y0=Math.floor((cy-rad)/W),y1=Math.floor((cy+rad)/W);let made=0;
+  const order=[];for(let iy=y0;iy<=y1;iy++)for(let ix=x0;ix<=x1;ix++)order.push([ix,iy,Math.hypot((ix+.5)*W-cx,(iy+.5)*W-cy)]);order.sort((a,b)=>a[2]-b[2]);
+  for(const [ix,iy] of order){const k=ix+','+iy;let t=TILE.map.get(k);
+    if(!t&&made<(TILE.map.size<4?40:5)){t=TILE.spare.pop()||document.createElement('canvas');t.width=t.height=TILE.px;const x=t.getContext('2d');
+      x.setTransform(scale,0,0,scale,-ix*W*scale,-iy*W*scale);drawTrackWorld(x,tr,pxw,{x:(ix+.5)*W,y:(iy+.5)*W,r:W*.75});made++;}
+    if(!t)continue;TILE.map.delete(k);TILE.map.set(k,t);ctx.drawImage(t,ix*W,iy*W,W*1.004,W*1.004);}
+  while(TILE.map.size>48){const k0=TILE.map.keys().next().value;TILE.spare.push(TILE.map.get(k0));TILE.map.delete(k0);}
+  if(TILE.spare.length>8)TILE.spare.length=8;
+}
 function drawRace(){
   const r=race,v=view;if(!r||!v)return;const cv=$('rc'),ctx=cv.getContext('2d');
   const mode=curMode(),me=r.cars[0],hs=humansOf(r);
@@ -2235,7 +2249,7 @@ function drawRace(){
     ctx.fillStyle=habOf(r.tr).fc;ctx.fillRect(0,0,cv.width,cv.height);
     rects.forEach((R,i)=>{const cam=v.cams[i];ctx.save();ctx.setTransform(v.dpr,0,0,v.dpr,0,0);ctx.beginPath();ctx.rect(R.x,R.y,R.w,R.h);ctx.clip();
       const z=Math.min(R.w,R.h*1.6)/470;ctx.translate(R.x+R.w/2,R.y+R.h*.66);ctx.rotate(-cam.h-Math.PI/2);ctx.scale(z,z);ctx.translate(-cam.x,-cam.y);
-      drawTrackWorld(ctx,r.tr,1/z,{x:cam.x,y:cam.y,r:Math.max(R.w,R.h)/z*.85});drawCarsWorld(ctx,r,'follow',cam.h+Math.PI/2,v);ctx.restore();});
+      drawTrackTiles(ctx,r.tr,z*v.dpr,1/z,cam.x,cam.y,Math.max(R.w,R.h)/z*.75);drawCarsWorld(ctx,r,'follow',cam.h+Math.PI/2,v);ctx.restore();});
   }else{
     ctx.clearRect(0,0,cv.width,cv.height);
     render3D(r,rects,hs);
@@ -2268,10 +2282,12 @@ function drawRace(){
 function drawMinimap(ctx,r,v){
   const tr=r.tr,b=tr.bbox,C=trackCache(tr),rot=b.w>b.h*1.05;
   const bw=rot?b.h:b.w,bh=rot?b.w:b.h,maxW=Math.min(120,v.cw*.28),maxH=Math.min(170,v.ch*.32),s=Math.min(maxW/bw,maxH/bh),W=bw*s,H=bh*s,x0=v.cw-W-10,y0=10;
-  ctx.save();ctx.fillStyle='rgba(10,30,22,.72)';rr(ctx,x0-4,y0-4,W+8,H+8,6);ctx.fill();
+  const dp=v.dpr||1,mk=tr.def.id+'|'+W.toFixed(1)+'|'+H.toFixed(1)+'|'+dp;
+  if(!C.mini||C.mini.k!==mk){const cv=document.createElement('canvas');cv.width=Math.ceil((W+8)*dp);cv.height=Math.ceil((H+8)*dp);const x=cv.getContext('2d');x.scale(dp,dp);
+    x.fillStyle='rgba(10,30,22,.72)';rr(x,0,0,W+8,H+8,6);x.fill();x.translate(4+W/2,4+H/2);if(rot)x.rotate(Math.PI/2);x.scale(s,s);x.translate(-(b.x+b.w/2),-(b.y+b.h/2));
+    x.lineJoin='round';x.strokeStyle='rgba(244,245,247,.9)';x.lineWidth=LANE*2.4;x.stroke(C.center);x.strokeStyle=TOY.lane[1];x.lineWidth=LANE*1.6;x.stroke(C.center);C.mini={k:mk,cv};}
+  ctx.save();ctx.drawImage(C.mini.cv,x0-4,y0-4,W+8,H+8);
   const cx=b.x+b.w/2,cy=b.y+b.h/2;ctx.translate(x0+W/2,y0+H/2);if(rot)ctx.rotate(Math.PI/2);ctx.scale(s,s);ctx.translate(-cx,-cy);
-  ctx.lineJoin='round';ctx.strokeStyle='rgba(244,245,247,.9)';ctx.lineWidth=LANE*2.4;ctx.stroke(C.center);
-  ctx.strokeStyle=TOY.lane[1];ctx.lineWidth=LANE*1.6;ctx.stroke(C.center);
   for(const c of r.cars){if(c.state==='out')continue;ctx.beginPath();ctx.arc(c.x,c.y,(c.isPlayer||c.p2?2.6:1.9)/s*2,0,7);ctx.fillStyle=c.color;ctx.fill();
     if(c.isPlayer||c.p2){ctx.lineWidth=1.6/s;ctx.strokeStyle=c.p2?'#6b93ff':'#ffd23f';ctx.stroke();}}
   ctx.restore();
