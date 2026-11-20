@@ -811,10 +811,10 @@ function buildTrack(def,nl=3){
   return tr;
 }
 const FEATS={anello:[['H',200,22]],garage:[['H',300,28]],parco:[['H',380,46],['H',200,22]],
- osso:[['O',184,46]],serpente:[['H',320,30],['O',184,46]],gp:[['O',184,46],['H',400,48]],
- tramonto:[['O',184,46],['H',300,30]],autunno:[['O',184,46],['H',520,52]],ghiaccio:[['O',184,46],['H',260,30]],notte:[['O',184,46],['H',520,56],['H',200,24]],
- tornanti:[['O',184,46],['H',400,54],['H',300,30]],preistoria:[['O',184,46],['H',460,52],['H',260,28]],luna:[['O',184,46],['H',460,52],['H',260,28]],
- alieni:[['O',184,46],['H',460,52],['H',260,28]],finale:[['O',184,46],['O',184,46],['H',360,50],['H',260,28]]};
+ osso:[],serpente:[['H',320,30]],gp:[['H',400,48]],
+ tramonto:[['H',300,30]],autunno:[['H',520,52]],ghiaccio:[['H',260,30]],notte:[['H',520,56],['H',200,24]],
+ tornanti:[['H',400,54],['H',300,30]],preistoria:[['H',460,52],['H',260,28]],luna:[['H',460,52],['H',260,28]],
+ alieni:[['H',460,52],['H',260,28]],finale:[['H',360,50],['H',260,28]]};
 for(const t of TRACKS){const fs=FEATS[t.id];if(!fs)continue;const cm=t.cmds;
   for(const [k,len,par] of fs){const need=k==='O'?len+110:len+30;let best=-1;
     for(let i=0;i<cm.length;i++){const c=cm[i];if(c[0]!=='S'||c[1]<need)continue;const pv=cm[i-1],nx=cm[i+1];

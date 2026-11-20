@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="5977bd91a2";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="65581639c4";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -826,10 +826,10 @@ function buildTrack(def,nl=3){
   return tr;
 }
 const FEATS={anello:[['H',200,22]],garage:[['H',300,28]],parco:[['H',380,46],['H',200,22]],
- osso:[['O',184,46]],serpente:[['H',320,30],['O',184,46]],gp:[['O',184,46],['H',400,48]],
- tramonto:[['O',184,46],['H',300,30]],autunno:[['O',184,46],['H',520,52]],ghiaccio:[['O',184,46],['H',260,30]],notte:[['O',184,46],['H',520,56],['H',200,24]],
- tornanti:[['O',184,46],['H',400,54],['H',300,30]],preistoria:[['O',184,46],['H',460,52],['H',260,28]],luna:[['O',184,46],['H',460,52],['H',260,28]],
- alieni:[['O',184,46],['H',460,52],['H',260,28]],finale:[['O',184,46],['O',184,46],['H',360,50],['H',260,28]]};
+ osso:[],serpente:[['H',320,30]],gp:[['H',400,48]],
+ tramonto:[['H',300,30]],autunno:[['H',520,52]],ghiaccio:[['H',260,30]],notte:[['H',520,56],['H',200,24]],
+ tornanti:[['H',400,54],['H',300,30]],preistoria:[['H',460,52],['H',260,28]],luna:[['H',460,52],['H',260,28]],
+ alieni:[['H',460,52],['H',260,28]],finale:[['H',360,50],['H',260,28]]};
 for(const t of TRACKS){const fs=FEATS[t.id];if(!fs)continue;const cm=t.cmds;
   for(const [k,len,par] of fs){const need=k==='O'?len+110:len+30;let best=-1;
     for(let i=0;i<cm.length;i++){const c=cm[i];if(c[0]!=='S'||c[1]<need)continue;const pv=cm[i-1],nx=cm[i+1];
