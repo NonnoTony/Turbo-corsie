@@ -1072,15 +1072,16 @@ function paintDetails(ctx,num,motorCol){
 }
 // auto in gara: disegnata una volta su un'immagine (per scala) e poi solo copiata; la fiamma del turbo resta dal vivo
 function drawCarFast(ctx,c){
-  const m=ctx.getTransform(),px=Math.hypot(m.a,m.b),q=Math.max(.5,Math.min(8,Math.round(px*4)/4));
-  const st=save.style;
-  if(!c._spr||c._spr.q!==q||c._spr.st!==st){const cv=c._spr&&c._spr.cv||document.createElement('canvas');cv.width=Math.ceil(64*q);cv.height=Math.ceil(44*q);const x=cv.getContext('2d');
-    x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);
+  const m=ctx.getTransform(),px=Math.hypot(m.a,m.b),q=Math.max(.5,Math.min(8,Math.pow(2,Math.round(Math.log2(px)*3)/3)));
+  const st=save.style;if(!c._sprs||c._sprs.st!==st)c._sprs={st,m:new Map()};
+  let spr=c._sprs.m.get(q);
+  if(!spr){const cv=document.createElement('canvas');cv.width=Math.ceil(64*q);cv.height=Math.ceil(44*q);const x=cv.getContext('2d');
     if(st==='anime'){const t=document.createElement('canvas');t.width=cv.width;t.height=cv.height;const y=t.getContext('2d');y.setTransform(q,0,0,q,34*q,22*q);drawCar(y,c.color,c.eq.roller,{look:c.look});
       const k=Math.max(1,q*.55);for(const [dx,dy] of [[k,0],[-k,0],[0,k],[0,-k],[k,k],[-k,k],[k,-k],[-k,-k]])x.drawImage(t,dx,dy);
       x.globalCompositeOperation='source-in';x.fillStyle='#14161c';x.fillRect(0,0,cv.width,cv.height);x.globalCompositeOperation='source-over';x.drawImage(t,0,0);}
     else{x.setTransform(q,0,0,q,34*q,22*q);drawCar(x,c.color,c.eq.roller,{look:c.look});}
-    c._spr={q,cv,st};}
+    spr={cv};c._sprs.m.set(q,spr);if(c._sprs.m.size>6)c._sprs.m.delete(c._sprs.m.keys().next().value);}
+  c._spr=spr;
   if(c.turbo&&c.state==='run'){ctx.fillStyle='rgba(255,170,40,.95)';ctx.beginPath();ctx.moveTo(-21,-3);ctx.lineTo(-30-Math.random()*6,0);ctx.lineTo(-21,3);ctx.fill();
     ctx.fillStyle='rgba(255,240,170,.95)';ctx.beginPath();ctx.moveTo(-21,-1.6);ctx.lineTo(-25-Math.random()*3,0);ctx.lineTo(-21,1.6);ctx.fill();}
   ctx.drawImage(c._spr.cv,-34,-22,64,44);
@@ -2217,61 +2218,24 @@ function drawHudBox(ctx,R,c,idx,r){
     ctx.fillText(T(c.state==='out'?'COURSE OUT!':`ARRIVATO ${pos}°`),R.x+R.w/2,R.y+R.h/2);}
 }
 // inseguimento: la pista (che non cambia) viene disegnata una volta a riquadri e poi solo copiata
-const TILE={key:null,map:new Map(),px:512,spare:[]};
+const TILE={key:null,map:new Map(),px:384,spare:[]};
 function drawTrackTiles(ctx,tr,scale,pxw,cx,cy,rad){
   const key=tr.def.id+'|'+NLof(tr)+'|'+scale.toFixed(3)+'|'+save.style+'|'+LANG;
   if(TILE.key!==key){TILE.key=key;for(const t of TILE.map.values())TILE.spare.push(t);TILE.map.clear();}
-  const W=TILE.px/scale,x0=Math.floor((cx-rad)/W),x1=Math.floor((cx+rad)/W),y0=Math.floor((cy-rad)/W),y1=Math.floor((cy+rad)/W);let made=0;
-  const order=[];for(let iy=y0;iy<=y1;iy++)for(let ix=x0;ix<=x1;ix++)order.push([ix,iy,Math.hypot((ix+.5)*W-cx,(iy+.5)*W-cy)]);order.sort((a,b)=>a[2]-b[2]);
-  for(const [ix,iy] of order){const k=ix+','+iy;let t=TILE.map.get(k);
-    if(!t&&made<(TILE.map.size<4?40:5)){t=TILE.spare.pop()||document.createElement('canvas');t.width=t.height=TILE.px;const x=t.getContext('2d');
-      x.setTransform(scale,0,0,scale,-ix*W*scale,-iy*W*scale);drawTrackWorld(x,tr,pxw,{x:(ix+.5)*W,y:(iy+.5)*W,r:W*.75});made++;}
+  const W=TILE.px/scale,make=(ix,iy)=>{let t=TILE.spare.pop();if(!t){t=document.createElement('canvas');t.width=t.height=TILE.px;}const x=t.getContext('2d');x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,TILE.px,TILE.px);
+    x.setTransform(scale,0,0,scale,-ix*W*scale,-iy*W*scale);drawTrackWorld(x,tr,pxw,{x:(ix+.5)*W,y:(iy+.5)*W,r:W*.75});TILE.map.set(ix+','+iy,t);return t;};
+  const list=r2=>{const o=[],x0=Math.floor((cx-r2)/W),x1=Math.floor((cx+r2)/W),y0=Math.floor((cy-r2)/W),y1=Math.floor((cy+r2)/W);
+    for(let iy=y0;iy<=y1;iy++)for(let ix=x0;ix<=x1;ix++)o.push([ix,iy,Math.hypot((ix+.5)*W-cx,(iy+.5)*W-cy)]);return o.sort((a,b)=>a[2]-b[2]);};
+  // a gara ferma (conto alla rovescia) si preparano tutti i riquadri; in corsa al massimo uno o due per fotogramma, con un limite di tempo
+  const t0=performance.now(),warm=!race||race.t<0||TILE.map.size<4,budget=warm?60:5;let made=0;
+  for(const [ix,iy] of list(rad)){const k=ix+','+iy;let t=TILE.map.get(k);
+    if(!t&&(warm||made<2)&&performance.now()-t0<budget){t=make(ix,iy);made++;}
     if(!t)continue;TILE.map.delete(k);TILE.map.set(k,t);ctx.drawImage(t,ix*W,iy*W,W*1.004,W*1.004);}
-  while(TILE.map.size>48){const k0=TILE.map.keys().next().value;TILE.spare.push(TILE.map.get(k0));TILE.map.delete(k0);}
+  // riquadri appena fuori dallo schermo preparati in anticipo, uno alla volta
+  if(!made&&performance.now()-t0<4)for(const [ix,iy] of list(rad*1.6)){if(!TILE.map.has(ix+','+iy)){make(ix,iy);break;}}
+  while(TILE.map.size>64){const k0=TILE.map.keys().next().value;TILE.spare.push(TILE.map.get(k0));TILE.map.delete(k0);}
   if(TILE.spare.length>8)TILE.spare.length=8;
 }
-// giro della morte visto di lato (2D): si vede tutta l'auto che fa il giro
-function sideCar(ctx,c,len){const K=c.look||lookFor(c.livery||liveryFor('solid',c.color),c.eq,{}),L=K.L,k=len/34;ctx.save();ctx.scale(k,k);
-  ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,1.5,17,1.6,0,0,7);ctx.fill();
-  ctx.fillStyle=K.bars||'#454b55';ctx.fillRect(-20,-3.4,40,1.6);
-  ctx.fillStyle=L.pattern==='solid'?L.base:L.base;ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-16,-9.5);ctx.quadraticCurveTo(-6,-12.5,2,-11.5);ctx.quadraticCurveTo(11,-10.6,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.closePath();ctx.fill();
-  if(L.a1&&L.pattern!=='solid'){ctx.fillStyle=L.a1;ctx.beginPath();ctx.moveTo(4,-4);ctx.quadraticCurveTo(10,-9.5,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.closePath();ctx.fill();}
-  ctx.fillStyle='rgba(12,18,30,.85)';ctx.beginPath();ctx.ellipse(-.5,-11.3,6.4,2.2,0,Math.PI,0);ctx.fill();
-  ctx.fillStyle=K.wing||'#222';ctx.fillRect(-19,-17,8,1.6);ctx.fillRect(-15.8,-16,1.4,6);
-  for(const x of [-9,9]){ctx.fillStyle='#16181c';ctx.beginPath();ctx.arc(x,-3.1,3.1,0,7);ctx.fill();ctx.fillStyle=K.rim||'#bbb';ctx.beginPath();ctx.arc(x,-3.1,1.5,0,7);ctx.fill();}
-  ctx.fillStyle=K.roller||'#eee';ctx.fillRect(18.4,-4.4,2.6,2.2);ctx.fillRect(-21,-4.4,2.6,2.2);
-  if(save.style==='anime'){ctx.strokeStyle='#14161c';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-16,-9.5);ctx.quadraticCurveTo(-6,-12.5,2,-11.5);ctx.quadraticCurveTo(11,-10.6,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.stroke();}
-  if(c.turbo&&c.state==='run'){ctx.fillStyle='rgba(255,170,40,.95)';ctx.beginPath();ctx.moveTo(-17,-7);ctx.lineTo(-27-Math.random()*5,-5.5);ctx.lineTo(-17,-4.5);ctx.fill();}
-  ctx.restore();}
-function drawLoopSide(ctx,r,z,Rc,me,alpha){const tr=r.tr,R=z.p,a=z.len,nl=NLof(tr);
-  const px=Rc.x,py=Rc.y,pw=Rc.w,ph=Rc.h;
-  const sc=Math.min(pw*.86/(2.4*R),ph*.66/(2*R)),gy=py+ph*.5+R*sc,ox=px+pw/2-(a/2)*sc;
-  const P=(f,h)=>[ox+f*sc,gy-h*sc];
-  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.25);ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.clip();
-  // cielo e terreno dell'ambiente
-  const hab=habOf(tr),g=ctx.createLinearGradient(0,py,0,gy);g.addColorStop(0,hab.sky[0]);g.addColorStop(.7,hab.sky[1]);g.addColorStop(1,hab.sky[2]);ctx.fillStyle=g;ctx.fillRect(px,py,pw,ph);
-  ctx.fillStyle=hab.fc;ctx.fillRect(px,gy,pw,ph);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(px,gy,pw,3);
-  // anello: sponda scura, piano bianco, corsia blu
-  const tw=Math.max(10,R*.3*sc);
-  const path=()=>{ctx.beginPath();ctx.moveTo(px-20,gy);const [x0,y0]=P(0,0);ctx.lineTo(x0,y0);for(let i=0;i<=160;i++){const pz=loopPose(z,z.s0+a*i/160,nl);const [x,y]=P(pz.f,pz.h);ctx.lineTo(x,y);}ctx.lineTo(px+pw+20,gy);};
-  const [cx,cy]=P(a/2,R);
-  ctx.fillStyle='rgba(0,0,0,.12)';ctx.beginPath();ctx.ellipse(cx,gy+4,R*sc*1.1,6,0,0,7);ctx.fill();
-  ctx.lineJoin='round';ctx.lineCap='round';
-  path();ctx.strokeStyle='#14161c';ctx.lineWidth=tw+6;ctx.stroke();
-  path();ctx.strokeStyle='#f4f5f7';ctx.lineWidth=tw;ctx.stroke();
-  path();ctx.strokeStyle=TOY.lane[1];ctx.lineWidth=tw*.45;ctx.stroke();
-  ctx.fillStyle='#d8262f';ctx.fillRect(cx-4,cy+R*sc*.2,8,gy-cy-R*sc*.2);ctx.fillRect(cx-R*sc*.45,gy-6,R*sc*.9,6);
-  // auto: le altre più chiare, la tua grande in primo piano
-  const carLen=Math.max(30,R*sc*.62);
-  const pose=c=>{const d=c.s-z.s0;if(d<0||d>a)return {f:d,h:0,pt:0};const pz=loopPose(z,c.s,nl);return {f:pz.f,h:pz.h,pt:pz.pitch};};
-  for(const c of r.cars){if(c===me||c.state==='out')continue;const q=pose(c);if(q.f<-R*1.6||q.f>a+R*1.6)continue;const [x,y]=P(q.f,q.h);
-    ctx.save();ctx.translate(x,y);ctx.rotate(-q.pt);ctx.translate(0,-tw*.25);ctx.globalAlpha*=.45;sideCar(ctx,c,carLen*.8);ctx.restore();}
-  {const q=pose(me);const [x,y]=P(Math.max(-R*1.5,Math.min(a+R*1.5,q.f)),q.h);ctx.save();ctx.translate(x,y);ctx.rotate(-q.pt);ctx.translate(0,-tw*.25);sideCar(ctx,me,carLen);ctx.restore();}
-  ctx.restore();
-  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.25);
-  if(save.style==='anime')comicText(ctx,'LOOP!',px+pw/2,py+Math.min(40,ph*.09),Math.min(34,pw/9),'#ffd23f');
-  else{ctx.fillStyle='#ffffff';ctx.font='700 18px "Chakra Petch", monospace';ctx.textAlign='center';ctx.fillText('LOOP',px+pw/2,py+26);}
-  ctx.restore();}
 function drawRace(){
   const r=race,v=view;if(!r||!v)return;const cv=$('rc'),ctx=cv.getContext('2d');
   const mode=curMode(),me=r.cars[0],hs=humansOf(r);
