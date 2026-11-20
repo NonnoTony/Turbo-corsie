@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="cbf2ec2a23";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="878604ad56";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -976,8 +976,8 @@ function playerLook(){return lookFor(liveryFor(save.livery,save.color),save.eq,s
 const BX0=-15.6,BX1=18.6,BYB=7.9;
 const smoothc=(a,e0,e1)=>{const t=Math.min(1,Math.max(0,(a-e0)/(e1-e0)));return t*t*(3-2*t);};
 function fenderK(x){return Math.max(1-smoothc(Math.abs(x-9),3,5.8),1-smoothc(Math.abs(x+9),3,5.8));}
-function bodyW(x){let w=9.9+3*fenderK(x);w*=1-.72*smoothc(x,13.4,BX1);w*=1-.2*smoothc(-x,13.4,-BX0);return Math.max(.8,w);}
-const HC=[[-15.6,11],[-9,12],[-3,12.5],[3,12.3],[9,11.1],[15,9.8],[18.6,8.6]];
+function bodyW(x){let w=9.6+2.3*fenderK(x);w*=1-.72*smoothc(x,13.4,BX1);w*=1-.2*smoothc(-x,13.4,-BX0);return Math.max(.8,w);}
+const HC=[[-15.6,10.1],[-9,10.7],[-3,11.1],[3,10.9],[9,10.1],[15,9.1],[18.6,8.3]];
 function bodyH(x){for(let i=0;i<HC.length-1;i++){const [a,ha]=HC[i],[b,hb]=HC[i+1];if(x<=b||i===HC.length-2){const t=Math.min(1,Math.max(0,(x-a)/(b-a))),e=(1-Math.cos(t*Math.PI))/2;return ha+(hb-ha)*e;}}return HC[0][1];}
 function bodyPath(ctx){ctx.beginPath();const n=56;for(let i=0;i<=n;i++){const x=BX1-(BX1-BX0)*i/n;i?ctx.lineTo(x,-bodyW(x)):ctx.moveTo(x,-bodyW(x));}
   for(let i=0;i<=n;i++){const x=BX0+(BX1-BX0)*i/n;ctx.lineTo(x,bodyW(x));}ctx.closePath();}
@@ -2586,13 +2586,13 @@ const ARCH=1.75,ARW=5.4;
 function archK(x){let a=0;for(const wx of [9,-9]){const d=Math.abs(x-wx);if(d<ARW)a=Math.max(a,.5+.5*Math.cos(Math.PI*d/ARW));}return a;}
 function edgeY(x){return BYB+ARCH*archK(x);}
 // sezione della scocca: fianchi arrotondati invece che verticali
-const secS=au=>Math.pow(Math.max(0,1-au**3.2),.42);
+const secS=au=>Math.pow(Math.max(0,1-au**2.6),.5);
 function bodyGeo(){
   if(BODY_GEO)return BODY_GEO;const T=THREE,NX=80,NU=48,pos=[],uv=[],idx=[];
   for(let i=0;i<=NX;i++){const x=BX0+(BX1-BX0)*i/NX,W=bodyW(x),Hc=bodyH(x),fk=fenderK(x);
     const yb=edgeY(x);
     for(let j=0;j<=NU;j++){const u=-1+2*j/NU,au=Math.abs(u),S=secS(au);
-      const y=yb+(Hc-yb)*S+fk*1.35*Math.exp(-(((au-.78)/.16)**2))*S,z=u*W;pos.push(x,y,z);uv.push((x+20)/40,(15-z)/30);}}
+      const y=yb+(Hc-yb)*S+fk*.75*Math.exp(-(((au-.8)/.14)**2))*S,z=u*W;pos.push(x,y,z);uv.push((x+20)/40,(15-z)/30);}}
   for(let i=0;i<NX;i++)for(let j=0;j<NU;j++){const a=i*(NU+1)+j,b=a+NU+1;idx.push(a,a+1,b,b,a+1,b+1);}
   // punta del muso chiusa
   const c=pos.length/3,last=NX*(NU+1);pos.push(BX1,BYB+.4,0);uv.push((BX1+20)/40,.5);for(let j=0;j<NU;j++)idx.push(c,last+j+1,last+j);
@@ -2694,8 +2694,8 @@ function carMesh(c,race){
   const cy=bodyH(.4);
   {const fl=addS(new T.CylinderGeometry(1,1,.3,32),S(0x17191d,{r:.85}),.4,cy+.02,0);fl.scale.set(6.3,1,4);
    }
-  const dome=addS(new T.SphereGeometry(5,40,20,0,Math.PI*2,0,Math.PI/2),HQ?P(0x1a2433,{r:.02,op:.5,env:1,cc:1}):S(0x0b1322,{r:.05,m:.5}),.4,cy-.35,0);dome.scale.set(1.32,.66,.84);dome.castShadow=false;dome.renderOrder=2;
-  const frame=addS(new T.TorusGeometry(5,.24,8,40).rotateX(Math.PI/2),S(new T.Color(L.base).multiplyScalar(.55),{r:.4}),.4,bodyH(.4)-.25,0);frame.scale.set(1.32,1,.84);
+  const dome=addS(new T.SphereGeometry(5,40,20,0,Math.PI*2,0,Math.PI/2),HQ?P(0x1a2433,{r:.02,op:.5,env:1,cc:1}):S(0x0b1322,{r:.05,m:.5}),.4,cy-.35,0);dome.scale.set(1.45,.48,.8);dome.castShadow=false;dome.renderOrder=2;
+  const frame=addS(new T.TorusGeometry(5,.24,8,40).rotateX(Math.PI/2),S(new T.Color(L.base).multiplyScalar(.55),{r:.4}),.4,bodyH(.4)-.25,0);frame.scale.set(1.45,1,.8);
   // kit: minigonne, presa sul tetto, diffusore grande
   if(kit==='x1'||kit==='x3')for(const sg of [1,-1])addS(new T.BoxGeometry(7,1.8,.8),aero,-.4,7.6,9.9*sg);
   if(kit==='x2'||kit==='x3'){addS(new T.BoxGeometry(3.6,1.8,3.4),aero,-6.2,bodyH(-6.2)+.8,0);addS(new T.BoxGeometry(.3,1.2,2.6),S(0x050607,{r:.9}),-4.3,bodyH(-6.2)+.9,0);}
