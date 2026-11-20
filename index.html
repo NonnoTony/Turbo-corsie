@@ -1064,8 +1064,8 @@ function drawCar(ctx,color,roller,opts={}){
   ctx.fillStyle='#6a717c';for(const [x,y] of [[12,5.6],[12,-5.6],[-12,5.6],[-12,-5.6]]){ctx.beginPath();ctx.arc(x,y,.55,0,7);ctx.fill();}
 
   // paraurti anteriore e posteriore
-  for(const sx of [1,-1]){ctx.fillStyle=K.bars;ctx.beginPath();[[13.2,-4.6],[16.4,-13.9],[21.4,-13.9],[21.4,13.9],[16.4,13.9],[13.2,4.6]].forEach(([x,y],i)=>i?ctx.lineTo(x*sx,y):ctx.moveTo(x*sx,y));ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=.3;ctx.stroke();ctx.fillStyle='rgba(0,0,0,.55)';for(const [hx,hy] of [[17.6,7.6],[17.6,-7.6],[18.8,0]]){ctx.beginPath();ctx.arc(hx*sx,hy,.9,0,7);ctx.fill();}}
+  for(const sx of [1,-1]){ctx.fillStyle=K.bars;ctx.beginPath();[[14.2,-4],[16.6,-11.2],[20.2,-11.2],[20.2,11.2],[16.6,11.2],[14.2,4]].forEach(([x,y],i)=>i?ctx.lineTo(x*sx,y):ctx.moveTo(x*sx,y));ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=.3;ctx.stroke();ctx.fillStyle='rgba(0,0,0,.55)';for(const [hx,hy] of [[17.6,6.2],[17.6,-6.2],[18.6,0]]){ctx.beginPath();ctx.arc(hx*sx,hy,.7,0,7);ctx.fill();}}
   if(bp!=='f0'){ctx.fillStyle=K.aero;ctx.beginPath();ctx.moveTo(18.2,-10);ctx.lineTo(23.3,-7.4);ctx.lineTo(23.3,7.4);ctx.lineTo(18.2,10);ctx.closePath();ctx.fill();
     ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=.3;for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(19.2+i*1.1,-8.8+i*.6);ctx.lineTo(19.2+i*1.1,8.8-i*.6);ctx.stroke();}}
   if(bp==='f2'){ctx.fillStyle='#454b55';ctx.fillRect(22.3,-7,1.6,14);ctx.fillStyle=K.roller;for(const sg of [1,-1]){ctx.beginPath();ctx.arc(24.1,6.2*sg,1.9,0,7);ctx.fill();ctx.fillStyle='#22262c';ctx.beginPath();ctx.arc(24.1,6.2*sg,.6,0,7);ctx.fill();ctx.fillStyle=K.roller;}}
@@ -1078,7 +1078,7 @@ function drawCar(ctx,color,roller,opts={}){
   if(bk!=='k0'){ctx.fillStyle=K.brakeCol||(bk==='k1'?'#3f7fd9':'#d23a2a');rr(ctx,-21.2,-6.5,1.8,13,.5);ctx.fill();ctx.fillStyle='rgba(0,0,0,.25)';for(let i=0;i<6;i++)ctx.fillRect(-21,-6+i*2.2,1.4,.5);}
   // rulli con bullone
   const rad=ro==='r3'?3.2:ro==='r0'?2.2:2.7;
-  for(const [x,y] of [[19.6,12.4],[19.6,-12.4],[-19.6,12.4],[-19.6,-12.4]]){
+  for(const [x,y] of [[19.6,11.4],[19.6,-11.4],[-19.6,11.4],[-19.6,-11.4]]){
     ctx.fillStyle=K.roller;ctx.beginPath();ctx.arc(x,y,rad,0,7);ctx.fill();
     if(ro==='r3'){ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=.35;ctx.beginPath();ctx.arc(x,y,rad*.72,0,7);ctx.stroke();}
     ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.arc(x-rad*.3,y-rad*.3,rad*.35,0,7);ctx.fill();
@@ -2630,21 +2630,21 @@ function carMesh(c,race){
   const cap=new T.CylinderGeometry(1.95,1.95,1.4,24);cap.rotateX(Math.PI/2);add(cap,S(K.motor,{r:.35,m:.3}),-11.6,5.8,3.4);
   for(const dx of [-.8,.8])add(new T.BoxGeometry(.3,.9,.5),S(0xc98a3a,{r:.3,m:.8}),-11.6+dx,7.6,3.4);
   // piastre porta-rulli in fibra, con fori e viti
-  const plateG=(sgx)=>{const sh=new T.Shape();const P=[[13.2,-4.6],[16.4,-13.9],[21.4,-13.9],[21.4,13.9],[16.4,13.9],[13.2,4.6]].map(([x,z])=>[x*sgx,z]);
+  const plateG=(sgx)=>{const sh=new T.Shape();const P=[[14.2,-4],[16.6,-11.2],[20.2,-11.2],[20.2,11.2],[16.6,11.2],[14.2,4]].map(([x,z])=>[x*sgx,z]);
     sh.moveTo(P[0][0],P[0][1]);for(const q of P.slice(1))sh.lineTo(q[0],q[1]);sh.closePath();
-    for(const [hx,hz] of [[17.6,7.6],[17.6,-7.6],[18.8,0]]){const h=new T.Path();h.absarc(hx*sgx,hz,.9,0,Math.PI*2,true);sh.holes.push(h);}
+    for(const [hx,hz] of [[17.6,6.2],[17.6,-6.2],[18.6,0]]){const h=new T.Path();h.absarc(hx*sgx,hz,.7,0,Math.PI*2,true);sh.holes.push(h);}
     const gg=new T.ExtrudeGeometry(sh,{depth:.8,bevelEnabled:true,bevelThickness:.12,bevelSize:.12,bevelSegments:2});gg.rotateX(Math.PI/2);return gg;};
   const plt=eq.plate||'p0',plM=S(K.bars,plt==='p1'?{r:.22,m:.2}:plt==='p2'?{r:.28,m:.75}:{r:.38,m:.35});for(const sgx of [1,-1]){const pm=new T.Mesh(plateG(sgx),plM);pm.position.y=4.9;pm.castShadow=true;g.add(pm);}
   // stabilizzatori sotto le piastre
   {const sb=eq.stab||'q0';if(sb!=='q0'){const post=new T.CylinderGeometry(.35,.35,3,8),pm2=S(0xc9ced4,{r:.25,m:.9});
-    for(const [x,z] of [[18.4,8.8],[18.4,-8.8],[-18.4,8.8],[-18.4,-8.8]]){add(post,pm2,x,3.5,z);
+    for(const [x,z] of [[18.4,8.2],[18.4,-8.2],[-18.4,8.2],[-18.4,-8.2]]){add(post,pm2,x,3.5,z);
       if(sb==='q1'){const w=new T.CylinderGeometry(1,1,.8,16);w.rotateX(Math.PI/2);add(w,S(0x1b1c20,{r:.6}),x,1.6,z);}
       else add(new T.SphereGeometry(1,16,12),S(0xe2e6ea,{r:.12,m:1}),x,1.7,z);}}}
   // zavorre montate sui paraurti
   if(dm!=='d0'){const zg=new T.CylinderGeometry(1.15,1.15,2.6,18);zg.rotateX(Math.PI/2);const zm=S(K.damper,{r:.25,m:.8});
     for(const [x,z] of (dm==='d2'?[[17.1,8.2],[-17.1,8.2]]:[[17.1,8.2]]))for(const sg of [1,-1])add(zg,zm,x,6.3,z*sg);}
   // paraurti anteriore: splitter e rulli stabilizzatori
-  if(bp!=='f0'){add(new T.BoxGeometry(5.4,.6,19),aero,21.1,3.4,0);for(const sg of [1,-1])add(new T.BoxGeometry(5,1.6,.5),aero,21.1,4.2,9.3*sg);}
+  if(bp!=='f0'){add(new T.BoxGeometry(4.6,.6,16),aero,20.6,3.4,0);for(const sg of [1,-1])add(new T.BoxGeometry(4.4,1.6,.5),aero,20.6,4.2,7.8*sg);}
   if(bp==='f2'){add(new T.BoxGeometry(1.6,1.4,14),grey,23.1,3.2,0);
     const eg=new T.CylinderGeometry(1.4,1.4,2,18);const em=S(K.roller,{r:.25,m:.8});for(const sg of [1,-1]){add(eg,em,24.1,3,6.2*sg);add(new T.CylinderGeometry(.6,.6,3,10),dk,24.1,3,6.2*sg);}}
   // spugne freno
@@ -2761,7 +2761,7 @@ function carMesh(c,race){
   const rh=ro==='r3'?2:2.6,rpf=[new T.Vector2(.7,0),new T.Vector2(rr3-.3,0),new T.Vector2(rr3,.3),new T.Vector2(rr3,rh*.4),new T.Vector2(rr3-.22,rh*.5),new T.Vector2(rr3,rh*.6),new T.Vector2(rr3,rh-.3),new T.Vector2(rr3-.3,rh),new T.Vector2(.7,rh)];
   const rgeo=new T.LatheGeometry(rpf,28),rmat=ro==='r0'?S(K.roller,{r:.45}):S(K.roller,{r:.22,m:.85});
   const brg=S(0xd0d5db,{r:.18,m:.95}),scr=new T.CylinderGeometry(.7,.7,.5,6),wsh=new T.CylinderGeometry(1.25,1.25,.22,20);
-  for(const [rx,rz] of [[21.1,13.6],[21.1,-13.6],[-21.1,13.6],[-21.1,-13.6]]){
+  for(const [rx,rz] of [[20.1,11.8],[20.1,-11.8],[-20.1,11.8],[-20.1,-11.8]]){
     // un rullo sotto la piastra e, con i rulli doppi, uno sopra: la piastra resta ben visibile in mezzo
     const PB=3.98,PT=5.02,dbl=ro==='r3',yU=PB-.32-rh,yA=PT+.32,top=dbl?yA+rh:PT;
     add(rgeo,rmat,rx,yU,rz);add(new T.CylinderGeometry(.7,.7,rh-.1,16),brg,rx,yU+rh/2,rz);add(wsh,brg,rx,PB-.16,rz);
