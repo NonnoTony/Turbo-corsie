@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="db7de1c2d7";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="09029f4902";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -797,6 +797,7 @@ function loopPose(z,s,nl){const R=z.p,a=z.len,u=Math.min(1,Math.max(0,(s-z.s0)/a
   if(u>1-p){const t=(u-(1-p))/p;return {f:a/2+a/2*t,h:0,lat:w/2*(1-sm(t)),pitch:0,th:0};}
   const th=2*Math.PI*(u-p)/(1-2*p);return {f:a/2+R*Math.sin(th),h:R*(1-Math.cos(th)),lat:-w/2+w*th/(2*Math.PI),pitch:th,th};}
 const LOOP_MIN=BASE_V*.7;
+function loopNear(tr,c){if(!c||c.state==='out')return null;for(const z of tr.zones.O){const d=c.s-z.s0;if(d>-140&&d<z.len+70)return z;}return null;}
 function buildTrack(def,nl=3){
   let x=0,y=0,h=def.h0||0,s=0; const P=[],zones={B:[],J:[],H:[],O:[]}; const STEP=4;
   let curves=0;
@@ -2232,6 +2233,37 @@ function drawTrackTiles(ctx,tr,scale,pxw,cx,cy,rad){
   while(TILE.map.size>48){const k0=TILE.map.keys().next().value;TILE.spare.push(TILE.map.get(k0));TILE.map.delete(k0);}
   if(TILE.spare.length>8)TILE.spare.length=8;
 }
+// giro della morte visto di lato (2D): si vede tutta l'auto che fa il giro
+function sideCar(ctx,c,len){const K=c.look||lookFor(c.livery||liveryFor('solid',c.color),c.eq,{}),L=K.L,k=len/34;ctx.save();ctx.scale(k,k);
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,1.5,17,1.6,0,0,7);ctx.fill();
+  ctx.fillStyle=K.bars||'#454b55';ctx.fillRect(-20,-3.4,40,1.6);
+  ctx.fillStyle=L.pattern==='solid'?L.base:L.base;ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-16,-9.5);ctx.quadraticCurveTo(-6,-12.5,2,-11.5);ctx.quadraticCurveTo(11,-10.6,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.closePath();ctx.fill();
+  if(L.a1&&L.pattern!=='solid'){ctx.fillStyle=L.a1;ctx.beginPath();ctx.moveTo(4,-4);ctx.quadraticCurveTo(10,-9.5,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.closePath();ctx.fill();}
+  ctx.fillStyle='rgba(12,18,30,.85)';ctx.beginPath();ctx.ellipse(-.5,-11.3,6.4,2.2,0,Math.PI,0);ctx.fill();
+  ctx.fillStyle=K.wing||'#222';ctx.fillRect(-19,-17,8,1.6);ctx.fillRect(-15.8,-16,1.4,6);
+  for(const x of [-9,9]){ctx.fillStyle='#16181c';ctx.beginPath();ctx.arc(x,-3.1,3.1,0,7);ctx.fill();ctx.fillStyle=K.rim||'#bbb';ctx.beginPath();ctx.arc(x,-3.1,1.5,0,7);ctx.fill();}
+  ctx.fillStyle=K.roller||'#eee';ctx.fillRect(18.4,-4.4,2.6,2.2);ctx.fillRect(-21,-4.4,2.6,2.2);
+  if(save.style==='anime'){ctx.strokeStyle='#14161c';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-16,-9.5);ctx.quadraticCurveTo(-6,-12.5,2,-11.5);ctx.quadraticCurveTo(11,-10.6,18.6,-5.6);ctx.lineTo(18.6,-4);ctx.stroke();}
+  if(c.turbo&&c.state==='run'){ctx.fillStyle='rgba(255,170,40,.95)';ctx.beginPath();ctx.moveTo(-17,-7);ctx.lineTo(-27-Math.random()*5,-5.5);ctx.lineTo(-17,-4.5);ctx.fill();}
+  ctx.restore();}
+function drawLoopSide(ctx,r,z,Rc,me,alpha){const tr=r.tr,R=z.p,a=z.len,nl=NLof(tr);
+  const pw=Rc.w*.9,ph=Rc.h*.62,px=Rc.x+(Rc.w-pw)/2,py=Rc.y+Rc.h*.1;const sc=Math.min(pw/(a+R*.6),ph/(2*R+R*.55)),ox=px+pw/2-(a/2)*sc,oy=py+ph-R*.22*sc;
+  const P=(f,h)=>[ox+f*sc,oy-h*sc];
+  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.1);
+  ctx.fillStyle='rgba(12,24,40,.35)';rr(ctx,px-6,py-6,pw+12,ph+12,14);ctx.fill();
+  const hab=habOf(tr),g=ctx.createLinearGradient(0,py,0,py+ph);g.addColorStop(0,hab.sky[0]);g.addColorStop(1,hab.sky[2]);ctx.fillStyle=g;rr(ctx,px,py,pw,ph,10);ctx.fill();
+  ctx.save();rr(ctx,px,py,pw,ph,10);ctx.clip();ctx.fillStyle=hab.fc;ctx.fillRect(px,oy+2,pw,ph);
+  const path=()=>{ctx.beginPath();const [x0,y0]=P(-R*1.5,0);ctx.moveTo(x0,y0);for(let i=0;i<=120;i++){const pz=loopPose(z,z.s0+a*i/120,nl);const [x,y]=P(pz.f,pz.h);ctx.lineTo(x,y);}const [x1,y1]=P(a+R*1.5,0);ctx.lineTo(x1,y1);};
+  ctx.lineJoin='round';ctx.lineCap='round';path();ctx.strokeStyle='#14161c';ctx.lineWidth=R*.36*sc+4;ctx.stroke();path();ctx.strokeStyle='#f4f5f7';ctx.lineWidth=R*.36*sc;ctx.stroke();
+  path();ctx.strokeStyle=TOY.lane[1];ctx.lineWidth=R*.2*sc;ctx.stroke();path();ctx.strokeStyle='#ef4a2f';ctx.lineWidth=Math.max(2,R*.05*sc);ctx.setLineDash([R*.15*sc,R*.12*sc]);ctx.stroke();ctx.setLineDash([]);
+  {const [bx,by]=P(a/2,R*2+R*.18);ctx.fillStyle='#d8262f';ctx.fillRect(bx-3,by,6,oy-by);}
+  for(const c of [...r.cars].sort((A,B)=>(A===me)-(B===me))){if(c.state==='out')continue;const d=c.s-z.s0;let f,h,pt;
+    if(d<0){f=d;h=0;pt=0;}else if(d>a){f=d;h=0;pt=0;}else{const pz=loopPose(z,c.s,nl);f=pz.f;h=pz.h;pt=pz.pitch;}
+    if(f<-R*1.5||f>a+R*1.5)continue;const [x,y]=P(f,h);ctx.save();ctx.translate(x,y);ctx.rotate(-pt);ctx.translate(0,-R*.11*sc);ctx.globalAlpha=c===me?1:.55;sideCar(ctx,c,Math.max(22,R*.75*sc));ctx.restore();}
+  ctx.restore();
+  if(save.style==='anime')comicText(ctx,'LOOP!',px+pw/2,py+24,Math.min(30,pw/10),'#ffd23f');
+  else{ctx.fillStyle='#ffffff';ctx.font='700 16px "Chakra Petch", monospace';ctx.textAlign='center';ctx.fillText('LOOP',px+pw/2,py+22);}
+  ctx.restore();}
 function drawRace(){
   const r=race,v=view;if(!r||!v)return;const cv=$('rc'),ctx=cv.getContext('2d');
   const mode=curMode(),me=r.cars[0],hs=humansOf(r);
@@ -2256,6 +2288,7 @@ function drawRace(){
   }
   // overlay schermo
   ctx.setTransform(v.dpr,0,0,v.dpr,0,0);
+  if(mode!=='3d')hs.forEach((h,i)=>{const lz=loopNear(r.tr,h);const R=rects[Math.min(i,rects.length-1)];h._lf=(h._lf||0)+((lz?1:0)-(h._lf||0))*.18;if(h._lf>.03&&(lz||h._lz))drawLoopSide(ctx,r,lz||h._lz,R,h,h._lf);h._lz=lz||h._lz;if(h._lf<.03)h._lz=null;});
   if(save.style==='anime')hs.forEach((h,i)=>{if(h.turbo&&h.state==='run')speedLines(ctx,rects[Math.min(i,rects.length-1)]);});
   if(r.duo&&rects.length>1){ctx.fillStyle='#0f2a21';const a=rects[0],b=rects[1];if(b.x>0)ctx.fillRect(a.w,0,2,v.ch);else ctx.fillRect(0,a.h,v.cw,2);}
   if(mode!=='full')drawMinimap(ctx,r,v);
@@ -2918,9 +2951,12 @@ function render3D(r,rects,hs){
   const multi=rects.length>1;g3.renderer.setScissorTest(multi);
   rects.forEach((R,i)=>{const me=hs[i],cam=view.cams?view.cams[i]:view.cam,ch=cam.h;
     const fy=trackHeight(tr,me.state==='out'?0:me.s);
-    const want=new T.Vector3(cam.x-Math.cos(ch)*95,fy+44,cam.y-Math.sin(ch)*95);
-    if(!g3.camPos[i])g3.camPos[i]=want.clone();else g3.camPos[i].lerp(want,.12);
-    g3.camera.position.copy(g3.camPos[i]);g3.camera.lookAt(cam.x+Math.cos(ch)*100,fy+4,cam.y+Math.sin(ch)*100);
+    let want=new T.Vector3(cam.x-Math.cos(ch)*95,fy+44,cam.y-Math.sin(ch)*95),look=new T.Vector3(cam.x+Math.cos(ch)*100,fy+4,cam.y+Math.sin(ch)*100);
+    {const lz=loopNear(tr,me);if(lz){const R=lz.p,mid=tr.at(lz.s0+lz.len/2),sx=-Math.sin(mid.h),sy=Math.cos(mid.h),d=R*4.6+halfW(tr)*1.2;
+      want=new T.Vector3(mid.x+sx*d-Math.cos(mid.h)*R*.3,R*1.15,mid.y+sy*d-Math.sin(mid.h)*R*.3);look=new T.Vector3(mid.x,R*.95,mid.y);}}
+    if(!g3.camPos[i])g3.camPos[i]=want.clone();else g3.camPos[i].lerp(want,.1);
+    if(!g3.camLook)g3.camLook=[];if(!g3.camLook[i])g3.camLook[i]=look.clone();else g3.camLook[i].lerp(look,.12);
+    g3.camera.position.copy(g3.camPos[i]);g3.camera.lookAt(g3.camLook[i]);
     const fov=60+(me.turbo&&me.state==='run'?8:0);g3.fovs[i]+=(fov-g3.fovs[i])*.08;
     g3.camera.fov=g3.fovs[i];g3.camera.aspect=R.w/R.h;g3.camera.updateProjectionMatrix();
     g3.sun.target.position.set(cam.x,0,cam.y);g3.sun.position.set(cam.x-220,520,cam.y+160);
