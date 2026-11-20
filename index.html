@@ -2232,22 +2232,33 @@ function sideCar(ctx,c,len){const K=c.look||lookFor(c.livery||liveryFor('solid',
   if(c.turbo&&c.state==='run'){ctx.fillStyle='rgba(255,170,40,.95)';ctx.beginPath();ctx.moveTo(-17,-7);ctx.lineTo(-27-Math.random()*5,-5.5);ctx.lineTo(-17,-4.5);ctx.fill();}
   ctx.restore();}
 function drawLoopSide(ctx,r,z,Rc,me,alpha){const tr=r.tr,R=z.p,a=z.len,nl=NLof(tr);
-  const pw=Rc.w*.9,ph=Rc.h*.62,px=Rc.x+(Rc.w-pw)/2,py=Rc.y+Rc.h*.1;const sc=Math.min(pw/(a+R*.6),ph/(2*R+R*.55)),ox=px+pw/2-(a/2)*sc,oy=py+ph-R*.22*sc;
-  const P=(f,h)=>[ox+f*sc,oy-h*sc];
-  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.1);
-  ctx.fillStyle='rgba(12,24,40,.35)';rr(ctx,px-6,py-6,pw+12,ph+12,14);ctx.fill();
-  const hab=habOf(tr),g=ctx.createLinearGradient(0,py,0,py+ph);g.addColorStop(0,hab.sky[0]);g.addColorStop(1,hab.sky[2]);ctx.fillStyle=g;rr(ctx,px,py,pw,ph,10);ctx.fill();
-  ctx.save();rr(ctx,px,py,pw,ph,10);ctx.clip();ctx.fillStyle=hab.fc;ctx.fillRect(px,oy+2,pw,ph);
-  const path=()=>{ctx.beginPath();const [x0,y0]=P(-R*1.5,0);ctx.moveTo(x0,y0);for(let i=0;i<=120;i++){const pz=loopPose(z,z.s0+a*i/120,nl);const [x,y]=P(pz.f,pz.h);ctx.lineTo(x,y);}const [x1,y1]=P(a+R*1.5,0);ctx.lineTo(x1,y1);};
-  ctx.lineJoin='round';ctx.lineCap='round';path();ctx.strokeStyle='#14161c';ctx.lineWidth=R*.36*sc+4;ctx.stroke();path();ctx.strokeStyle='#f4f5f7';ctx.lineWidth=R*.36*sc;ctx.stroke();
-  path();ctx.strokeStyle=TOY.lane[1];ctx.lineWidth=R*.2*sc;ctx.stroke();path();ctx.strokeStyle='#ef4a2f';ctx.lineWidth=Math.max(2,R*.05*sc);ctx.setLineDash([R*.15*sc,R*.12*sc]);ctx.stroke();ctx.setLineDash([]);
-  {const [bx,by]=P(a/2,R*2+R*.18);ctx.fillStyle='#d8262f';ctx.fillRect(bx-3,by,6,oy-by);}
-  for(const c of [...r.cars].sort((A,B)=>(A===me)-(B===me))){if(c.state==='out')continue;const d=c.s-z.s0;let f,h,pt;
-    if(d<0){f=d;h=0;pt=0;}else if(d>a){f=d;h=0;pt=0;}else{const pz=loopPose(z,c.s,nl);f=pz.f;h=pz.h;pt=pz.pitch;}
-    if(f<-R*1.5||f>a+R*1.5)continue;const [x,y]=P(f,h);ctx.save();ctx.translate(x,y);ctx.rotate(-pt);ctx.translate(0,-R*.11*sc);ctx.globalAlpha=c===me?1:.55;sideCar(ctx,c,Math.max(22,R*.75*sc));ctx.restore();}
+  const px=Rc.x,py=Rc.y,pw=Rc.w,ph=Rc.h;
+  const sc=Math.min(pw*.86/(2.4*R),ph*.66/(2*R)),gy=py+ph*.5+R*sc,ox=px+pw/2-(a/2)*sc;
+  const P=(f,h)=>[ox+f*sc,gy-h*sc];
+  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.25);ctx.beginPath();ctx.rect(px,py,pw,ph);ctx.clip();
+  // cielo e terreno dell'ambiente
+  const hab=habOf(tr),g=ctx.createLinearGradient(0,py,0,gy);g.addColorStop(0,hab.sky[0]);g.addColorStop(.7,hab.sky[1]);g.addColorStop(1,hab.sky[2]);ctx.fillStyle=g;ctx.fillRect(px,py,pw,ph);
+  ctx.fillStyle=hab.fc;ctx.fillRect(px,gy,pw,ph);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(px,gy,pw,3);
+  // anello: sponda scura, piano bianco, corsia blu
+  const tw=Math.max(10,R*.3*sc);
+  const path=()=>{ctx.beginPath();ctx.moveTo(px-20,gy);const [x0,y0]=P(0,0);ctx.lineTo(x0,y0);for(let i=0;i<=160;i++){const pz=loopPose(z,z.s0+a*i/160,nl);const [x,y]=P(pz.f,pz.h);ctx.lineTo(x,y);}ctx.lineTo(px+pw+20,gy);};
+  const [cx,cy]=P(a/2,R);
+  ctx.fillStyle='rgba(0,0,0,.12)';ctx.beginPath();ctx.ellipse(cx,gy+4,R*sc*1.1,6,0,0,7);ctx.fill();
+  ctx.lineJoin='round';ctx.lineCap='round';
+  path();ctx.strokeStyle='#14161c';ctx.lineWidth=tw+6;ctx.stroke();
+  path();ctx.strokeStyle='#f4f5f7';ctx.lineWidth=tw;ctx.stroke();
+  path();ctx.strokeStyle=TOY.lane[1];ctx.lineWidth=tw*.45;ctx.stroke();
+  ctx.fillStyle='#d8262f';ctx.fillRect(cx-4,cy+R*sc*.2,8,gy-cy-R*sc*.2);ctx.fillRect(cx-R*sc*.45,gy-6,R*sc*.9,6);
+  // auto: le altre più chiare, la tua grande in primo piano
+  const carLen=Math.max(30,R*sc*.62);
+  const pose=c=>{const d=c.s-z.s0;if(d<0||d>a)return {f:d,h:0,pt:0};const pz=loopPose(z,c.s,nl);return {f:pz.f,h:pz.h,pt:pz.pitch};};
+  for(const c of r.cars){if(c===me||c.state==='out')continue;const q=pose(c);if(q.f<-R*1.6||q.f>a+R*1.6)continue;const [x,y]=P(q.f,q.h);
+    ctx.save();ctx.translate(x,y);ctx.rotate(-q.pt);ctx.translate(0,-tw*.25);ctx.globalAlpha*=.45;sideCar(ctx,c,carLen*.8);ctx.restore();}
+  {const q=pose(me);const [x,y]=P(Math.max(-R*1.5,Math.min(a+R*1.5,q.f)),q.h);ctx.save();ctx.translate(x,y);ctx.rotate(-q.pt);ctx.translate(0,-tw*.25);sideCar(ctx,me,carLen);ctx.restore();}
   ctx.restore();
-  if(save.style==='anime')comicText(ctx,'LOOP!',px+pw/2,py+24,Math.min(30,pw/10),'#ffd23f');
-  else{ctx.fillStyle='#ffffff';ctx.font='700 16px "Chakra Petch", monospace';ctx.textAlign='center';ctx.fillText('LOOP',px+pw/2,py+22);}
+  ctx.save();ctx.globalAlpha=Math.min(1,alpha*1.25);
+  if(save.style==='anime')comicText(ctx,'LOOP!',px+pw/2,py+Math.min(40,ph*.09),Math.min(34,pw/9),'#ffd23f');
+  else{ctx.fillStyle='#ffffff';ctx.font='700 18px "Chakra Petch", monospace';ctx.textAlign='center';ctx.fillText('LOOP',px+pw/2,py+26);}
   ctx.restore();}
 function drawRace(){
   const r=race,v=view;if(!r||!v)return;const cv=$('rc'),ctx=cv.getContext('2d');
@@ -2273,10 +2284,10 @@ function drawRace(){
   }
   // overlay schermo
   ctx.setTransform(v.dpr,0,0,v.dpr,0,0);
-  if(mode!=='3d')hs.forEach((h,i)=>{const lz=loopNear(r.tr,h);const R=rects[Math.min(i,rects.length-1)];h._lf=(h._lf||0)+((lz?1:0)-(h._lf||0))*.18;if(h._lf>.03&&(lz||h._lz))drawLoopSide(ctx,r,lz||h._lz,R,h,h._lf);h._lz=lz||h._lz;if(h._lf<.03)h._lz=null;});
+  hs.forEach((h,i)=>{const lz=loopNear(r.tr,h);const R=rects[Math.min(i,rects.length-1)];h._lf=(h._lf||0)+((lz?1:0)-(h._lf||0))*.18;if(h._lf>.03&&(lz||h._lz))drawLoopSide(ctx,r,lz||h._lz,R,h,h._lf);h._lz=lz||h._lz;if(h._lf<.03)h._lz=null;});
   if(save.style==='anime')hs.forEach((h,i)=>{if(h.turbo&&h.state==='run')speedLines(ctx,rects[Math.min(i,rects.length-1)]);});
   if(r.duo&&rects.length>1){ctx.fillStyle='#0f2a21';const a=rects[0],b=rects[1];if(b.x>0)ctx.fillRect(a.w,0,2,v.ch);else ctx.fillRect(0,a.h,v.cw,2);}
-  if(mode!=='full')drawMinimap(ctx,r,v);
+  if(mode!=='full'&&!hs.some(h=>h._lf>.3))drawMinimap(ctx,r,v);
   if(r.duo){hs.forEach((h,i)=>drawHudBox(ctx,rects[Math.min(i,rects.length-1)],h,i,r));if(rects.length===1)drawHudBox(ctx,{x:0,y:72,w:v.cw,h:v.ch-72},hs[1],1,r);}
   if(r.t<.8){
     const n=r.t<0?Math.ceil(-r.t):0;const W=150,H=46,x=v.cw/2-W/2,y=v.ch/2-H/2;
