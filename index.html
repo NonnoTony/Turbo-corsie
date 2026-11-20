@@ -2762,9 +2762,11 @@ function carMesh(c,race){
   const rgeo=new T.LatheGeometry(rpf,28),rmat=ro==='r0'?S(K.roller,{r:.45}):S(K.roller,{r:.22,m:.85});
   const brg=S(0xd0d5db,{r:.18,m:.95}),scr=new T.CylinderGeometry(.7,.7,.5,6),wsh=new T.CylinderGeometry(1.25,1.25,.22,20);
   for(const [rx,rz] of [[21.1,13.6],[21.1,-13.6],[-21.1,13.6],[-21.1,-13.6]]){
-    const ys=ro==='r3'?[1,3.1]:[1.6];
-    for(const y0 of ys){add(rgeo,rmat,rx,y0,rz);add(new T.CylinderGeometry(.7,.7,rh-.1,16),brg,rx,y0+rh/2,rz);}
-    add(wsh,brg,rx,(ro==='r3'?5.25:4.4),rz);add(scr,brg,rx,6.05,rz);add(new T.CylinderGeometry(.32,.32,5.4,8),brg,rx,3.2,rz);}
+    // un rullo sotto la piastra e, con i rulli doppi, uno sopra: la piastra resta ben visibile in mezzo
+    const PB=3.98,PT=5.02,dbl=ro==='r3',yU=PB-.32-rh,yA=PT+.32,top=dbl?yA+rh:PT;
+    add(rgeo,rmat,rx,yU,rz);add(new T.CylinderGeometry(.7,.7,rh-.1,16),brg,rx,yU+rh/2,rz);add(wsh,brg,rx,PB-.16,rz);
+    if(dbl){add(rgeo,rmat,rx,yA,rz);add(new T.CylinderGeometry(.7,.7,rh-.1,16),brg,rx,yA+rh/2,rz);add(wsh,brg,rx,PT+.16,rz);}
+    add(scr,brg,rx,top+.27,rz);add(new T.CylinderGeometry(.32,.32,top-yU+.6,8),brg,rx,(top+yU)/2,rz);}
   const fl=new T.ConeGeometry(2.8,12,12);fl.rotateZ(Math.PI/2);
   const flame=new T.Mesh(fl,new T.MeshBasicMaterial({color:0xffaa28}));flame.position.set(-27,10,0);flame.visible=false;g.add(flame);
   const shd=new T.Mesh(new T.CircleGeometry(16,24),new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.2,depthWrite:false}));
