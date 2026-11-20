@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="4f16fec80e";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="5f5db88e3e";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -789,9 +789,13 @@ const TRACKS=[
 ];
 
 // giro della morte: spostamento laterale (salita da un lato, discesa dall'altro, come i loop veri)
-function loopLat(u,nl){return (LANE*nl/2+8)*Math.sin(2*Math.PI*u);}
-function loopPose(z,s,nl){const u=Math.min(1,Math.max(0,(s-z.s0)/z.len)),th=2*Math.PI*u,R=z.p,a=z.len;
-  return {f:a*u+R*Math.sin(th),h:R*(1-Math.cos(th)),lat:loopLat(u,nl),pitch:Math.atan2(2*Math.PI*R*Math.sin(th),a+2*Math.PI*R*Math.cos(th)),u};}
+// giro della morte: entrata spostata da un lato, cerchio verticale, uscita dall'altro lato (come le piste giocattolo)
+function loopW(nl){return LANE*nl+20;}
+function loopPose(z,s,nl){const R=z.p,a=z.len,u=Math.min(1,Math.max(0,(s-z.s0)/a)),C=2*Math.PI*R,tot=a+C,p=(a/2)/tot,w=loopW(nl);
+  const sm=t=>t*t*(3-2*t);
+  if(u<p){const t=u/p;return {f:a/2*t,h:0,lat:-w/2*sm(t),pitch:0,th:0};}
+  if(u>1-p){const t=(u-(1-p))/p;return {f:a/2+a/2*t,h:0,lat:w/2*(1-sm(t)),pitch:0,th:0};}
+  const th=2*Math.PI*(u-p)/(1-2*p);return {f:a/2+R*Math.sin(th),h:R*(1-Math.cos(th)),lat:-w/2+w*th/(2*Math.PI),pitch:th,th};}
 const LOOP_MIN=BASE_V*.7;
 function buildTrack(def,nl=3){
   let x=0,y=0,h=def.h0||0,s=0; const P=[],zones={B:[],J:[],H:[],O:[]}; const STEP=4;
@@ -803,7 +807,7 @@ function buildTrack(def,nl=3){
     }else{
       const n=Math.max(1,Math.round(a/STEP)),ds=a/n;
       if(t!=='S'){const z={s0:s,s1:s+a,len:a,p:b};
-        if(t==='O'){let L2=0,pf=0,ph=0;for(let i=0;i<=200;i++){const u=i/200,th=2*Math.PI*u,f=a*u+b*Math.sin(th),hh=b*(1-Math.cos(th)),la=loopLat(u,nl);if(i)L2+=Math.hypot(f-pf,hh-ph);pf=f;ph=hh;}z.k=Math.max(1,L2/a);}
+        if(t==='O'){let L2=0,P0=null;for(let i=0;i<=400;i++){const P1=loopPose(z,z.s0+a*i/400,nl);if(P0)L2+=Math.hypot(P1.f-P0.f,P1.h-P0.h,P1.lat-P0.lat);P0=P1;}z.k=Math.max(1,L2/a);}
         zones[t].push(z);}
       for(let i=0;i<n;i++){P.push({x,y,h,k:0,s});x+=Math.cos(h)*ds;y+=Math.sin(h)*ds;s+=ds;}
     }
@@ -821,15 +825,15 @@ function buildTrack(def,nl=3){
   return tr;
 }
 const FEATS={anello:[['H',200,22]],garage:[['H',300,28]],parco:[['H',380,46],['H',200,22]],
- osso:[['O',92,46]],serpente:[['H',320,30],['O',92,46]],gp:[['O',92,46],['H',400,48]],
- tramonto:[['O',92,46],['H',300,30]],autunno:[['H',520,52],['O',92,46]],ghiaccio:[['O',92,46],['H',260,30]],notte:[['H',520,56],['O',92,46],['H',200,24]],
- tornanti:[['O',96,48],['H',400,54],['H',300,30]],preistoria:[['O',96,48],['H',460,52],['H',260,28]],luna:[['O',96,48],['H',460,52],['H',260,28]],
- alieni:[['O',96,48],['H',460,52],['H',260,28]],finale:[['O',96,48],['O',96,48],['H',360,50],['H',260,28]]};
+ osso:[['O',184,46]],serpente:[['H',320,30],['O',184,46]],gp:[['O',184,46],['H',400,48]],
+ tramonto:[['O',184,46],['H',300,30]],autunno:[['O',184,46],['H',520,52]],ghiaccio:[['O',184,46],['H',260,30]],notte:[['O',184,46],['H',520,56],['H',200,24]],
+ tornanti:[['O',184,46],['H',400,54],['H',300,30]],preistoria:[['O',184,46],['H',460,52],['H',260,28]],luna:[['O',184,46],['H',460,52],['H',260,28]],
+ alieni:[['O',184,46],['H',460,52],['H',260,28]],finale:[['O',184,46],['O',184,46],['H',360,50],['H',260,28]]};
 for(const t of TRACKS){const fs=FEATS[t.id];if(!fs)continue;const cm=t.cmds;
-  for(const [k,len,par] of fs){const need=k==='O'?len+140:len+30;let best=-1;
+  for(const [k,len,par] of fs){const need=k==='O'?len+110:len+30;let best=-1;
     for(let i=0;i<cm.length;i++){const c=cm[i];if(c[0]!=='S'||c[1]<need)continue;const pv=cm[i-1],nx=cm[i+1];
-      if((pv&&!['S','C'].includes(pv[0]))||(nx&&!['S','C'].includes(nx[0])))continue;if(best<0||c[1]>cm[best][1])best=i;}
-    if(best<0)continue;const L0=cm[best][1],pre=k==='O'?L0-len-40:(L0-len)/2,post=L0-len-pre;
+      const okN=q=>!q||['S','C'].includes(q[0])||(k==='H'&&q[0]==='O'&&q===nx);if(!okN(pv)||!okN(nx))continue;if(best<0||c[1]>cm[best][1])best=i;}
+    if(best<0)continue;const L0=cm[best][1],pre=k==='O'?L0-len-30:(L0-len)/2,post=L0-len-pre;
     cm.splice(best,1,['S',pre],[k,len,par],['S',post]);}}
 TRACKS.forEach(t=>t.prize=t.prize.map(v=>Math.round(Math.round(Math.round(v*.93)*.9)*.8)));  // premi -7%, poi -10%, poi -20%
 const OUT_PRIZE=14;
@@ -2135,14 +2139,15 @@ function drawTrackWorld(ctx,tr,px,cull){
       ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-4,-HALF+6);ctx.lineTo(-10,-HALF+6);ctx.lineTo(0,0);ctx.lineTo(-10,HALF-6);ctx.lineTo(-4,HALF-6);ctx.closePath();ctx.fill();ctx.restore();}
     for(const [f,txt] of [[.12,'SALITA'],[.5,z.p>=40?'PONTE':''],[.88,'DISCESA']]){if(!txt)continue;const [x,y,h]=tr.pt(z.s0+z.len*f,0);ctx.save();ctx.translate(x,y);ctx.rotate(h);
       ctx.fillStyle='rgba(20,22,28,.75)';rr(ctx,-30,-9,60,18,4);ctx.fill();ctx.fillStyle='#ffffff';ctx.font='700 11px "Chakra Petch", monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(T(txt),0,1);ctx.restore();}}
-  // giro della morte
-  for(const z of tr.zones.O){{const m=tr.at((z.s0+z.s1)/2);if(!near(m.x,m.y,200))continue;}const nlz=NLof(tr);
-    ctx.save();ctx.translate(6,8);zonePoly(ctx,tr,z,HALF+14);ctx.fillStyle='rgba(40,20,10,.35)';ctx.fill();ctx.restore();
-    zonePoly(ctx,tr,z,HALF+14);ctx.fillStyle='#d8262f';ctx.fill();zonePoly(ctx,tr,z,HALF+4);ctx.fillStyle='#ef4a2f';ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=3;for(const sg of [-1,1]){ctx.beginPath();for(let i=0;i<=40;i++){const u=i/40,P2=loopPose(z,z.s0+u*z.len,nlz);if(Math.abs(P2.lat*sg)<0&&false)continue;
-      const [x,y]=tr.pt(z.s0+Math.min(z.len,Math.max(0,P2.f)),P2.lat*.5+sg*LANE*.4);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();}
-    const m=tr.at((z.s0+z.s1)/2);ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.h);ctx.fillStyle='#ffffff';rr(ctx,-26,-10,52,20,5);ctx.fill();ctx.fillStyle='#d8262f';
-    ctx.font='700 13px "Chakra Petch", monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('LOOP',0,1);ctx.restore();}
+  // giro della morte: anello visto dall'alto in prospettiva
+  for(const z of tr.zones.O){const mid=(z.s0+z.s1)/2,m=tr.at(mid);if(!near(m.x,m.y,260))continue;const R=z.p,w=loopW(NLof(tr));
+    ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.h);
+    ctx.strokeStyle='rgba(30,20,10,.3)';ctx.lineWidth=20;ctx.beginPath();ctx.ellipse(10,12,R*1.05,w*.62,0,0,7);ctx.stroke();
+    ctx.lineWidth=18;ctx.strokeStyle='#ef4a2f';ctx.beginPath();ctx.ellipse(0,0,R*1.05,w*.62,0,0,7);ctx.stroke();
+    const ring=(d,lw,col)=>{ctx.lineWidth=lw;ctx.strokeStyle=col;ctx.beginPath();ctx.ellipse(0,0,Math.max(4,R*1.05+d),Math.max(4,w*.62+d),0,0,7);ctx.stroke();};
+    ring(9,3,'#ffffff');ring(-9,3,'#ffffff');if(save.style==='anime'){ring(11,2,'#14161c');ring(-11,2,'#14161c');}
+    ctx.rotate(Math.PI/2);ctx.fillStyle='#ffffff';rr(ctx,-28,-11,56,22,6);ctx.fill();ctx.fillStyle='#d8262f';ctx.font='700 14px "Chakra Petch", monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('LOOP',0,1);
+    ctx.restore();}
   // salti: rampa arancione
   for(const z of tr.zones.J){{const m=tr.at((z.s0+z.s1)/2);if(!near(m.x,m.y,200))continue;}
     ctx.save();ctx.translate(4,6);zonePoly(ctx,tr,z,HALF+10);ctx.fillStyle='rgba(60,30,10,.3)';ctx.fill();ctx.restore();
@@ -2341,22 +2346,19 @@ function build3D(tr){
   const hillBase=q=>{const z=tr.zones.H.find(z=>q>=z.s0&&q<z.s1);if(!z||z.p<40)return 0;return Math.max(0,H(q)-5);};
   for(const z of tr.zones.H){if(z.p<40)continue;const pm=new T.MeshStandardMaterial({color:0xf2c230,roughness:.4});
     for(let q=z.s0+z.len*.18;q<z.s1-z.len*.15;q+=70){const hh=H(q);if(hh<14)continue;for(const sg of [-1,1]){const [px,py]=tr.pt(q,sg*(HALF-10));const m=new T.Mesh(new T.BoxGeometry(7,hh-4,7),pm);m.position.set(px,(hh-4)/2,py);m.castShadow=true;grp.add(m);}}}
-  // giro della morte: superficie delle corsie, sponde e anello di sostegno
-  for(const z of tr.zones.O){const N=96,pos=[],cols=[],cc=new T.Color(),hd=tr.at(z.s0).h;
-    const P3=(u,o)=>{const pz=loopPose(z,z.s0+u*z.len,nl);const [x,y]=tr.pt(z.s0+pz.f,o+pz.lat);return [x,pz.h+.3,y,pz];};
-    const nrm=(u)=>{const pz=loopPose(z,z.s0+u*z.len,nl);return [-Math.sin(pz.pitch),Math.cos(pz.pitch)];};
+  // giro della morte: corsie e sponde come il resto della pista, base grigia sotto l'anello
+  for(const z of tr.zones.O){const N=180,pos=[],cols=[],cc=new T.Color(),hd=tr.at(z.s0).h,cs=Math.cos(hd),sn=Math.sin(hd);
+    const P3=(u,o,d=0)=>{const pz=loopPose(z,z.s0+u*z.len,nl);const [x,y]=tr.pt(z.s0+pz.f,o+pz.lat);const nf=-Math.sin(pz.pitch),nu=Math.cos(pz.pitch);return [x+cs*nf*d,pz.h+.3+nu*d,y+sn*nf*d];};
     const quad=(A,B,C,D,col)=>{for(const v of [A,B,C,A,C,D])pos.push(v[0],v[1],v[2]);cc.set(col);for(let k=0;k<6;k++)cols.push(cc.r,cc.g,cc.b);};
-    const off3=(P,u,d)=>{const [nf,nu]=nrm(u);return [P[0]+Math.cos(hd)*nf*d,P[1]+nu*d,P[2]+Math.sin(hd)*nf*d];};
     for(let i=0;i<N;i++){const u0=i/N,u1=(i+1)/N;
+      quad(P3(u0,-HALF,-.6),P3(u0,HALF,-.6),P3(u1,HALF,-.6),P3(u1,-HALF,-.6),'#ef4a2f');
       quad(P3(u0,-HALF),P3(u0,HALF),P3(u1,HALF),P3(u1,-HALF),'#e9ecf0');
-      for(let l=0;l<nl;l++){const o=laneO(l,nl),w=(LANE-7)/2;quad(off3(P3(u0,o-w),u0,.4),off3(P3(u0,o+w),u0,.4),off3(P3(u1,o+w),u1,.4),off3(P3(u1,o-w),u1,.4),TOY.lane[l%2?1:0]);}
-      for(const sg of [-1,1]){const a0=P3(u0,sg*HALF),a1=P3(u1,sg*HALF);quad(a0,off3(a0,u0,10),off3(a1,u1,10),a1,'#f4f5f7');}
-      for(const sg of [-1,1]){const a0=off3(P3(u0,sg*HALF*.7),u0,-1.2),a1=off3(P3(u1,sg*HALF*.7),u1,-1.2),b0=off3(P3(u0,sg*HALF*.7),u0,-4),b1=off3(P3(u1,sg*HALF*.7),u1,-4);quad(a0,b0,b1,a1,'#d8262f');}}
+      for(let l=0;l<nl;l++){const o=laneO(l,nl),ww=(LANE-7)/2;quad(P3(u0,o-ww,.4),P3(u0,o+ww,.4),P3(u1,o+ww,.4),P3(u1,o-ww,.4),TOY.lane[l%2?1:0]);}
+      for(const sg of [-1,1]){quad(P3(u0,sg*HALF),P3(u0,sg*HALF,11),P3(u1,sg*HALF,11),P3(u1,sg*HALF),'#f4f5f7');quad(P3(u0,sg*HALF,11),P3(u0,sg*(HALF+3),11),P3(u1,sg*(HALF+3),11),P3(u1,sg*HALF,11),'#ffffff');}}
     const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('color',new T.Float32BufferAttribute(cols,3));g.computeVertexNormals();
     const m=new T.Mesh(g,new T.MeshStandardMaterial({vertexColors:true,side:T.DoubleSide,roughness:.45,envMapIntensity:.15}));m.castShadow=true;m.receiveShadow=true;grp.add(m);
-    const pc=tr.at((z.s0+z.s1)/2),pm=new T.MeshStandardMaterial({color:0xd8262f,roughness:.4});
-    for(const sg of [-1,1]){const [px,py]=tr.pt((z.s0+z.s1)/2,sg*(HALF+70));const pl=new T.Mesh(new T.BoxGeometry(6,z.p*2+10,6),pm);pl.position.set(px,z.p+5,py);pl.castShadow=true;grp.add(pl);}
-    {const [ax,ay]=tr.pt((z.s0+z.s1)/2,-(HALF+70)),[bx,by]=tr.pt((z.s0+z.s1)/2,HALF+70);const bm=new T.Mesh(new T.BoxGeometry(6,6,Math.hypot(bx-ax,by-ay)),pm);bm.position.set((ax+bx)/2,z.p*2+8,(ay+by)/2);bm.rotation.y=-Math.atan2(by-ay,bx-ax)+Math.PI/2;grp.add(bm);}}
+    const w=loopW(nl),mid=tr.at(z.s0+z.len/2),base=new T.Mesh(new T.BoxGeometry(z.p*2.6,1.2,w+HALF*2+14),new T.MeshStandardMaterial({color:0xb9bec5,roughness:.6}));
+    base.position.set(mid.x,.1,mid.y);base.rotation.y=-hd;base.receiveShadow=true;grp.add(base);}
   const inZone=(type,q)=>tr.zones[type].some(z=>q>=z.s0&&q<z.s1);
   const laneCol=(l,q)=>{
     if(q<12||q>tr.L-12)return (l*2+Math.floor(((q+12)%tr.L)/6))%2?'#f4f4f4':'#111111';
