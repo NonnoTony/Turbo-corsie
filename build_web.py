@@ -4,6 +4,10 @@ src=open('index.html',encoding='utf-8').read()
 cut=src.index('<div class="app">')
 head,body=src[:cut],src[cut:]
 head=re.sub(r'<meta name="claude:viewport-fit-sides"[^>]*>\n?','',head)
+import hashlib,json
+VER=hashlib.sha1(src.encode('utf-8')).hexdigest()[:10]
+# controllo degli aggiornamenti: se su GitHub c'è una versione più nuova, la pagina si ricarica da sola con quella
+UPD='<script>(function(){var V="'+VER+'";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>'
 page=f'''<!doctype html>
 <html lang="it">
 <head>
@@ -11,6 +15,7 @@ page=f'''<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
+{UPD}
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -26,6 +31,7 @@ page=f'''<!doctype html>
 os.makedirs('docs',exist_ok=True)
 open('docs/index.html','w',encoding='utf-8').write(page)
 open('docs/.nojekyll','w').write('')
+open('docs/version.json','w').write(json.dumps({'v':VER}))
 open('docs/manifest.webmanifest','w',encoding='utf-8').write('''{
   "name": "Turbo Corsie",
   "short_name": "Turbo Corsie",
