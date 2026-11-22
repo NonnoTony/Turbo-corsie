@@ -1,0 +1,570 @@
+{
+ "Trofei": {
+  "en": "Trophies",
+  "de": "Trophäen",
+  "es": "Trofeos",
+  "ja": "トロフィー",
+  "ar": "الكؤوس",
+  "ru": "Трофеи"
+ },
+ "Mostra tutti": {
+  "en": "Show all",
+  "de": "Alle zeigen",
+  "es": "Ver todos",
+  "ja": "すべて表示",
+  "ar": "عرض الكل",
+  "ru": "Показать все"
+ },
+ "Nascondi": {
+  "en": "Hide",
+  "de": "Ausblenden",
+  "es": "Ocultar",
+  "ja": "閉じる",
+  "ar": "إخفاء",
+  "ru": "Скрыть"
+ },
+ "Prossimi trofei": {
+  "en": "Next trophies",
+  "de": "Nächste Trophäen",
+  "es": "Próximos trofeos",
+  "ja": "次のトロフィー",
+  "ar": "الكؤوس التالية",
+  "ru": "Следующие трофеи"
+ },
+ "Trofeo sbloccato!": {
+  "en": "Trophy unlocked!",
+  "de": "Trophäe freigeschaltet!",
+  "es": "¡Trofeo desbloqueado!",
+  "ja": "トロフィー獲得！",
+  "ar": "تم فتح كأس!",
+  "ru": "Трофей получен!"
+ },
+ "Primo giro di pista": {
+  "en": "First time on track",
+  "de": "Erste Runde",
+  "es": "Primera vuelta a la pista",
+  "ja": "はじめてのコース",
+  "ar": "أول مرة على الحلبة",
+  "ru": "Первый выезд"
+ },
+ "Completa la tua prima gara": {
+  "en": "Finish your first race",
+  "de": "Beende dein erstes Rennen",
+  "es": "Termina tu primera carrera",
+  "ja": "はじめてのレースを完走する",
+  "ar": "أكمل سباقك الأول",
+  "ru": "Завершите свою первую гонку"
+ },
+ "Pilota instancabile": {
+  "en": "Tireless racer",
+  "de": "Unermüdlicher Fahrer",
+  "es": "Piloto incansable",
+  "ja": "つかれ知らずのレーサー",
+  "ar": "سائق لا يتعب",
+  "ru": "Неутомимый гонщик"
+ },
+ "Completa 25 gare": {
+  "en": "Finish 25 races",
+  "de": "Beende 25 Rennen",
+  "es": "Termina 25 carreras",
+  "ja": "レースを25回完走する",
+  "ar": "أكمل 25 سباقًا",
+  "ru": "Завершите 25 гонок"
+ },
+ "Veterano della corsia": {
+  "en": "Lane veteran",
+  "de": "Bahn-Veteran",
+  "es": "Veterano del carril",
+  "ja": "コースのベテラン",
+  "ar": "محترف المسارات",
+  "ru": "Ветеран трассы"
+ },
+ "Completa 100 gare": {
+  "en": "Finish 100 races",
+  "de": "Beende 100 Rennen",
+  "es": "Termina 100 carreras",
+  "ja": "レースを100回完走する",
+  "ar": "أكمل 100 سباق",
+  "ru": "Завершите 100 гонок"
+ },
+ "Prima vittoria": {
+  "en": "First win",
+  "de": "Erster Sieg",
+  "es": "Primera victoria",
+  "ja": "はじめての優勝",
+  "ar": "الفوز الأول",
+  "ru": "Первая победа"
+ },
+ "Vinci una gara": {
+  "en": "Win a race",
+  "de": "Gewinne ein Rennen",
+  "es": "Gana una carrera",
+  "ja": "レースで優勝する",
+  "ar": "افز بسباق",
+  "ru": "Выиграйте гонку"
+ },
+ "Campione in erba": {
+  "en": "Rising champion",
+  "de": "Nachwuchs-Champion",
+  "es": "Campeón en ciernes",
+  "ja": "未来のチャンピオン",
+  "ar": "بطل صاعد",
+  "ru": "Юный чемпион"
+ },
+ "Vinci 10 gare": {
+  "en": "Win 10 races",
+  "de": "Gewinne 10 Rennen",
+  "es": "Gana 10 carreras",
+  "ja": "レースで10回優勝する",
+  "ar": "افز بـ 10 سباقات",
+  "ru": "Выиграйте 10 гонок"
+ },
+ "Re della pista": {
+  "en": "King of the track",
+  "de": "König der Strecke",
+  "es": "Rey de la pista",
+  "ja": "コースの王者",
+  "ar": "ملك الحلبة",
+  "ru": "Король трассы"
+ },
+ "Vinci 50 gare": {
+  "en": "Win 50 races",
+  "de": "Gewinne 50 Rennen",
+  "es": "Gana 50 carreras",
+  "ja": "レースで50回優勝する",
+  "ar": "افز بـ 50 سباقًا",
+  "ru": "Выиграйте 50 гонок"
+ },
+ "Tutte le facili": {
+  "en": "All the easy ones",
+  "de": "Alle leichten",
+  "es": "Todas las fáciles",
+  "ja": "かんたんコース制覇",
+  "ar": "كل الحلبات السهلة",
+  "ru": "Все лёгкие"
+ },
+ "Vinci tutte le piste facili": {
+  "en": "Win every easy track",
+  "de": "Gewinne alle leichten Strecken",
+  "es": "Gana todas las pistas fáciles",
+  "ja": "かんたんなコースすべてで優勝する",
+  "ar": "افز بكل الحلبات السهلة",
+  "ru": "Победите на всех лёгких трассах"
+ },
+ "Medie domate": {
+  "en": "Medium tamed",
+  "de": "Mittlere gezähmt",
+  "es": "Medias dominadas",
+  "ja": "ふつうコース制覇",
+  "ar": "ترويض الحلبات المتوسطة",
+  "ru": "Средние покорены"
+ },
+ "Vinci tutte le piste medie": {
+  "en": "Win every medium track",
+  "de": "Gewinne alle mittleren Strecken",
+  "es": "Gana todas las pistas medias",
+  "ja": "ふつうのコースすべてで優勝する",
+  "ar": "افز بكل الحلبات المتوسطة",
+  "ru": "Победите на всех средних трассах"
+ },
+ "Senza paura": {
+  "en": "Fearless",
+  "de": "Furchtlos",
+  "es": "Sin miedo",
+  "ja": "こわいものなし",
+  "ar": "بلا خوف",
+  "ru": "Без страха"
+ },
+ "Vinci tutte le piste difficili": {
+  "en": "Win every hard track",
+  "de": "Gewinne alle schweren Strecken",
+  "es": "Gana todas las pistas difíciles",
+  "ja": "むずかしいコースすべてで優勝する",
+  "ar": "افز بكل الحلبات الصعبة",
+  "ru": "Победите на всех сложных трассах"
+ },
+ "Piede leggero": {
+  "en": "Light foot",
+  "de": "Leichter Fuß",
+  "es": "Pie ligero",
+  "ja": "そっとアクセル",
+  "ar": "قدم خفيفة",
+  "ru": "Лёгкая нога"
+ },
+ "Vinci una gara senza usare il turbo": {
+  "en": "Win a race without using the turbo",
+  "de": "Gewinne ein Rennen ohne Turbo",
+  "es": "Gana una carrera sin usar el turbo",
+  "ja": "ターボを使わずに優勝する",
+  "ar": "افز بسباق دون استخدام التيربو",
+  "ru": "Выиграйте гонку без турбо"
+ },
+ "Pile di riserva": {
+  "en": "Spare power",
+  "de": "Reserve-Batterien",
+  "es": "Pilas de reserva",
+  "ja": "電池のこしてゴール",
+  "ar": "بطاريات احتياطية",
+  "ru": "Запас батарей"
+ },
+ "Vinci con più di metà delle pile ancora cariche": {
+  "en": "Win with more than half of your batteries left",
+  "de": "Gewinne mit mehr als halb vollen Batterien",
+  "es": "Gana con más de la mitad de las pilas cargadas",
+  "ja": "電池を半分以上のこして優勝する",
+  "ar": "افز وأكثر من نصف البطاريات ما زال مشحونًا",
+  "ru": "Выиграйте, сохранив больше половины заряда"
+ },
+ "Fuga solitaria": {
+  "en": "Runaway win",
+  "de": "Alleingang",
+  "es": "Fuga en solitario",
+  "ja": "ぶっちぎり",
+  "ar": "انطلاقة منفردة",
+  "ru": "Отрыв"
+ },
+ "Vinci con almeno 3 secondi di vantaggio sul secondo": {
+  "en": "Win at least 3 seconds ahead of second place",
+  "de": "Gewinne mit mindestens 3 Sekunden Vorsprung",
+  "es": "Gana con al menos 3 segundos de ventaja sobre el segundo",
+  "ja": "2位に3秒以上の差をつけて優勝する",
+  "ar": "افز متقدمًا 3 ثوانٍ على الأقل على الثاني",
+  "ru": "Выиграйте с отрывом от второго не меньше 3 секунд"
+ },
+ "Giramondo": {
+  "en": "Globetrotter",
+  "de": "Weltenbummler",
+  "es": "Trotamundos",
+  "ja": "世界一周",
+  "ar": "جوّال",
+  "ru": "Путешественник"
+ },
+ "Completa 200 giri": {
+  "en": "Complete 200 laps",
+  "de": "Fahre 200 Runden",
+  "es": "Completa 200 vueltas",
+  "ja": "200周を走る",
+  "ar": "أكمل 200 لفة",
+  "ru": "Пройдите 200 кругов"
+ },
+ "Grillo volante": {
+  "en": "Flying cricket",
+  "de": "Fliegende Grille",
+  "es": "Grillo volador",
+  "ja": "空とぶコオロギ",
+  "ar": "الجندب الطائر",
+  "ru": "Летучий кузнечик"
+ },
+ "Supera 100 salti": {
+  "en": "Clear 100 jumps",
+  "de": "Meistere 100 Sprünge",
+  "es": "Supera 100 saltos",
+  "ja": "ジャンプを100回クリアする",
+  "ar": "اجتز 100 قفزة",
+  "ru": "Преодолейте 100 прыжков"
+ },
+ "Turbo a tutta": {
+  "en": "Full turbo",
+  "de": "Voller Turbo",
+  "es": "Turbo a tope",
+  "ja": "ターボ全開",
+  "ar": "تيربو بأقصى قوة",
+  "ru": "Полный турбо"
+ },
+ "Usa il turbo per 5 minuti in tutto": {
+  "en": "Use the turbo for 5 minutes in total",
+  "de": "Nutze den Turbo insgesamt 5 Minuten",
+  "es": "Usa el turbo 5 minutos en total",
+  "ja": "ターボを合計5分使う",
+  "ar": "استخدم التيربو 5 دقائق إجمالًا",
+  "ru": "Используйте турбо в сумме 5 минут"
+ },
+ "Meccanico": {
+  "en": "Mechanic",
+  "de": "Mechaniker",
+  "es": "Mecánico",
+  "ja": "メカニック",
+  "ar": "ميكانيكي",
+  "ru": "Механик"
+ },
+ "Monta 5 pezzi diversi": {
+  "en": "Fit 5 different parts",
+  "de": "Baue 5 verschiedene Teile ein",
+  "es": "Monta 5 piezas distintas",
+  "ja": "ちがうパーツを5つ取りつける",
+  "ar": "ركّب 5 قطع مختلفة",
+  "ru": "Установите 5 разных деталей"
+ },
+ "Mago del garage": {
+  "en": "Garage wizard",
+  "de": "Garagen-Zauberer",
+  "es": "Mago del taller",
+  "ja": "ガレージの魔法使い",
+  "ar": "ساحر المرآب",
+  "ru": "Волшебник гаража"
+ },
+ "Monta 20 pezzi diversi": {
+  "en": "Fit 20 different parts",
+  "de": "Baue 20 verschiedene Teile ein",
+  "es": "Monta 20 piezas distintas",
+  "ja": "ちがうパーツを20個取りつける",
+  "ar": "ركّب 20 قطعة مختلفة",
+  "ru": "Установите 20 разных деталей"
+ },
+ "Collezione di auto": {
+  "en": "Car collection",
+  "de": "Autosammlung",
+  "es": "Colección de coches",
+  "ja": "マシンコレクション",
+  "ar": "مجموعة سيارات",
+  "ru": "Коллекция машин"
+ },
+ "Crea 3 auto tue nel garage": {
+  "en": "Create 3 cars of your own in the garage",
+  "de": "Erstelle 3 eigene Autos in der Garage",
+  "es": "Crea 3 coches propios en el taller",
+  "ja": "ガレージで自分のマシンを3台つくる",
+  "ar": "أنشئ 3 سيارات خاصة بك في المرآب",
+  "ru": "Создайте 3 свои машины в гараже"
+ },
+ "Sfida in famiglia": {
+  "en": "Family challenge",
+  "de": "Familien-Duell",
+  "es": "Desafío en familia",
+  "ja": "家族で対決",
+  "ar": "تحدٍّ عائلي",
+  "ru": "Семейная дуэль"
+ },
+ "Finisci una gara a due giocatori": {
+  "en": "Finish a two-player race",
+  "de": "Beende ein Rennen zu zweit",
+  "es": "Termina una carrera de dos jugadores",
+  "ja": "2人プレイのレースを完走する",
+  "ar": "أكمل سباقًا للاعبَين",
+  "ru": "Завершите гонку на двоих"
+ },
+ "Pilota del mondo": {
+  "en": "World racer",
+  "de": "Weltfahrer",
+  "es": "Piloto del mundo",
+  "ja": "世界のレーサー",
+  "ar": "سائق عالمي",
+  "ru": "Гонщик мира"
+ },
+ "Finisci una gara online": {
+  "en": "Finish an online race",
+  "de": "Beende ein Online-Rennen",
+  "es": "Termina una carrera en línea",
+  "ja": "オンラインレースを完走する",
+  "ar": "أكمل سباقًا عبر الإنترنت",
+  "ru": "Завершите онлайн-гонку"
+ },
+ "Missione compiuta": {
+  "en": "Mission accomplished",
+  "de": "Mission erfüllt",
+  "es": "Misión cumplida",
+  "ja": "ミッションクリア",
+  "ar": "تمت المهمة",
+  "ru": "Задание выполнено"
+ },
+ "Riscuoti 10 missioni giornaliere": {
+  "en": "Claim 10 daily missions",
+  "de": "Hole dir 10 Tagesmissionen ab",
+  "es": "Cobra 10 misiones diarias",
+  "ja": "デイリーミッションを10回受け取る",
+  "ar": "استلم 10 مهام يومية",
+  "ru": "Получите награду за 10 ежедневных заданий"
+ },
+ "Contro il tempo": {
+  "en": "Against the clock",
+  "de": "Gegen die Uhr",
+  "es": "Contra el reloj",
+  "ja": "タイムに挑戦",
+  "ar": "ضد الوقت",
+  "ru": "Наперегонки со временем"
+ },
+ "Conquista una medaglia nella Sfida a tempo": {
+  "en": "Earn a medal in Time Trial",
+  "de": "Hole eine Medaille im Zeitfahren",
+  "es": "Consigue una medalla en Contrarreloj",
+  "ja": "タイムアタックでメダルを取る",
+  "ar": "احصل على ميدالية في تحدي الوقت",
+  "ru": "Получите медаль в гонке на время"
+ },
+ "Batti il fantasma": {
+  "en": "Beat the ghost",
+  "de": "Schlag den Geist",
+  "es": "Vence al fantasma",
+  "ja": "ゴーストに勝つ",
+  "ar": "تغلّب على الشبح",
+  "ru": "Обгони призрака"
+ },
+ "Nella Sfida a tempo arriva prima del tuo fantasma": {
+  "en": "In Time Trial, finish ahead of your ghost",
+  "de": "Komm im Zeitfahren vor deinem Geist ins Ziel",
+  "es": "En Contrarreloj, llega antes que tu fantasma",
+  "ja": "タイムアタックで自分のゴーストより先にゴールする",
+  "ar": "في تحدي الوقت، اسبق شبحك إلى خط النهاية",
+  "ru": "В гонке на время финишируйте раньше своего призрака"
+ },
+ "Cronometro d’oro": {
+  "en": "Golden stopwatch",
+  "de": "Goldene Stoppuhr",
+  "es": "Cronómetro de oro",
+  "ja": "金のストップウォッチ",
+  "ar": "ساعة التوقيت الذهبية",
+  "ru": "Золотой секундомер"
+ },
+ "Conquista 5 medaglie d’oro nella Sfida a tempo": {
+  "en": "Earn 5 gold medals in Time Trial",
+  "de": "Hole 5 Goldmedaillen im Zeitfahren",
+  "es": "Consigue 5 medallas de oro en Contrarreloj",
+  "ja": "タイムアタックで金メダルを5個取る",
+  "ar": "احصل على 5 ميداليات ذهبية في تحدي الوقت",
+  "ru": "Получите 5 золотых медалей в гонке на время"
+ },
+ "Tutto oro": {
+  "en": "All gold",
+  "de": "Alles Gold",
+  "es": "Todo oro",
+  "ja": "オール金",
+  "ar": "كلها ذهب",
+  "ru": "Всё золото"
+ },
+ "Medaglia d’oro nella Sfida a tempo su tutte le piste": {
+  "en": "Gold medal in Time Trial on every track",
+  "de": "Goldmedaille im Zeitfahren auf allen Strecken",
+  "es": "Medalla de oro en Contrarreloj en todas las pistas",
+  "ja": "すべてのコースのタイムアタックで金メダル",
+  "ar": "ميدالية ذهبية في تحدي الوقت على كل الحلبات",
+  "ru": "Золото в гонке на время на всех трассах"
+ },
+ "Sfida a tempo": {
+  "en": "Time Trial",
+  "de": "Zeitfahren",
+  "es": "Contrarreloj",
+  "ja": "タイムアタック",
+  "ar": "تحدي الوقت",
+  "ru": "Гонка на время"
+ },
+ "Fantasma": {
+  "en": "Ghost",
+  "de": "Geist",
+  "es": "Fantasma",
+  "ja": "ゴースト",
+  "ar": "الشبح",
+  "ru": "Призрак"
+ },
+ "Oro": {
+  "en": "Gold",
+  "de": "Gold",
+  "es": "Oro",
+  "ja": "金",
+  "ar": "ذهبية",
+  "ru": "Золото"
+ },
+ "Argento": {
+  "en": "Silver",
+  "de": "Silber",
+  "es": "Plata",
+  "ja": "銀",
+  "ar": "فضية",
+  "ru": "Серебро"
+ },
+ "Bronzo": {
+  "en": "Bronze",
+  "de": "Bronze",
+  "es": "Bronce",
+  "ja": "銅",
+  "ar": "برونزية",
+  "ru": "Бронза"
+ },
+ "Il tuo tempo": {
+  "en": "Your time",
+  "de": "Deine Zeit",
+  "es": "Tu tiempo",
+  "ja": "きみのタイム",
+  "ar": "وقتك",
+  "ru": "Ваше время"
+ },
+ "Giro migliore": {
+  "en": "Best lap",
+  "de": "Beste Runde",
+  "es": "Mejor vuelta",
+  "ja": "ベストラップ",
+  "ar": "أفضل لفة",
+  "ru": "Лучший круг"
+ },
+ "Record": {
+  "en": "Best",
+  "de": "Rekord",
+  "es": "Récord",
+  "ja": "ベスト",
+  "ar": "الأفضل",
+  "ru": "Рекорд"
+ },
+ "Gara": {
+  "en": "Race",
+  "de": "Rennen",
+  "es": "Carrera",
+  "ja": "レース",
+  "ar": "سباق",
+  "ru": "Гонка"
+ },
+ "Medaglia d’oro!": {
+  "en": "Gold medal!",
+  "de": "Goldmedaille!",
+  "es": "¡Medalla de oro!",
+  "ja": "金メダル！",
+  "ar": "ميدالية ذهبية!",
+  "ru": "Золотая медаль!"
+ },
+ "Medaglia d’argento!": {
+  "en": "Silver medal!",
+  "de": "Silbermedaille!",
+  "es": "¡Medalla de plata!",
+  "ja": "銀メダル！",
+  "ar": "ميدالية فضية!",
+  "ru": "Серебряная медаль!"
+ },
+ "Medaglia di bronzo!": {
+  "en": "Bronze medal!",
+  "de": "Bronzemedaille!",
+  "es": "¡Medalla de bronce!",
+  "ja": "銅メダル！",
+  "ar": "ميدالية برونزية!",
+  "ru": "Бронзовая медаль!"
+ },
+ "Nessuna medaglia": {
+  "en": "No medal",
+  "de": "Keine Medaille",
+  "es": "Sin medalla",
+  "ja": "メダルなし",
+  "ar": "لا ميدالية",
+  "ru": "Без медали"
+ },
+ "Nuovo record! Il fantasma ora corre con questo tempo.": {
+  "en": "New best! The ghost now races with this time.",
+  "de": "Neuer Rekord! Der Geist fährt jetzt mit dieser Zeit.",
+  "es": "¡Nuevo récord! El fantasma ahora corre con este tiempo.",
+  "ja": "新記録！ゴーストはこのタイムで走るよ。",
+  "ar": "رقم جديد! الشبح يسابق الآن بهذا الوقت.",
+  "ru": "Новый рекорд! Теперь призрак едет с этим временем."
+ },
+ "Primo tempo registrato: la prossima volta corri contro il tuo fantasma.": {
+  "en": "First time recorded: next time you race against your ghost.",
+  "de": "Erste Zeit gespeichert: Nächstes Mal fährst du gegen deinen Geist.",
+  "es": "Primer tiempo guardado: la próxima vez correrás contra tu fantasma.",
+  "ja": "はじめてのタイムを記録！次は自分のゴーストと勝負だ。",
+  "ar": "تم تسجيل أول وقت: في المرة القادمة ستسابق شبحك.",
+  "ru": "Первое время записано: в следующий раз вы поедете против своего призрака."
+ },
+ "Ogni medaglia dà crediti solo la prima volta che la conquisti.": {
+  "en": "Each medal gives credits only the first time you earn it.",
+  "de": "Jede Medaille bringt nur beim ersten Mal Credits.",
+  "es": "Cada medalla da créditos solo la primera vez que la consigues.",
+  "ja": "メダルのクレジットはさいしょに取ったときだけもらえます。",
+  "ar": "كل ميدالية تمنح رصيدًا فقط في المرة الأولى التي تفوز بها.",
+  "ru": "Каждая медаль приносит кредиты только в первый раз."
+ }
+}
