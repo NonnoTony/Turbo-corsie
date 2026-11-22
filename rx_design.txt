@@ -1,2 +1,0 @@
-# Sfida a tempo e trofei: nessuna nuova regex necessaria.
-# I testi con numeri variabili usati (+N crediti, N/M, +N cr, +1.23 s, 41.20 s) sono già coperti da RX ([/^\+(\d+) crediti$/]) o sono solo numeri/simboli uguali in tutte le lingue.
