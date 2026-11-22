@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="8d71b41c96";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="d9bcc14a28";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -612,8 +612,8 @@ body:not(.land) #mBtns{order:4}
 .pd{flex:1 1 0;max-width:140px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
 .pd.p1{order:2}.pd.p2{order:1}.pd.p3{order:3}
 .pd-car{animation:carDrop .45s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--d) + .3s)}
-.pd-car svg{width:62px;height:33px;display:block;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.4))}
-.p1 .pd-car svg{width:74px;height:39px}
+.pd-car svg{width:66px;height:31px;display:block;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.4))}
+.p1 .pd-car svg{width:80px;height:38px}
 @keyframes carDrop{from{opacity:0;transform:translateY(-30px)}}
 .pd-name{max-width:100%;font-weight:700;font-size:13px;line-height:1.2;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pd.me .pd-name{color:var(--yellow)}
@@ -4102,7 +4102,8 @@ function showResults(){
   const misDone=dailyMissions().list.filter((m,i)=>!misPre[i]&&m.p>=m.goal);
   const humF=st.filter(c=>(c.isPlayer||c.p2)&&c.state==='done'),hero=humF[0]||null,myPl=bad||!hero?null:st.indexOf(hero);
   const heroCls=bad?'out':myPl===0?'gold':myPl===1?'silver':myPl===2?'bronze':'blue';
-  const carSvg='<svg viewBox="0 0 64 34" aria-hidden="true"><path d="M3 24l4-9 15-3 8-6h16l10 8 6 2v8z" fill="var(--c)" stroke="#111" stroke-width="2.2" stroke-linejoin="round"/><path d="M31 8h13l6 6H27z" fill="#cfe8ff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 19h14" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="26" r="6" fill="#222" stroke="#111" stroke-width="2"/><circle cx="16" cy="26" r="2.4" fill="#d8d8d8"/><circle cx="50" cy="26" r="6" fill="#222" stroke="#111" stroke-width="2"/><circle cx="50" cy="26" r="2.4" fill="#d8d8d8"/></svg>';
+  // modellino 4WD visto di lato: telaio a vista, rulli davanti e dietro (sopra e sotto), ruote piccole, scocca bassa e alettone
+  const carSvg='<svg viewBox="0 0 72 34" aria-hidden="true"><path d="M2 22h68" stroke="#111" stroke-width="4.6" stroke-linecap="round"/><path d="M2 22h68" stroke="#c9ccd1" stroke-width="2.4" stroke-linecap="round"/><rect x="3" y="13" width="3" height="9" fill="#8d939b" stroke="#111" stroke-width="1.2"/><rect x="66" y="13" width="3" height="9" fill="#8d939b" stroke="#111" stroke-width="1.2"/><ellipse cx="4.5" cy="14" rx="3.2" ry="1.8" fill="#fff" stroke="#111" stroke-width="1.2"/><ellipse cx="4.5" cy="24.5" rx="3.2" ry="1.8" fill="#fff" stroke="#111" stroke-width="1.2"/><ellipse cx="67.5" cy="14" rx="3.2" ry="1.8" fill="#fff" stroke="#111" stroke-width="1.2"/><ellipse cx="67.5" cy="24.5" rx="3.2" ry="1.8" fill="#fff" stroke="#111" stroke-width="1.2"/><path d="M55 8.5l2 10M62 8.5l-1 10" stroke="#111" stroke-width="1.6"/><rect x="52" y="5.5" width="14" height="3.4" rx="1" fill="var(--c)" stroke="#111" stroke-width="1.4"/><path d="M9 21l3-6 13-2.5 6-4.5h12l7 5.5 9 1.5 1 6z" fill="var(--c)" stroke="#111" stroke-width="2" stroke-linejoin="round"/><path d="M31.5 9.2h10.5l4.8 3.8H27z" fill="#22262c" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 17.5h40" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round"/><circle cx="38" cy="16.5" r="2.6" fill="#fff" stroke="#111" stroke-width=".8"/><circle cx="18" cy="25" r="5" fill="#222" stroke="#111" stroke-width="1.6"/><circle cx="18" cy="25" r="2.2" fill="#d8d8d8"/><circle cx="52" cy="25" r="5" fill="#222" stroke="#111" stroke-width="1.6"/><circle cx="52" cy="25" r="2.2" fill="#d8d8d8"/></svg>';
   const pod=st.slice(0,3).filter(c=>c.state==='done').map((c,k)=>{const mine=c.isPlayer||c.p2;
     return `<div class="pd p${k+1}${mine?' me':''}" style="--c:${c.color};--d:${(.25+(2-k)*.18).toFixed(2)}s"><div class="pd-car">${carSvg}</div><div class="pd-name">${mine?`<span class="pd-tag">${r.duo?(c.isPlayer?'G1':'G2'):'Tu'}</span>`:''}<span>${esc(c.name)}</span></div><div class="pd-blk"><b>${k+1}</b></div></div>`;}).join('');
   const bestLap=hero&&hero.laps.length?Math.min(...hero.laps):null;
