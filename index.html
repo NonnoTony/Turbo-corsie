@@ -170,8 +170,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 .hint kbd{font-family:var(--f-data);background:var(--panel-2);border:1px solid var(--line);border-radius:3px;padding:0 5px;color:var(--ink)}
 
 /* modal */
-.modal{position:fixed;inset:0;background:rgba(5,15,10,.72);display:grid;place-items:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));z-index:20}
-.sheet{width:min(480px,100%);padding:22px;display:flex;flex-direction:column;gap:14px}
+.modal{position:fixed;inset:0;background:rgba(5,15,10,.72);display:grid;place-items:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px));z-index:20;overflow-y:auto;overscroll-behavior:contain}
+.sheet{width:min(480px,100%);padding:22px;display:flex;flex-direction:column;gap:14px;margin:auto}
 .sheet h2{font-size:28px;color:var(--yellow)}
 .sheet h2.bad{color:var(--red)}
 .res{width:100%;border-collapse:collapse;font-size:15px}
@@ -188,6 +188,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 .online p{margin:0;color:var(--muted)}
 .joinrow{display:flex;gap:8px;flex-wrap:wrap}
 .joinrow input{flex:1;min-width:120px;background:var(--panel-2);border:2px solid var(--line);border-radius:4px;color:var(--ink);font:700 22px var(--f-data);letter-spacing:.2em;text-transform:uppercase;padding:6px 10px}
+.joinrow input::placeholder{letter-spacing:.06em}
 .code{font-family:var(--f-display);font-size:44px;line-height:1;color:var(--yellow);letter-spacing:.08em}
 .players{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
 .players li{display:flex;align-items:center;gap:10px;background:var(--panel-2);border:2px solid var(--line);border-radius:5px;padding:8px 12px}
@@ -195,7 +196,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 .frme{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}.frme input,#setName{background:var(--panel-2);border:2px solid var(--line);border-radius:4px;color:var(--ink);font:700 17px var(--f-body);padding:8px 10px;min-width:0;flex:1 1 180px}
 #setName{flex:none;width:100%;height:auto;box-sizing:border-box}
 .frlab{flex-basis:100%;color:var(--muted);font-size:13px;font-weight:600;margin-bottom:-4px}
-.frcode{display:flex;align-items:center;gap:10px}.frcode span{color:var(--muted);font-size:13px}.frcode b{font:400 24px var(--f-display);color:var(--yellow);letter-spacing:.08em}
+.frcode{display:flex;align-items:center;gap:10px}.frcode span{color:var(--muted);font-size:13px}.frcode b{font:400 24px var(--f-display);color:var(--yellow);letter-spacing:.08em;white-space:nowrap}
 .frdot{width:12px;height:12px;border-radius:50%;background:#59605c;flex:none}.frdot.on{background:#5fd38a;box-shadow:0 0 8px #5fd38a}
 .players li .frx{background:transparent;border:0;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px}
 .players li .frinv{padding:6px 12px;font-size:13px}
@@ -208,8 +209,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 .netstatus{font-family:var(--f-data);font-size:13px;color:var(--muted)}
 .netstatus.bad{color:#ff8b74}
 .duopanel{padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:16px}
-.duo2{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;flex:1;min-width:0}
-.duo2 select{background:var(--panel-2);border:2px solid var(--line);border-radius:4px;color:var(--ink);font:600 15px var(--f-body);padding:7px 10px}
+.duo2{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;flex:1 1 280px;min-width:0}
+.duo2 select{background:var(--panel-2);border:2px solid var(--line);border-radius:4px;color:var(--ink);font:600 15px var(--f-body);padding:7px 10px;max-width:100%}
 .duo2 .hint{flex-basis:100%}
 .scheda .sch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px;align-items:center}
 .scheda canvas{width:100%;height:auto;display:block}
@@ -329,7 +330,7 @@ body.racing .nav{display:none}
 .volval{font:700 16px var(--f-data);min-width:52px;text-align:right}
 /* ===== layout orizzontale ===== */
 body.land .app{max-width:1180px}
-body.land .garage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:14px}
+body.land .garage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:14px;min-height:220px}
 body.land .gview{grid-column:1;grid-row:1 / span 2;display:flex;align-items:center;justify-content:center}
 body.land .gview .viewer{width:100%}
 body.land .gtabs{grid-column:2;grid-row:1}
@@ -544,7 +545,7 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
 </div>
 <div class="frinvite" id="frInvite" hidden></div>
 <div class="toast" id="toast" hidden></div>
-<div class="rotate" id="rotate" role="alert"><div class="phone" aria-hidden="true"></div><p id="rotTitle">Gira il telefono in verticale</p><small id="rotSub">Hai scelto il gioco in verticale. La gara è in pausa.</small></div>
+<div class="rotate" id="rotate" role="alert"><div class="phone" aria-hidden="true"></div><p id="rotTitle">Gira il telefono in verticale</p><small id="rotSub">Hai scelto il gioco in verticale. La gara è in pausa.</small><button class="ghost" id="rotSwitch" hidden>Gioca in orizzontale</button></div>
 
 <script>
 (()=>{
@@ -944,7 +945,8 @@ function T(s){if(LANG==='it'||s==null)return s;const Dl=I18N[LANG]||EN,k=String(
   for(const [re,tp] of RX){if(re.test(t)){const tpl=tp[LANG]||tp.en;return k.replace(t,t.replace(re,(...m)=>tpl.replace(/\{T(\d)\}/g,(_,i)=>T(m[i])).replace(/\{O(\d)\}/g,(_,i)=>(ORDN[LANG]||ORD)(m[i])).replace(/\$(\d)/g,(_,i)=>m[i])));}}return k;}
 // traduce i testi che compaiono nella pagina (anche quelli creati dal gioco), ricordando l'originale italiano
 const ORIG=new WeakMap(),LASTV=new WeakMap();
-function trNode(n){const v=n.nodeValue;if(!v||!v.trim())return;let o=ORIG.get(n);if(o===undefined||(v!==o&&v!==LASTV.get(n))){o=v;ORIG.set(n,o);}const t=LANG!=='it'?T(o):o;LASTV.set(n,t);if(t!==v)n.nodeValue=t;}
+function trNode(n){const v=n.nodeValue;if(!v||!v.trim())return;if(n.parentElement&&n.parentElement.closest('[translate="no"]'))return;  // nomi scelti dal giocatore: non si traducono
+  let o=ORIG.get(n);if(o===undefined||(v!==o&&v!==LASTV.get(n))){o=v;ORIG.set(n,o);}const t=LANG!=='it'?T(o):o;LASTV.set(n,t);if(t!==v)n.nodeValue=t;}
 function trTree(root){if(root.nodeType===3){trNode(root);return;}if(root.nodeType!==1||root.tagName==='SCRIPT'||root.tagName==='STYLE')return;
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while((n=w.nextNode()))trNode(n);
   for(const el of (root.querySelectorAll?root.querySelectorAll('[title],[placeholder]'):[]))for(const a of ['title','placeholder']){if(!el.hasAttribute(a))continue;const key='o'+a;
@@ -1478,7 +1480,7 @@ $('shop').addEventListener('click',e=>{
 function renderLiveries(){
   syncCurrentCar();
   const list=[...save.garage.list.filter(c=>c.kind==='custom'),...save.garage.list.filter(c=>c.kind==='livery')];
-  $('liveries').innerHTML=list.map(c=>`<button class="lv" data-car="${c.id}" aria-pressed="${save.garage.sel===c.id}"><canvas width="264" height="168"></canvas><span>${esc(c.name)}${c.kind==='livery'?'<small>Livrea</small>':''}</span></button>`).join('')
+  $('liveries').innerHTML=list.map(c=>`<button class="lv" data-car="${c.id}" aria-pressed="${save.garage.sel===c.id}"><canvas width="264" height="168"></canvas><span>${c.kind==='custom'?`<bdi translate="no">${esc(c.name)}</bdi>`:esc(c.name)}${c.kind==='livery'?'<small>Livrea</small>':''}</span></button>`).join('')
     +`<button class="lv newcar" data-act="newcar"><span class="plus">+</span><span>Nuova auto</span></button>`;
   $('liveries').querySelectorAll('.lv[data-car]').forEach(b=>{const cv=b.querySelector('canvas'),ctx=cv.getContext('2d'),c=carById(b.dataset.car),K=carLookOf(c);
     ctx.fillStyle='#143a2d';ctx.fillRect(0,0,cv.width,cv.height);ctx.translate(cv.width/2-8,cv.height/2);ctx.scale(5.2,5.2);
@@ -1600,7 +1602,9 @@ function updateOrientation(){
   rotateNeed=TOUCH&&!bigScreen()&&(land?portraitNow:(!portraitNow&&window.innerHeight<560));
   const ro=$('rotate');ro.classList.toggle('show',rotateNeed);ro.classList.toggle('toland',land);
   $('rotTitle').textContent=land?'Gira il telefono in orizzontale':'Gira il telefono in verticale';
-  $('rotSub').textContent=race&&race.duo?'Le gare a due giocatori si giocano in orizzontale. La gara è in pausa.':land?'Hai scelto il gioco in orizzontale. La gara è in pausa.':'Hai scelto il gioco in verticale. La gara è in pausa.';
+  $('rotSub').textContent=race&&race.duo?'Le gare a due giocatori si giocano in orizzontale. La gara è in pausa.':!race?(land?'Hai scelto il gioco in orizzontale.':'Hai scelto il gioco in verticale.'):land?'Hai scelto il gioco in orizzontale. La gara è in pausa.':'Hai scelto il gioco in verticale. La gara è in pausa.';
+  // se il telefono ha la rotazione bloccata si può cambiare la scelta da qui, senza restare bloccati
+  $('rotSwitch').hidden=!!(race&&race.duo);$('rotSwitch').textContent=land?'Gioca in verticale':'Gioca in orizzontale';
   if(was!==land){if(race)requestAnimationFrame(resizeRace);if(gv.r)requestAnimationFrame(garageResize);}
 }
 window.addEventListener('resize',()=>{updateOrientation();if(gv.r)garageResize();});
@@ -1613,6 +1617,7 @@ function renderSettings(){
 $('setLang').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;setLang(b.dataset.v);renderSettings();});
 $('setGfx').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.gfx=b.dataset.v;persist();applyGfx();renderSettings();});
 $('setStyle').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.style=b.dataset.v;persist();applyStyle();renderSettings();});
+$('rotSwitch').onclick=()=>{save.orient=wantLandscape()?'portrait':'landscape';persist();updateOrientation();lockPortrait();if(curScr==='settings')renderSettings();};
 $('setOrient').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.orient=b.dataset.v;persist();updateOrientation();lockPortrait();renderSettings();});
 $('setVol').addEventListener('input',e=>{save.vol=(+e.target.value)/100;$('volVal').textContent=e.target.value+'%';persist();if(save.vol>0){audioOn();beep(660,.08);}});
 function show(scr){
@@ -3144,7 +3149,7 @@ function frSend(code,msg){return new Promise(res=>{if(!fr.peer||!fr.ok)return re
 function frPoll(){clearTimeout(fr.timer);if(!fr.ok)return;for(const f of save.friends)frSend(f.code,frHello()).then(()=>frRender());
   fr.timer=setTimeout(frPoll,$('scrOnline').hidden?60000:15000);}
 function frRender(){if(!$('frPanel'))return;$('frCode').textContent=fmtCode(save.profile.code);
-  if(document.activeElement!==$('frName'))$('frName').value=save.profile.name||'';
+  if(document.activeElement!==$('frName'))$('frName').value=save.profile.name||'';$('frName').placeholder=save.name||'';
   $('frReq').innerHTML=fr.req.map(r=>`<div class="req"><b>${esc(r.name)}</b> <span>ti ha aggiunto agli amici</span><button class="cta alt frinv" data-acc="${r.code}">Aggiungi anche tu</button><button class="ghost" data-rej="${r.code}">No</button></div>`).join('');
   $('frList').innerHTML=save.friends.length?save.friends.map(f=>{const on=fr.online[f.code];return `<li><span class="frdot ${on?'on':''}"></span><span class="nm">${esc(f.name||'Amico')}</span><span class="sub">${on?'Online':on===false?'Offline':'…'} · ${fmtCode(f.code)}</span>${on?`<button class="cta frinv" data-inv="${f.code}">Invita</button>`:''}<button class="frx" data-del="${f.code}" aria-label="Rimuovi">×</button></li>`;}).join(''):'<li><span class="nm" style="font-weight:500;white-space:normal">Nessun amico ancora: scambiatevi i codici amico.</span></li>';
   $('frStatus').textContent=fr.ok===false?'Collegamento agli amici non disponibile: controlla la connessione.':'';}

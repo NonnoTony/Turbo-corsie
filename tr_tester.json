@@ -1,0 +1,6 @@
+{
+  "Hai scelto il gioco in orizzontale.": {"en": "You chose landscape mode.", "de": "Du hast das Querformat gewählt.", "es": "Has elegido el modo horizontal.", "ja": "横向きモードを選びました。", "ar": "اخترت الوضع الأفقي.", "ru": "Вы выбрали горизонтальный режим."},
+  "Hai scelto il gioco in verticale.": {"en": "You chose portrait mode.", "de": "Du hast das Hochformat gewählt.", "es": "Has elegido el modo vertical.", "ja": "縦向きモードを選びました。", "ar": "اخترت الوضع العمودي.", "ru": "Вы выбрали вертикальный режим."},
+  "Gioca in verticale": {"en": "Play in portrait", "de": "Im Hochformat spielen", "es": "Jugar en vertical", "ja": "縦向きで遊ぶ", "ar": "العب بالوضع العمودي", "ru": "Играть вертикально"},
+  "Gioca in orizzontale": {"en": "Play in landscape", "de": "Im Querformat spielen", "es": "Jugar en horizontal", "ja": "横向きで遊ぶ", "ar": "العب بالوضع الأفقي", "ru": "Играть горизонтально"}
+}
