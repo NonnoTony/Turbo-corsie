@@ -434,6 +434,188 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
 .medal{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:var(--mc)}
 .medal.g{--mc:#ffd23f}.medal.s{--mc:#cfd6de}.medal.b{--mc:#d08a4a}
 @media (min-width:700px) and (min-height:700px){.trophies h3{font-size:22px}.tro .tn{font-size:16px}.tro .td{font-size:14px}.ttrow{font-size:13px}}
+/* ===== interfaccia "anime": schede piste, missioni, cruscotto di gara e risultati ===== */
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic .fl{fill:currentColor}
+/* entrata delle schermate e della finestra */
+@keyframes scrIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{0%{opacity:0;transform:scale(.82) rotate(-2deg)}60%{opacity:1;transform:scale(1.03)}100%{transform:none}}
+#scrGarage:not([hidden]),#scrTracks:not([hidden]),#scrOnline:not([hidden]),#scrSettings:not([hidden]){animation:scrIn .28s ease-out}
+.modal:not([hidden]){animation:fadeIn .2s ease-out}
+.modal:not([hidden]) .sheet{animation:popIn .45s cubic-bezier(.2,1.3,.4,1)}
+
+/* missioni giornaliere */
+.mis{grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;border-radius:12px;transition:border-color .2s}
+.mis .mi{grid-row:1/4;grid-column:1;width:42px;height:42px;border-radius:50%;background:#1a1a12;border:2px solid var(--yellow);color:var(--yellow);display:grid;place-items:center}
+.mis .mt{grid-column:2}
+.mis .mb{grid-column:2;height:10px;border-radius:99px;box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.mis .mb i{border-radius:99px;background:linear-gradient(90deg,#ff9f1c,var(--yellow));background-image:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 6px,transparent 6px 12px),linear-gradient(90deg,#ff9f1c,var(--yellow))}
+.mis .mn{grid-column:2}
+.mis .mr{grid-column:3;grid-row:1/4}
+.mis .mr b{font-size:15px;color:var(--yellow)}
+.mis .mr button{border-radius:999px;padding:8px 16px;box-shadow:0 3px 0 #a7861a;font-weight:800}
+.mis.full{border-color:var(--yellow);box-shadow:0 0 0 2px rgba(255,210,63,.22)}
+.mis.full .mi{background:var(--yellow);color:#1a1a12}
+.mis.full .mr button{animation:claimPulse 1.1s ease-in-out infinite}
+@keyframes claimPulse{50%{transform:scale(1.08);box-shadow:0 3px 0 #a7861a,0 0 14px rgba(255,210,63,.75)}}
+.mis.claimed .mi{border-color:var(--ok);color:var(--ok)}
+.mis.claimed .mb i{background:var(--ok)}
+
+/* schede delle piste */
+.track{--dc:var(--muted);position:relative;border-radius:14px;border-top:6px solid var(--dc);gap:10px;transition:transform .15s,box-shadow .15s}
+.track.d1{--dc:var(--ok)}.track.d2{--dc:#c4e24a}.track.d3{--dc:#ffa630}.track.d4{--dc:#ff5a3c}
+#scrTracks:not([hidden]) .track{animation:scrIn .35s ease-out both;animation-delay:calc(min(var(--i),8) * 45ms)}
+.tmap{position:relative}
+.tmap canvas{border-radius:8px}
+.tnum{position:absolute;top:8px;inset-inline-start:8px;min-width:38px;height:38px;display:grid;place-items:center;font:400 20px/1 var(--f-display);color:var(--yellow);background:#1a1a12;border:2px solid var(--yellow);border-radius:10px;box-shadow:3px 3px 0 rgba(0,0,0,.45);padding:0 6px}
+.diff{position:absolute;top:8px;inset-inline-end:8px;display:flex;align-items:center;gap:7px;background:rgba(14,26,20,.9);border:2px solid var(--dc);border-radius:999px;padding:5px 11px 5px 9px;box-shadow:3px 3px 0 rgba(0,0,0,.4)}
+.diff b{font:700 13px/1 var(--f-data);letter-spacing:.06em;text-transform:uppercase;color:var(--dc);white-space:nowrap}
+.dbar{display:flex;align-items:flex-end;gap:2px;height:16px}
+.dbar i{width:5px;border-radius:2px;background:rgba(255,255,255,.18)}
+.dbar i:nth-child(1){height:6px}.dbar i:nth-child(2){height:9px}.dbar i:nth-child(3){height:12px}.dbar i:nth-child(4){height:16px}
+.d1 .dbar i:nth-child(-n+1),.d2 .dbar i:nth-child(-n+2),.d3 .dbar i:nth-child(-n+3),.d4 .dbar i:nth-child(-n+4){background:var(--dc)}
+.tribbon{position:absolute;bottom:10px;inset-inline-start:8px;display:flex;align-items:center;gap:6px;background:var(--yellow);color:#1a1a12;border:2px solid #1a1a12;border-radius:8px;padding:4px 10px 4px 7px;font:400 14px/1 var(--f-display);transform:rotate(-4deg);box-shadow:3px 3px 0 #1a1a12}
+.tribbon .ic{width:20px;height:20px}
+.track.lk .tmap canvas{filter:grayscale(1) brightness(.42)}
+.tlock{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.tlock .ic{width:68px;height:68px;padding:14px;border-radius:50%;background:rgba(14,26,20,.88);border:3px solid #ff8b74;color:#ff8b74;stroke-width:2}
+.track.lk{border-top-color:var(--line)}
+.track.lk h3{color:var(--muted)}
+.track.lk .diff{opacity:.7}
+.track .locked{display:flex;align-items:center;gap:10px;background:rgba(239,74,47,.1);border:2px dashed #ff8b74;border-radius:10px;padding:10px 12px;line-height:1.3}
+.track .locked .ic{width:24px;height:24px}
+.tags .rec{border-color:var(--yellow);color:var(--ink)}
+.track .cta{font-size:20px;padding:14px 18px;border-radius:10px}
+.track.won{box-shadow:inset 0 0 0 1px rgba(255,210,63,.25)}
+.track.next{box-shadow:0 0 0 3px var(--yellow),0 8px 24px rgba(0,0,0,.35)}
+.track.next .cta{animation:ctaGlow 1.4s ease-in-out infinite}
+@keyframes ctaGlow{50%{box-shadow:0 4px 0 #9b2a17,0 0 0 5px rgba(255,210,63,.45);transform:translateY(-1px)}}
+@media (hover:hover){.track:not(.lk):hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.35)}.track.next:hover{box-shadow:0 0 0 3px var(--yellow),0 10px 24px rgba(0,0,0,.35)}}
+
+/* cruscotto di gara */
+.hbox{position:relative;background:linear-gradient(180deg,var(--panel-2),var(--panel));border-radius:10px;border-inline-start:5px solid var(--hc,var(--line))}
+#hud .hbox:nth-child(1){--hc:var(--yellow)}#hud .hbox:nth-child(2){--hc:var(--blue)}#hud .hbox:nth-child(3){--hc:var(--red)}#hud .hbox:nth-child(4){--hc:var(--ok)}
+#hPos{color:var(--yellow)}
+.hbox.up{animation:posUp .7s ease-out}
+.hbox.down{animation:posDown .7s ease-out}
+@keyframes posUp{0%{background:#2f8f55;transform:scale(1.1)}100%{transform:none}}
+@keyframes posDown{0%{background:#8f2f22}100%{}}
+.mrow{display:flex;align-items:center;gap:6px;margin-top:6px}
+.mrow .meter{flex:1;margin-top:0}
+.meter{border-radius:99px;background:rgba(0,0,0,.45);box-shadow:inset 0 1px 2px rgba(0,0,0,.6)}
+.meter i{border-radius:99px}
+.meter::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 60%),repeating-linear-gradient(90deg,transparent 0 calc(25% - 2px),rgba(0,0,0,.4) calc(25% - 2px) 25%)}
+.mico{flex:none;position:relative;display:block}
+.mico.bat{width:15px;height:9px;border:2px solid var(--yellow);border-radius:2px;margin-inline-end:2px}
+.mico.bat::after{content:"";position:absolute;inset-inline-end:-5px;top:1px;width:2px;height:3px;background:var(--yellow);border-radius:1px}
+.mico.bat::before{content:"";position:absolute;inset:1px;width:55%;background:var(--yellow)}
+.mico.grip{width:13px;height:13px;border:3px solid var(--ok);border-radius:50%;box-shadow:inset 0 0 0 2px #1a1a12;background:#666}
+.canvas-wrap{transition:border-color .15s,box-shadow .15s}
+.race.boost .canvas-wrap{border-color:var(--yellow);box-shadow:0 0 0 2px rgba(255,210,63,.35),0 0 22px rgba(255,160,40,.5)}
+.turbo-btn{position:relative;overflow:hidden;isolation:isolate;border:3px solid #1a1a12;border-radius:14px;background:linear-gradient(180deg,#ffe46b 0%,#ffc21a 55%,#ff9f1c 100%);box-shadow:0 6px 0 #1a1a12;text-shadow:2px 2px 0 rgba(255,255,255,.55);letter-spacing:.04em;transition:transform .06s,box-shadow .06s}
+.turbo-btn::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 14px,transparent 14px 32px);background-size:70px 100%}
+.turbo-btn::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;opacity:0}
+.turbo-btn.on{transform:translateY(4px) scale(.985);box-shadow:0 2px 0 #1a1a12,0 0 26px 6px rgba(255,150,30,.65);background:linear-gradient(180deg,#fff27a 0%,#ffb02e 50%,#ef4a2f 100%)}
+.turbo-btn.on::before{animation:tStripes .35s linear infinite}
+.turbo-btn.on::after{animation:tFlash .5s ease-out}
+@keyframes tStripes{to{background-position:70px 0}}
+@keyframes tFlash{0%{opacity:1;background:radial-gradient(circle,rgba(255,255,255,.95) 0,rgba(255,255,255,.5) 30%,transparent 70%);transform:scale(.4)}100%{opacity:0;transform:scale(1.6)}}
+.turbo-btn.low:not(.p2){background:linear-gradient(180deg,#d9cf9a,#b8a35c);color:#3a3520}
+.turbo-btn.low.on:not(.p2){box-shadow:0 2px 0 #1a1a12}
+.turbo-btn.p2{border-color:#0c1a3a;background:linear-gradient(180deg,#6b93ff,#3b6fe0 55%,#2a55b8);box-shadow:0 6px 0 #0c1a3a;text-shadow:2px 2px 0 rgba(0,0,0,.35)}
+.turbo-btn.p2.on{background:linear-gradient(180deg,#a9c0ff,#6b93ff 50%,#3b6fe0);box-shadow:0 2px 0 #0c1a3a,0 0 26px 6px rgba(80,140,255,.6)}
+
+/* risultati di fine gara */
+#modal .sheet{width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;gap:12px;padding:16px;border:3px solid #1a1a12;border-radius:18px;box-shadow:0 0 0 3px var(--yellow),0 18px 50px rgba(0,0,0,.6);
+  background:radial-gradient(rgba(255,255,255,.05) 1.2px,transparent 1.6px) 0 0/10px 10px,var(--panel)}
+#mBody{display:contents}
+#modal .rx-a{order:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+body:not(.land) #modal .rx-a{display:contents}
+body:not(.land) #modal .rx-podium{order:2}
+body:not(.land) #modal .rx-b{order:3}
+body:not(.land) #mBtns{order:4}
+#mTitle{order:1;position:relative;z-index:2;align-self:center;text-align:center;margin-top:-34px;max-width:100%;font-size:28px;line-height:1.1;color:#1a1a12;background:var(--yellow);padding:7px 18px 5px;border:3px solid #1a1a12;border-radius:6px;transform:rotate(-2deg) skewX(-6deg);box-shadow:5px 5px 0 #1a1a12;animation:titleIn .5s cubic-bezier(.2,1.5,.4,1) .15s both}
+#mTitle.bad{color:var(--ink);background:var(--red)}
+@keyframes titleIn{from{opacity:0;transform:scale(2.2) rotate(-8deg)}}
+#modal .rx-b{order:2;display:flex;flex-direction:column;gap:10px;min-width:0}
+#mBtns{order:3;justify-content:center}
+#mBtns>*{flex:1 1 auto}
+#mBtns .cta{font-size:19px;padding:14px 18px;border-radius:10px}
+.rx-hero{position:relative;height:178px;display:grid;place-items:center;overflow:hidden;border-radius:12px;border:3px solid #1a1a12;--b1:#3b6fe0;--b2:#2a55b8}
+.rx-hero.gold{--b1:#ffd23f;--b2:#ffa62b}.rx-hero.silver{--b1:#e9eef1;--b2:#a9b6be}.rx-hero.bronze{--b1:#f3b27a;--b2:#c97a3c}.rx-hero.out{--b1:#ef4a2f;--b2:#9b2a17}
+.rx-burst{position:absolute;left:50%;top:50%;width:760px;height:760px;margin:-380px 0 0 -380px;background:repeating-conic-gradient(var(--b1) 0 9deg,var(--b2) 9deg 18deg);animation:spin 18s linear infinite}
+.rx-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 25%,rgba(0,0,0,.5) 100%);pointer-events:none}
+@keyframes spin{to{transform:rotate(1turn)}}
+.rx-place{direction:ltr;position:relative;z-index:2;display:flex;align-items:flex-start;font:400 104px/1 var(--f-display);color:#fff;-webkit-text-stroke:5px #1a1a12;paint-order:stroke fill;text-shadow:6px 6px 0 #1a1a12;animation:placeIn .6s cubic-bezier(.2,1.6,.4,1) .05s both}
+.rx-place span{font-size:.45em;margin-top:.12em}
+.rx-hero.out .rx-place{color:var(--yellow)}
+@keyframes placeIn{from{opacity:0;transform:scale(3) rotate(15deg)}}
+.rx-stamp{position:absolute;z-index:3;top:12px;inset-inline-end:10px;font:400 15px/1.1 var(--f-display);color:var(--red);background:#fff;border:3px solid var(--red);border-radius:8px;padding:5px 9px;transform:rotate(10deg);box-shadow:3px 3px 0 #1a1a12;animation:stampIn .45s cubic-bezier(.2,1.6,.4,1) .9s both}
+@keyframes stampIn{from{opacity:0;transform:scale(2.6) rotate(30deg)}}
+.rx-conf{position:absolute;inset:0;z-index:1;pointer-events:none}
+.rx-conf i{position:absolute;top:-16px;left:var(--x);width:8px;height:13px;background:var(--cc);border:1px solid rgba(0,0,0,.4);transform:rotate(var(--rt));animation:fall var(--du) linear var(--dl) infinite}
+@keyframes fall{to{transform:translateY(215px) rotate(calc(var(--rt) + 540deg))}}
+.rx-podium{display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:4px 4px 0;border-bottom:4px solid #1a1a12}
+.pd{flex:1 1 0;max-width:140px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pd.p1{order:2}.pd.p2{order:1}.pd.p3{order:3}
+.pd-car{animation:carDrop .45s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(var(--d) + .3s)}
+.pd-car svg{width:62px;height:33px;display:block;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.4))}
+.p1 .pd-car svg{width:74px;height:39px}
+@keyframes carDrop{from{opacity:0;transform:translateY(-30px)}}
+.pd-name{max-width:100%;font-weight:700;font-size:13px;line-height:1.2;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd.me .pd-name{color:var(--yellow)}
+.pd-tag{display:inline-block;background:var(--yellow);color:#1a1a12;border-radius:4px;padding:0 5px;margin-inline-end:4px;font:700 11px/1.5 var(--f-data)}
+.pd-blk{width:100%;display:flex;justify-content:center;padding-top:5px;font:400 26px/1 var(--f-display);color:#1a1a12;border:3px solid #1a1a12;border-bottom:0;border-radius:8px 8px 0 0;transform-origin:bottom;animation:rise .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:var(--d)}
+.p1 .pd-blk{height:78px;background:linear-gradient(#ffe066,#ffb02e)}
+.p2 .pd-blk{height:58px;background:linear-gradient(#f2f5f7,#aab6bd)}
+.p3 .pd-blk{height:42px;background:linear-gradient(#f3b27a,#c97a3c)}
+.pd.me .pd-blk{box-shadow:inset 0 0 0 3px #fff}
+@keyframes rise{from{transform:scaleY(0)}}
+.rx-champ{margin:0;font-weight:700;color:var(--yellow);text-align:center}
+.rx-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rx-st{display:flex;flex-direction:column;gap:2px;background:var(--panel-2);border:2px solid var(--line);border-radius:10px;padding:7px 12px;min-width:0}
+.rx-st .eyebrow{font-size:11px;letter-spacing:.08em}
+.rx-st b{font:700 22px/1.1 var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rx-st.rec{border-color:var(--red)}
+.rx-gain{display:flex;align-items:center;justify-content:center;gap:10px;background:#1a1a12;border:3px solid var(--yellow);border-radius:999px;padding:6px 18px}
+.rx-gain b{font:400 34px/1.1 var(--f-display);color:var(--yellow);font-variant-numeric:tabular-nums;min-width:3ch;text-align:center}
+.rx-gain>span:last-child{font:700 16px var(--f-body);text-transform:uppercase;letter-spacing:.06em}
+.rx-coin svg{width:34px;height:34px;display:block}
+.rx-gain.count .rx-coin{animation:coin .45s linear infinite}
+.rx-gain.done{animation:gainPop .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes coin{50%{transform:scaleX(.15)}}
+@keyframes gainPop{40%{transform:scale(1.12)}}
+.rx-mis{display:flex;flex-direction:column;gap:7px;background:rgba(95,211,138,.1);border:2px solid var(--ok);border-radius:12px;padding:10px 12px}
+.rx-mis .eyebrow{color:var(--ok)}
+.rx-mis .hint{font-size:13px}
+.rx-mi{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px;line-height:1.25}
+.rx-mi .mi{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--ok);color:#1a1a12}
+.rx-mi .ic{width:18px;height:18px}
+.rx-mi b{margin-inline-start:auto;font-family:var(--f-data);color:var(--yellow);white-space:nowrap}
+#modal .res{font-size:14px}
+#modal .res td{padding:5px 4px}
+body.land #modal .sheet{width:min(920px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:12px 20px;align-items:start;padding:18px}
+body.land #modal .rx-a{grid-column:1;grid-row:1 / span 3}
+body.land #mTitle{grid-column:2;grid-row:1;margin-top:4px;justify-self:start;align-self:start}
+body.land #modal .rx-b{grid-column:2;grid-row:2}
+body.land #mBtns{grid-column:2;grid-row:3}
+@media (max-height:520px){.rx-hero{height:120px}.rx-place{font-size:70px}.p1 .pd-blk{height:52px}.p2 .pd-blk{height:40px}.p3 .pd-blk{height:30px}.pd-blk{font-size:20px}@keyframes fall{to{transform:translateY(150px) rotate(540deg)}}}
+@media (min-width:700px) and (min-height:700px){
+  #modal .sheet{width:min(580px,100%);padding:22px}
+  .rx-hero{height:210px}.rx-place{font-size:128px}
+  #mTitle{font-size:34px}
+  .pd-name{font-size:15px}.rx-st b{font-size:26px}.rx-st .eyebrow{font-size:13px}
+  .rx-mi{font-size:16px}#modal .res{font-size:16px}
+  .tnum{min-width:46px;height:46px;font-size:24px}.diff b{font-size:15px}.dbar{height:19px}.dbar i{width:6px}.dbar i:nth-child(4){height:19px}.dbar i:nth-child(3){height:14px}
+  .mis .mi{width:50px;height:50px}.mis .mi .ic{width:26px;height:26px}.mis .mb{height:12px}
+  .mico.bat{width:19px;height:11px}.mico.grip{width:16px;height:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  #scrGarage,#scrTracks,#scrOnline,#scrSettings,#scrTracks .track,.modal,.modal .sheet,#mTitle,.rx-burst,.rx-place,.rx-stamp,.pd-car,.pd-blk,.rx-gain,.rx-coin,.mis .mr button,.track.next .cta,.hbox.up,.hbox.down,.turbo-btn::before,.turbo-btn::after{animation:none!important}
+  .rx-conf{display:none}
+  .track,.turbo-btn,.canvas-wrap{transition:none}
+}
 </style>
 
 <div class="app">
@@ -560,8 +742,8 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
         <div class="panel hbox"><span class="eyebrow">Giro</span><span class="v" id="hLap">1/3</span></div>
         <div class="panel hbox"><span class="eyebrow">Velocità</span><span class="v" id="hSpd">0 km/h</span></div>
         <div class="panel hbox"><span class="eyebrow">Pile · Tenuta</span>
-          <div class="meter" title="Carica delle pile"><i id="mTurbo"></i></div>
-          <div class="meter" title="Rischio course out"><i id="mRisk"></i></div>
+          <div class="mrow"><span class="mico bat" aria-hidden="true"></span><div class="meter" title="Carica delle pile"><i id="mTurbo"></i></div></div>
+          <div class="mrow"><span class="mico grip" aria-hidden="true"></span><div class="meter" title="Rischio course out"><i id="mRisk"></i></div></div>
         </div>
         <button class="turbo-btn" id="turboBtn">TURBO<small>tieni premuto</small></button>
         <button class="turbo-btn p2" id="turboBtn2" hidden>TURBO G2<small>tieni premuto</small></button>
@@ -1590,29 +1772,39 @@ function missionProgress(ev){
   if(done.length)setTimeout(()=>toast(`Missione completata: +${done[0].rw} crediti`),1300);
 }
 function updateMissionDot(){const d=save.daily;$('mDot').hidden=!(d&&d.day===dayKey()&&d.list.some(m=>!m.claimed&&m.p>=m.goal));}
+// icone disegnate (niente immagini esterne) per missioni, piste e risultati
+const svgI=(d,c='')=>`<svg viewBox="0 0 24 24" class="ic ${c}" aria-hidden="true">${d}</svg>`;
+const MICON={race:svgI('<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>'),win:svgI('<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M10 17h4v3h-4z"/>'),
+  top2:svgI('<circle cx="12" cy="15" r="5"/><path d="M8 3l3 7M16 3l-3 7M11.5 13.5l1-.5v4"/>'),laps:svgI('<path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/>'),
+  turbo:svgI('<path class="fl" d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),jumps:svgI('<path d="M2 20h6M16 20h6"/><path d="M5 16q7-14 14 0" stroke-dasharray="2.5 3"/>'),
+  track:svgI('<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),record:svgI('<path class="fl" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
+  buy:svgI('<path d="M3 4h2l2 11h11l2-8H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>'),
+  lock:svgI('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2"/>'),check:svgI('<path d="M5 12.5l4.5 4.5L19 7"/>')};
 function renderMissions(){
   const d=dailyMissions(),now=new Date(),end=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1),mins=Math.max(1,Math.ceil((end-now)/60000));
   const all=d.list.every(m=>m.claimed);
   $('missions').innerHTML=`<div class="mhead"><h3>Missioni giornaliere</h3><span class="mleft">Nuove missioni tra ${Math.floor(mins/60)} h ${mins%60} min</span></div>
     <div class="mlist">${d.list.map((m,i)=>{const full=m.p>=m.goal,pv=m.t==='turbo'?Math.floor(m.p):m.p;
-      return `<div class="mis ${m.claimed?'claimed':''}"><span class="mt">${esc(MTYPES[m.t].txt(m))}</span>
+      return `<div class="mis ${m.claimed?'claimed':full?'full':''}"><span class="mi">${m.claimed?MICON.check:MICON[m.t]||''}</span><span class="mt">${esc(MTYPES[m.t].txt(m))}</span>
       <span class="mr"><b>+${m.rw} cr</b>${m.claimed?'<span>Riscossa</span>':full?`<button data-claim="${i}">Riscuoti</button>`:''}</span>
       <span class="mb"><i style="width:${Math.min(100,m.p/m.goal*100)}%"></i></span><span class="mn">${pv}/${m.goal}</span></div>`;}).join('')}</div>
     ${all?'<p class="hint" style="margin:10px 0 0">Tutte le missioni di oggi sono completate. Torna domani!</p>':''}`;
   updateMissionDot();
 }
 $('missions').addEventListener('click',e=>{const b=e.target.closest('[data-claim]');if(!b)return;const m=dailyMissions().list[+b.dataset.claim];
-  if(!m||m.claimed||m.p<m.goal)return;m.claimed=true;save.credits+=m.rw;troCount('mis',1);persist();$('credits').textContent=save.credits;toast(`+${m.rw} crediti`);renderMissions();});
+  if(!m||m.claimed||m.p<m.goal)return;m.claimed=true;save.credits+=m.rw;troCount('mis',1);persist();$('credits').textContent=save.credits;toast(`+${m.rw} crediti`);renderMissions();
+  audioOn();beep(880,.06);setTimeout(()=>beep(1320,.1),90);});
 try{dailyMissions();updateMissionDot();}catch(e){}
 setInterval(()=>{if(save.daily&&save.daily.day!==dayKey()){dailyMissions();if(!$('scrTracks').hidden)renderMissions();else updateMissionDot();}},60000);
 function renderTracks(){
   renderDuo();renderMissions();renderTrophies();
-  $('tracks').innerHTML=TRACKS.map((t,i)=>{const tr=TR[i],un=unlocked(i),best=save.best[t.id];
-    return `<div class="panel track"><canvas width="560" height="420" data-i="${i}"></canvas><h3>${t.name}</h3><p>${t.d}</p>
+  const nx=TRACKS.findIndex((t,i)=>unlocked(i)&&!save.wins[t.id]),DLV={'Facile':1,'Medio facile':2,'Medio':3,'Difficile':4};
+  $('tracks').innerHTML=TRACKS.map((t,i)=>{const tr=TR[i],un=unlocked(i),best=save.best[t.id],won=!!save.wins[t.id],dl=DLV[t.lv]||0;
+    return `<div class="panel track d${dl}${un?'':' lk'}${won?' won':''}${i===nx?' next':''}" style="--i:${i}"><div class="tmap"><canvas width="560" height="420" data-i="${i}"></canvas><span class="tnum">${i+1}</span>${t.lv?`<span class="diff"><span class="dbar" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>${t.lv}</b></span>`:''}${won?`<span class="tribbon">${MICON.win}<b>Vinta</b></span>`:''}${un?'':`<span class="tlock">${MICON.lock}</span>`}</div><h3>${t.name}</h3><p>${t.d}</p>
     <div class="len"><span><b>${meters(tr.L)}</b> al giro</span><span>${LAPS} giri · ${meters(tr.L*LAPS)} in totale</span></div>
-    <div class="tags">${t.lv?`<span class="win">${t.lv}</span>`:''}<span class="win" style="border-color:var(--muted);color:var(--ink)">${habOf(tr).name}</span><span>${tr.curves} curve</span><span>${tr.zones.J.length} ${tr.zones.J.length===1?'salto':'salti'}</span>${tr.zones.O.length?`<span>${tr.zones.O.length} ${tr.zones.O.length===1?'giro della morte':'giri della morte'}</span>`:''}${tr.zones.H.filter(z=>z.p<40).length?`<span>${tr.zones.H.filter(z=>z.p<40).length} ${tr.zones.H.filter(z=>z.p<40).length===1?'salita':'salite'}</span>`:''}${tr.zones.H.filter(z=>z.p>=40).length?`<span>${tr.zones.H.filter(z=>z.p>=40).length} ${tr.zones.H.filter(z=>z.p>=40).length===1?'ponte':'ponti'}</span>`:''}${save.wins[t.id]?'<span class="win">Vinta</span>':''}${best?`<span>Record ${fmtT(best)}</span>`:''}</div>
+    <div class="tags"><span class="win" style="border-color:var(--muted);color:var(--ink)">${habOf(tr).name}</span><span>${tr.curves} curve</span><span>${tr.zones.J.length} ${tr.zones.J.length===1?'salto':'salti'}</span>${tr.zones.O.length?`<span>${tr.zones.O.length} ${tr.zones.O.length===1?'giro della morte':'giri della morte'}</span>`:''}${tr.zones.H.filter(z=>z.p<40).length?`<span>${tr.zones.H.filter(z=>z.p<40).length} ${tr.zones.H.filter(z=>z.p<40).length===1?'salita':'salite'}</span>`:''}${tr.zones.H.filter(z=>z.p>=40).length?`<span>${tr.zones.H.filter(z=>z.p>=40).length} ${tr.zones.H.filter(z=>z.p>=40).length===1?'ponte':'ponti'}</span>`:''}${best?`<span class="rec">Record ${fmtT(best)}</span>`:''}</div>
     <div class="prize">Premi: ${t.prize[0]} / ${t.prize[1]} / ${t.prize[2]} / ${prizeAt(t,3)} / ${prizeAt(t,4)} cr</div>
-    ${un?ttCardRow(i)+`<div class="trbtns"><button class="cta" data-race="${i}">Corri</button><button class="cta tt" data-tt="${i}">Sfida a tempo</button></div>`:`<div class="locked">Vinci «${TRACKS[i-1].name}» per sbloccarla</div>`}</div>`;}).join('');
+    ${un?ttCardRow(i)+`<div class="trbtns"><button class="cta" data-race="${i}">Corri</button><button class="cta tt" data-tt="${i}">Sfida a tempo</button></div>`:`<div class="locked">${MICON.lock}<span>Vinci «${TRACKS[i-1].name}» per sbloccarla</span></div>`}</div>`;}).join('');
   document.querySelectorAll('#tracks canvas').forEach(c=>drawMini(c,trackFor(+c.dataset.i,5)));
 }
 $('tracks').addEventListener('click',e=>{const b=e.target.closest('[data-race]');if(b)startRace(+b.dataset.race);});
@@ -1832,9 +2024,10 @@ function tick(dt){
   // HUD
   const st=standings(r),pos=st.indexOf(me)+1;
   $('hPos').textContent=me.state==='out'?'Fuori':pos+'°/'+r.cars.length;if(r.tt)ttHud(r);
+  if(pos!==r.hudPos){if(r.hudPos&&r.t>0&&me.state==='run'){const hb=$('hPos').parentNode;hb.classList.remove('up','down');void hb.offsetWidth;hb.classList.add(pos<r.hudPos?'up':'down');}r.hudPos=pos;}
   $('hLap').textContent=Math.min(LAPS,Math.max(1,me.lap+1))+'/'+LAPS;
   $('hSpd').textContent=Math.round(me.state==='out'?0:me.v*KMH)+' km/h';
-  {const f=me.energy/(me.emax||me.st.cap);$('mTurbo').style.width=(f*100).toFixed(1)+'%';$('mTurbo').classList.toggle('low',f<BATT_LOW);}
+  {const f=me.energy/(me.emax||me.st.cap);$('mTurbo').style.width=(f*100).toFixed(1)+'%';$('mTurbo').classList.toggle('low',f<BATT_LOW);$('turboBtn').classList.toggle('low',!r.duo&&f<BATT_LOW);}
   const w=Math.min(1,me.wobble);$('mRisk').style.width=(Math.max(.03,w)*100).toFixed(1)+'%';
   $('mRisk').style.background=w>.66?'var(--red)':w>.33?'var(--yellow)':'var(--ok)';
   if(gain&&actx){const on=r.t>=0&&me.state!=='out'&&save.vol>0;gain.gain.setTargetAtTime(on?(.03+(me.turbo?.018:0))*save.vol:0,actx.currentTime,.05);
@@ -3208,7 +3401,7 @@ function render3D(r,rects,hs){
 // input: giocatore 1 (Spazio, pulsante, metà sinistra/alta) e giocatore 2 (Freccia su/Invio, pulsante blu, altra metà)
 const inp={k1:false,k2:false,b1:false,b2:false,p:new Map()};
 function applyInput(){const ps=[...inp.p.values()];input.turbo=inp.k1||inp.b1||ps.includes(1);input.turbo2=inp.k2||inp.b2||ps.includes(2);
-  $('turboBtn').classList.toggle('on',input.turbo);$('turboBtn2').classList.toggle('on',input.turbo2);}
+  $('turboBtn').classList.toggle('on',input.turbo);$('turboBtn2').classList.toggle('on',input.turbo2);$('scrRace').classList.toggle('boost',!!(input.turbo||input.turbo2));}
 function resetInput(){inp.k1=inp.k2=inp.b1=inp.b2=false;inp.p.clear();applyInput();}
 function setTurbo(on){inp.b1=on;applyInput();}
 const tb=$('turboBtn'),tb2=$('turboBtn2'),rc=$('rc');
@@ -3231,6 +3424,19 @@ window.addEventListener('blur',()=>resetInput());
 
 // ---------- risultati ----------
 function hideModal(){$('modal').hidden=true;}
+// animazione dei crediti guadagnati e piccola fanfara con i suoni del gioco
+function resultsFx(gain,pl){
+  const el=$('rxGain');if(!el)return;const calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fan=pl<0?[[330,.12],[220,.3]]:pl===0?[[523,.09],[659,.09],[784,.09],[1047,.28]]:pl<3?[[523,.1],[659,.1],[784,.22]]:[[440,.1],[523,.2]];
+  fan.forEach(([f,d],k)=>setTimeout(()=>beep(f,d),180+k*120));
+  if(calm||gain<=0){el.parentNode.classList.add('done');return;}
+  el.textContent='+0';el.parentNode.classList.add('count');
+  const t0=performance.now()+650,D=Math.min(1500,500+gain*5);let lastB=0;
+  const step=now=>{if(!el.isConnected||$('modal').hidden)return;const k=Math.max(0,Math.min(1,(now-t0)/D)),v=Math.round(gain*(1-Math.pow(1-k,3)));
+    el.textContent='+'+v;if(k>0&&k<1&&now-lastB>95){lastB=now;beep(700+600*k,.025);}
+    if(k<1)requestAnimationFrame(step);else{el.parentNode.classList.remove('count');el.parentNode.classList.add('done');beep(1568,.08);}};
+  requestAnimationFrame(step);
+}
 function showResults(){
   const r=race;if(!r)return;if(r.tt)return ttResults(r);const st=standings(r),me=r.cars[0],def=r.def,ti=r.ti;
   let gainCr,title,bad=false;
@@ -3245,6 +3451,7 @@ function showResults(){
     if(place===0){const first=!save.wins[def.id];save.wins[def.id]=true;if(first&&TRACKS[ti+1])toast(`Sbloccata: ${TRACKS[ti+1].name}`);}
     if(!save.best[def.id]||me.finishT<save.best[def.id]){save.best[def.id]=me.finishT;r.newRecord=true;}}
   save.credits+=gainCr;persist();$('credits').textContent=save.credits;
+  const misPre=dailyMissions().list.map(m=>m.claimed||m.p>=m.goal);
   {const hum=r.cars.filter(c=>c.isPlayer||c.p2),fin=hum.filter(c=>c.state==='done'),pl=fin.map(c=>st.indexOf(c)),lp=Math.max(0,...hum.map(c=>c.laps.length));
    missionProgress({kind:'race',finished:fin.length>0,place:pl.length?Math.min(...pl):null,laps:lp,jumps:lp*r.tr.zones.J.length,turbo:r.turboT||0,track:def.id,record:!!r.newRecord});
    try{troRaceEnd(r,st,fin,pl,lp);}catch(e){}}
@@ -3253,10 +3460,27 @@ function showResults(){
     const bestLap=c.laps.length?Math.min(...c.laps):null;
     return `<tr class="${c.isPlayer||c.p2?'me':''}"><td>${i+1}°</td><td><span class="dot" style="background:${c.color}"></span>${r.duo&&(c.isPlayer||c.p2)?(c.isPlayer?'G1 · ':'G2 · '):''}${esc(c.name)}</td><td class="t">${t}</td></tr>`;}).join('');
   const champ=!r.online&&ti===TRACKS.length-1&&!bad&&st[0]===me;
-  $('mBody').innerHTML=`${champ?'<p style="margin:0 0 10px;font-weight:700">Hai vinto la Coppa dei Campioni. Sei il campione del negozio!</p>':''}
-    ${bad?'<p style="margin:0 0 10px;color:var(--muted)">Troppo veloce in curva o sul salto. Prova rulli migliori, una zavorra o rilascia il turbo prima.</p>':''}
-    <table class="res"><tr><td class="eyebrow">Pos</td><td class="eyebrow">Macchina</td><td class="eyebrow t">Tempo</td></tr>${rows}</table>
-    <p class="gain" style="margin:12px 0 0">+${gainCr} crediti</p>`;
+  // schermata finale in stile fumetto: numero grande, podio, crediti che salgono, record e missioni
+  const misDone=dailyMissions().list.filter((m,i)=>!misPre[i]&&m.p>=m.goal);
+  const humF=st.filter(c=>(c.isPlayer||c.p2)&&c.state==='done'),hero=humF[0]||null,myPl=bad||!hero?null:st.indexOf(hero);
+  const heroCls=bad?'out':myPl===0?'gold':myPl===1?'silver':myPl===2?'bronze':'blue';
+  const carSvg='<svg viewBox="0 0 64 34" aria-hidden="true"><path d="M3 24l4-9 15-3 8-6h16l10 8 6 2v8z" fill="var(--c)" stroke="#111" stroke-width="2.2" stroke-linejoin="round"/><path d="M31 8h13l6 6H27z" fill="#cfe8ff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 19h14" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="26" r="6" fill="#222" stroke="#111" stroke-width="2"/><circle cx="16" cy="26" r="2.4" fill="#d8d8d8"/><circle cx="50" cy="26" r="6" fill="#222" stroke="#111" stroke-width="2"/><circle cx="50" cy="26" r="2.4" fill="#d8d8d8"/></svg>';
+  const pod=st.slice(0,3).filter(c=>c.state==='done').map((c,k)=>{const mine=c.isPlayer||c.p2;
+    return `<div class="pd p${k+1}${mine?' me':''}" style="--c:${c.color};--d:${(.25+(2-k)*.18).toFixed(2)}s"><div class="pd-car">${carSvg}</div><div class="pd-name">${mine?`<span class="pd-tag">${r.duo?(c.isPlayer?'G1':'G2'):'Tu'}</span>`:''}<span>${esc(c.name)}</span></div><div class="pd-blk"><b>${k+1}</b></div></div>`;}).join('');
+  const bestLap=hero&&hero.laps.length?Math.min(...hero.laps):null;
+  const conf=myPl===0?`<div class="rx-conf" aria-hidden="true">${Array.from({length:22},(_,k)=>`<i style="--x:${(k*4.6+Math.random()*4).toFixed(1)}%;--dl:${(Math.random()*1.6).toFixed(2)}s;--du:${(1.8+Math.random()*1.4).toFixed(2)}s;--cc:${['#ffd23f','#ef4a2f','#3b6fe0','#5fd38a','#ffffff','#ff6fa8'][k%6]};--rt:${Math.round(Math.random()*360)}deg"></i>`).join('')}</div>`:'';
+  $('mBody').innerHTML=`<div class="rx-a"><div class="rx-hero ${heroCls}"><div class="rx-burst" aria-hidden="true"></div>${conf}
+      <div class="rx-place" aria-hidden="true">${myPl!=null?`<b>${myPl+1}</b><span>°</span>`:'<b>!</b>'}</div>
+      ${r.newRecord?'<div class="rx-stamp">Nuovo record!</div>':''}</div>
+    ${pod?`<div class="rx-podium">${pod}</div>`:''}</div>
+    <div class="rx-b">
+    ${champ?'<p class="rx-champ">Hai vinto la Coppa dei Campioni. Sei il campione del negozio!</p>':''}
+    ${bad?'<p style="margin:0;color:var(--muted)">Troppo veloce in curva o sul salto. Prova rulli migliori, una zavorra o rilascia il turbo prima.</p>':''}
+    ${hero?`<div class="rx-stats"><div class="rx-st"><span class="eyebrow">Tempo</span><b>${fmtT(hero.finishT)}</b></div><div class="rx-st${r.newRecord?' rec':''}"><span class="eyebrow">Giro migliore</span><b>${fmtT(bestLap)}</b></div></div>`:''}
+    <div class="rx-gain"><span class="rx-coin" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffd23f" stroke="#1a1a12" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="#c98f12" stroke-width="2"/><path d="M12 8.5v7" stroke="#c98f12" stroke-width="2" stroke-linecap="round"/></svg></span><b id="rxGain">+${gainCr}</b><span>crediti</span></div>
+    ${misDone.length?`<div class="rx-mis"><div class="eyebrow">Missioni completate</div>${misDone.map(m=>`<div class="rx-mi"><span class="mi">${MICON[m.t]||''}</span><span>${esc(MTYPES[m.t].txt(m))}</span><b>+${m.rw} cr</b></div>`).join('')}<p class="hint">Riscuoti i premi nella schermata Piste.</p></div>`:''}
+    <table class="res"><tr><td class="eyebrow">Pos</td><td class="eyebrow">Macchina</td><td class="eyebrow t">Tempo</td></tr>${rows}</table></div>`;
+  resultsFx(gainCr,bad?-1:myPl);
   if(r.online){
     $('mBtns').innerHTML=`<button class="cta" id="bRoom">Torna alla stanza</button><button class="cta alt" id="bGarage">Garage</button>`;
     $('modal').hidden=false;
