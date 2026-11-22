@@ -399,6 +399,40 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
   .toast{font-size:18px;padding:14px 22px}
 }
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+/* ---------- trofei e sfida a tempo ---------- */
+.trophies{padding:14px 16px;margin-bottom:14px}
+.trophies .thead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.trophies h3{margin:0;font-family:var(--f-display);font-size:18px;letter-spacing:.02em}
+.trophies .tcount{font-family:var(--f-data);font-size:13px;color:var(--yellow)}
+.trophies .tbar{flex:1 1 120px;height:6px;border-radius:3px;background:rgba(0,0,0,.35);overflow:hidden;min-width:80px}
+.trophies .tbar i{display:block;height:100%;background:var(--yellow)}
+.trophies .ttog{background:transparent;border:2px solid var(--line);border-radius:4px;padding:5px 10px;font-weight:700;font-size:13px;color:var(--ink);cursor:pointer}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.tro{display:grid;grid-template-columns:34px 1fr auto;gap:2px 10px;align-items:center;background:var(--panel-2);border:2px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0}
+.tro .ti{grid-row:1/4;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.3);color:var(--muted);font-size:18px;line-height:1}
+.tro.got{border-color:var(--yellow)}.tro.got .ti{background:var(--yellow);color:#1a1a12}
+.tro .tn{font-weight:700;font-size:14px;min-width:0}
+.tro .td{grid-column:2/4;font-size:12.5px;color:var(--muted);line-height:1.3}
+.tro .trw{font-family:var(--f-data);font-size:12px;color:var(--yellow);white-space:nowrap}
+.tro .tb{grid-column:2/3;height:5px;border-radius:3px;background:rgba(0,0,0,.35);overflow:hidden}.tro .tb i{display:block;height:100%;background:var(--blue)}
+.tro .tp{grid-column:3;font-family:var(--f-data);font-size:11px;color:var(--muted);text-align:right}
+.tropop{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:45;display:flex;align-items:center;gap:12px;background:var(--panel);border:3px solid var(--yellow);border-radius:8px;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:calc(100% - 32px);animation:tropIn .35s ease-out}
+.tropop .ti{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--yellow);color:#1a1a12;font-size:22px}
+.tropop{width:max-content}.tropop .tx{display:flex;flex-direction:column;min-width:0}.tropop .tx small{white-space:nowrap}.tropop .tx b{font-size:16px}.tropop .tx span{font-family:var(--f-data);font-size:13px;color:var(--yellow)}
+@keyframes tropIn{from{transform:translate(-50%,-30px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.trbtns{display:flex;gap:8px;flex-wrap:wrap}.trbtns .cta{flex:1 1 auto}
+.cta.tt{background:#5b3fb5;box-shadow:0 4px 0 #3a2780}
+.ttrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--f-data);font-size:12px}
+.ttrow .ttl{color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-right:2px}
+.md{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:3px;padding:1px 6px;color:var(--muted)}
+.md::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--mc);opacity:.45}
+.md.on{color:var(--ink);border-color:var(--mc)}.md.on::before{opacity:1}
+.md.g{--mc:#ffd23f}.md.s{--mc:#cfd6de}.md.b{--mc:#d08a4a}
+.ttbest{color:var(--ink)}.md.ttbest::before{display:none}
+.ttres td.md2{text-align:right}
+.medal{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;background:var(--mc)}
+.medal.g{--mc:#ffd23f}.medal.s{--mc:#cfd6de}.medal.b{--mc:#d08a4a}
+@media (min-width:700px) and (min-height:700px){.trophies h3{font-size:22px}.tro .tn{font-size:16px}.tro .td{font-size:14px}.ttrow{font-size:13px}}
 </style>
 
 <div class="app">
@@ -442,6 +476,7 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
     <!-- PISTE -->
     <section id="scrTracks" hidden>
       <div class="panel missions" id="missions"></div>
+      <div class="panel trophies" id="trophies"></div>
       <div class="panel duopanel">
         <div class="views" id="duoSel" role="group" aria-label="Numero di giocatori"><button data-n="1" aria-pressed="true">1 giocatore</button><button data-n="2" aria-pressed="false">2 giocatori</button></div>
         <div class="duo2" id="duoCfg" hidden>
@@ -544,6 +579,7 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
 </div>
 <div class="frinvite" id="frInvite" hidden></div>
 <div class="toast" id="toast" hidden></div>
+<div class="tropop" id="troPop" hidden></div>
 <div class="rotate" id="rotate" role="alert"><div class="phone" aria-hidden="true"></div><p id="rotTitle">Gira il telefono in verticale</p><small id="rotSub">Hai scelto il gioco in verticale. La gara è in pausa.</small></div>
 
 <script>
@@ -869,7 +905,7 @@ function addCar(){syncCurrentCar();const mine=save.garage.list.filter(c=>c.kind=
   if(mine.length>=8){toast('Puoi avere al massimo 8 auto tue');return;}
   const used=new Set(mine.map(c=>c.color)),color=PC_COLORS.find(c=>!used.has(c))||COLORS[0];
   const id='c'+Date.now().toString(36);save.garage.list.push({id,kind:'custom',name:'Auto '+(mine.length+1),color,pc:{},eq:stockEq()});
-  gtab='colori';selectCar(id);$('gscroll').scrollTop=0;toast('Nuova auto creata: scegli colori e modifiche');}
+  gtab='colori';selectCar(id);$('gscroll').scrollTop=0;toast('Nuova auto creata: scegli colori e modifiche');troCheck();}
 function deleteCar(){const c=curCar();if(c.kind!=='custom')return;
   save.garage.list=save.garage.list.filter(x=>x.id!==c.id);
   const next=save.garage.list.find(x=>x.kind==='custom')||save.garage.list.find(x=>x.kind==='livery');
@@ -1473,7 +1509,7 @@ $('shop').addEventListener('click',e=>{
   const b=e.target.closest('.opt');if(!b||b.disabled)return;const i=BYID[b.dataset.id];
   if(!save.owned.includes(i.id)){if(save.credits<i.cost)return;save.credits-=i.cost;save.owned.push(i.id);toast(`Comprato: ${i.name}`);missionProgress({kind:'buy'});}
   {const before=schRaw(save.eq),after=schRaw({...save.eq,[i.cat]:i.id});lastMod={name:i.name,d:SCH.map((l,k)=>[l,Math.round((after[k]/before[k]-1)*100)]).filter(([,v])=>v!==0)};}
-  save.eq[i.cat]=i.id;persist();refreshGarage();netPublishProfile();if(gv.r)setInside(INTERNAL.includes(i.cat));
+  save.eq[i.cat]=i.id;troMount(i.id);persist();refreshGarage();netPublishProfile();if(gv.r)setInside(INTERNAL.includes(i.cat));
 });
 function renderLiveries(){
   syncCurrentCar();
@@ -1564,17 +1600,17 @@ function renderMissions(){
   updateMissionDot();
 }
 $('missions').addEventListener('click',e=>{const b=e.target.closest('[data-claim]');if(!b)return;const m=dailyMissions().list[+b.dataset.claim];
-  if(!m||m.claimed||m.p<m.goal)return;m.claimed=true;save.credits+=m.rw;persist();$('credits').textContent=save.credits;toast(`+${m.rw} crediti`);renderMissions();});
+  if(!m||m.claimed||m.p<m.goal)return;m.claimed=true;save.credits+=m.rw;troCount('mis',1);persist();$('credits').textContent=save.credits;toast(`+${m.rw} crediti`);renderMissions();});
 try{dailyMissions();updateMissionDot();}catch(e){}
 setInterval(()=>{if(save.daily&&save.daily.day!==dayKey()){dailyMissions();if(!$('scrTracks').hidden)renderMissions();else updateMissionDot();}},60000);
 function renderTracks(){
-  renderDuo();renderMissions();
+  renderDuo();renderMissions();renderTrophies();
   $('tracks').innerHTML=TRACKS.map((t,i)=>{const tr=TR[i],un=unlocked(i),best=save.best[t.id];
     return `<div class="panel track"><canvas width="560" height="420" data-i="${i}"></canvas><h3>${t.name}</h3><p>${t.d}</p>
     <div class="len"><span><b>${meters(tr.L)}</b> al giro</span><span>${LAPS} giri · ${meters(tr.L*LAPS)} in totale</span></div>
     <div class="tags">${t.lv?`<span class="win">${t.lv}</span>`:''}<span class="win" style="border-color:var(--muted);color:var(--ink)">${habOf(tr).name}</span><span>${tr.curves} curve</span><span>${tr.zones.J.length} ${tr.zones.J.length===1?'salto':'salti'}</span>${tr.zones.O.length?`<span>${tr.zones.O.length} ${tr.zones.O.length===1?'giro della morte':'giri della morte'}</span>`:''}${tr.zones.H.filter(z=>z.p<40).length?`<span>${tr.zones.H.filter(z=>z.p<40).length} ${tr.zones.H.filter(z=>z.p<40).length===1?'salita':'salite'}</span>`:''}${tr.zones.H.filter(z=>z.p>=40).length?`<span>${tr.zones.H.filter(z=>z.p>=40).length} ${tr.zones.H.filter(z=>z.p>=40).length===1?'ponte':'ponti'}</span>`:''}${save.wins[t.id]?'<span class="win">Vinta</span>':''}${best?`<span>Record ${fmtT(best)}</span>`:''}</div>
     <div class="prize">Premi: ${t.prize[0]} / ${t.prize[1]} / ${t.prize[2]} / ${prizeAt(t,3)} / ${prizeAt(t,4)} cr</div>
-    ${un?`<button class="cta" data-race="${i}">Corri</button>`:`<div class="locked">Vinci «${TRACKS[i-1].name}» per sbloccarla</div>`}</div>`;}).join('');
+    ${un?ttCardRow(i)+`<div class="trbtns"><button class="cta" data-race="${i}">Corri</button><button class="cta tt" data-tt="${i}">Sfida a tempo</button></div>`:`<div class="locked">Vinci «${TRACKS[i-1].name}» per sbloccarla</div>`}</div>`;}).join('');
   document.querySelectorAll('#tracks canvas').forEach(c=>drawMini(c,trackFor(+c.dataset.i,5)));
 }
 $('tracks').addEventListener('click',e=>{const b=e.target.closest('[data-race]');if(b)startRace(+b.dataset.race);});
@@ -1653,14 +1689,18 @@ const EXTRA_AI=[['Cometa Rossa','#d8262f'],['Lupo Grigio','#8a9097'],['Stella Vi
 function aiFive(def,ti){const out=[...def.ai];for(let k=0;k<2;k++){const b=def.ai[k%def.ai.length],[name,color]=EXTRA_AI[(ti*2+k)%EXTRA_AI.length];out.push({...b,name,color,caution:Math.max(.5,(b.caution||.8)-.04)});}return out;}
 // gara a due sullo stesso dispositivo: tutte le auto montano gli stessi pezzi
 const DUO_EQ={...(()=>{const e={};PARTS.forEach(c=>e[c.key]=c.items[0].id);return e;})(),motor:'m2',gear:'g0',tire:'t0',roller:'r2',damper:'d1',brake:'k0',battery:'b1'};
-function startRace(ti,online){
+function startRace(ti,online,opts){
   audioOn();hideModal();
+  const tt=!online&&!!(opts&&opts.tt);
   const def=TRACKS[ti],tr=online?(online.nl===5?trackFor(ti,5):TR[ti]):trackFor(ti,5);
   let cars;
   if(online){
     cars=[];const myIdx=online.racers.findIndex(x=>x.peer===online.me);
     cars.push(makeCar({name:myName(),color:liveryFor(save.livery,save.color).dot,livery:liveryFor(save.livery,save.color),look:playerLook(),eq:save.eq,isPlayer:true,lane:myIdx}));
     online.racers.forEach((x,i)=>{if(i!==myIdx){const L=liveryFor(x.lv,x.color);cars.push(makeCar({name:x.name,color:L.dot,livery:L,look:lookFor(L,x.eq,x.pc),eq:x.eq,isPlayer:false,isRemote:true,peer:x.peer,lane:i}));}});
+  }else if(tt){
+    // sfida a tempo: da soli contro il cronometro, nella corsia di mezzo
+    cars=[makeCar({name:save.name,color:liveryFor(save.livery,save.color).dot,livery:liveryFor(save.livery,save.color),look:playerLook(),eq:save.eq,isPlayer:true,lane:2})];
   }else if(save.p2&&save.p2.on){
     syncCurrentCar();const lanes=[0,1,2,3,4].sort(()=>Math.random()-.5);
     const c2=carById(save.p2.car)||save.garage.list.find(c=>c.id!==save.garage.sel)||curCar(),K2=carLookOf(c2);
@@ -1676,8 +1716,9 @@ function startRace(ti,online){
   cars.forEach(c=>{c.s=tr.L-26;c.off=laneO(c.lane,NLof(tr));posCar(c,tr);
     // carica delle pile per tutta la gara: il motore consuma sempre un po', il turbo molto di più
     c.estT=tr.L*LAPS/c.st.top;c.emax=c.st.cap+BATT_IDLE*c.st.drain*c.estT+.12*c.estT;c.energy=c.emax;});
-  race={duo:!online&&!!(save.p2&&save.p2.on),ti,def,tr,cars,t:online?-(online.start-Date.now())/1000:-3.6,clock:0,finished:0,endT:null,lastBeep:4,acc:0,online:online||null,lastSend:0};
+  race={duo:!online&&!tt&&!!(save.p2&&save.p2.on),tt,ti,def,tr,cars,t:online?-(online.start-Date.now())/1000:-3.6,clock:0,finished:0,endT:null,lastBeep:4,acc:0,online:online||null,lastSend:0};
   $('raceTitle').textContent=def.name;$('raceLen').textContent=LAPS+' giri da '+meters(tr.L)+' · '+meters(tr.L*LAPS)+' in totale';
+  ttBegin(race);
   show('race');
   $('hud').classList.toggle('duo',race.duo);$('scrRace').classList.toggle('duo',race.duo);updateOrientation();$('turboBtn2').hidden=!race.duo;$('turboBtn').firstChild.textContent=race.duo?'TURBO G1':'TURBO';
   view=null;setViewButtons();
@@ -1770,6 +1811,7 @@ function tick(dt){
     if(prevT<0){const n=Math.ceil(-r.t);if(n<r.lastBeep){r.lastBeep=n;beep(n===0?880:440,n===0?.3:.12);}}
     for(const c of r.cars){if(c.isRemote&&c.state!=='out')netStepRemote(c,H,r);else stepCar(c,H,r);
       if((c.isPlayer||c.p2)&&c.turbo&&c.state==='run'&&r.t>=0)r.turboT=(r.turboT||0)+H;}
+    if(r.tt)ttStep(r);
   }
   const me=r.cars[0];
   if(r.online){
@@ -1784,7 +1826,7 @@ function tick(dt){
   }
   // HUD
   const st=standings(r),pos=st.indexOf(me)+1;
-  $('hPos').textContent=me.state==='out'?'Fuori':pos+'°/'+r.cars.length;
+  $('hPos').textContent=me.state==='out'?'Fuori':pos+'°/'+r.cars.length;if(r.tt)ttHud(r);
   $('hLap').textContent=Math.min(LAPS,Math.max(1,me.lap+1))+'/'+LAPS;
   $('hSpd').textContent=Math.round(me.state==='out'?0:me.v*KMH)+' km/h';
   {const f=me.energy/(me.emax||me.st.cap);$('mTurbo').style.width=(f*100).toFixed(1)+'%';$('mTurbo').classList.toggle('low',f<BATT_LOW);}
@@ -2222,6 +2264,7 @@ function splitRects(v,duo,mode){
 }
 function humansOf(r){return r.duo?[r.cars[0],r.cars.find(c=>c.p2)]:[r.cars[0]];}
 function drawCarsWorld(ctx,r,mode,markRot,v){
+  if(r.tt)ttDrawGhost(ctx,r,mode,v);
   const cars=[...r.cars].sort((a,b)=>(a.z+(a.bridge?5:0))-(b.z+(b.bridge?5:0)));
   for(const c of cars){
     const lz=c.state!=='out'&&r.tr.zoneAt('O',c.s),lift=c.z+(c.bridge?6:0)+(lz?loopPose(lz,c.s,NLof(r.tr)).h*.35:0),sc=(1+lift/90)*(mode==='full'?Math.max(1,24/(34*v.sc)):1);
@@ -2953,6 +2996,7 @@ function render3D(r,rects,hs){
     o.sh.position.set(cx+2,ground+1.2,cy+2);o.sh.rotation.z=-(c.h+c.yaw+c.rot);o.sh.material.opacity=.18*c.alpha/(1+c.z/40);
     o.g.visible=c.alpha>.3||c.state!=='out';
   });
+  ttGhost3D(r);
   // camera da inseguimento, una per ogni giocatore
   rects=rects||[{x:0,y:0,w:view.cw,h:view.ch}];hs=hs||[r.cars[0]];
   if(!g3.camPos||g3.camPos.length!==hs.length)g3.camPos=hs.map(()=>null);if(!g3.fovs||g3.fovs.length!==hs.length)g3.fovs=hs.map(()=>60);
@@ -2999,7 +3043,7 @@ window.addEventListener('blur',()=>resetInput());
 // ---------- risultati ----------
 function hideModal(){$('modal').hidden=true;}
 function showResults(){
-  const r=race;if(!r)return;const st=standings(r),me=r.cars[0],def=r.def,ti=r.ti;
+  const r=race;if(!r)return;if(r.tt)return ttResults(r);const st=standings(r),me=r.cars[0],def=r.def,ti=r.ti;
   let gainCr,title,bad=false;
   const p2=r.duo?r.cars.find(c=>c.p2):null;
   if(r.duo){const pl=[me,p2].map(c=>c.state==='done'?st.indexOf(c):99);const best=Math.min(...pl);
@@ -3013,7 +3057,8 @@ function showResults(){
     if(!save.best[def.id]||me.finishT<save.best[def.id]){save.best[def.id]=me.finishT;r.newRecord=true;}}
   save.credits+=gainCr;persist();$('credits').textContent=save.credits;
   {const hum=r.cars.filter(c=>c.isPlayer||c.p2),fin=hum.filter(c=>c.state==='done'),pl=fin.map(c=>st.indexOf(c)),lp=Math.max(0,...hum.map(c=>c.laps.length));
-   missionProgress({kind:'race',finished:fin.length>0,place:pl.length?Math.min(...pl):null,laps:lp,jumps:lp*r.tr.zones.J.length,turbo:r.turboT||0,track:def.id,record:!!r.newRecord});}
+   missionProgress({kind:'race',finished:fin.length>0,place:pl.length?Math.min(...pl):null,laps:lp,jumps:lp*r.tr.zones.J.length,turbo:r.turboT||0,track:def.id,record:!!r.newRecord});
+   try{troRaceEnd(r,st,fin,pl,lp);}catch(e){}}
   $('mTitle').textContent=title;$('mTitle').className=bad?'bad':'';
   const rows=st.map((c,i)=>{const t=c.state==='done'?fmtT(c.finishT):c.left?'uscito':c.state==='out'?'course out':`giro ${Math.min(LAPS,Math.max(1,c.lap+1))}`;
     const bestLap=c.laps.length?Math.min(...c.laps):null;
@@ -3285,6 +3330,164 @@ function netStepRemote(c,dt,r){
   }
   if(c.state!=='out')posCar(c,tr);
 }
+
+// ---------- trofei (obiettivi permanenti) ----------
+if(!save.tro||typeof save.tro!=='object')save.tro={};
+if(!save.tro.got||typeof save.tro.got!=='object')save.tro.got={};
+if(!save.tro.n||typeof save.tro.n!=='object')save.tro.n={};
+if(!save.tro.f||typeof save.tro.f!=='object')save.tro.f={};
+if(!Array.isArray(save.tro.mt))save.tro.mt=[];
+if(!save.tt||typeof save.tt!=='object')save.tt={};
+const troN=k=>+save.tro.n[k]||0;
+function troCount(k,v){if(!(v>0))return;save.tro.n[k]=Math.round((troN(k)+v)*10)/10;}
+function troMount(id){const i=BYID[id];if(i&&i.cost&&!save.tro.mt.includes(id)){save.tro.mt.push(id);troCheck();}}
+const troWonIn=f=>{const l=TRACKS.filter(f);return [l.filter(t=>save.wins[t.id]).length,l.length];};
+const ttMedals=m=>TRACKS.filter(t=>save.tt[t.id]&&save.tt[t.id].m>=m).length;
+const TROPHIES=[
+ {id:'race1',n:'Primo giro di pista',d:'Completa la tua prima gara',rw:20,g:1,v:()=>troN('races')},
+ {id:'race25',n:'Pilota instancabile',d:'Completa 25 gare',rw:80,g:25,v:()=>troN('races')},
+ {id:'race100',n:'Veterano della corsia',d:'Completa 100 gare',rw:200,g:100,v:()=>troN('races')},
+ {id:'win1',n:'Prima vittoria',d:'Vinci una gara',rw:30,g:1,v:()=>Math.max(troN('wins'),Object.keys(save.wins).length?1:0)},
+ {id:'win10',n:'Campione in erba',d:'Vinci 10 gare',rw:100,g:10,v:()=>troN('wins')},
+ {id:'win50',n:'Re della pista',d:'Vinci 50 gare',rw:250,g:50,v:()=>troN('wins')},
+ {id:'easy',n:'Tutte le facili',d:'Vinci tutte le piste facili',rw:120,gf:()=>troWonIn(t=>t.lv==='Facile')},
+ {id:'medium',n:'Medie domate',d:'Vinci tutte le piste medie',rw:200,gf:()=>troWonIn(t=>/^Medio/.test(t.lv||''))},
+ {id:'hard',n:'Senza paura',d:'Vinci tutte le piste difficili',rw:350,gf:()=>troWonIn(t=>t.lv==='Difficile')},
+ {id:'noturbo',n:'Piede leggero',d:'Vinci una gara senza usare il turbo',rw:80,g:1,v:()=>save.tro.f.noturbo?1:0},
+ {id:'saver',n:'Pile di riserva',d:'Vinci con più di metà delle pile ancora cariche',rw:60,g:1,v:()=>save.tro.f.saver?1:0},
+ {id:'margin',n:'Fuga solitaria',d:'Vinci con almeno 3 secondi di vantaggio sul secondo',rw:60,g:1,v:()=>save.tro.f.margin?1:0},
+ {id:'laps',n:'Giramondo',d:'Completa 200 giri',rw:80,g:200,v:()=>troN('laps')},
+ {id:'jumps',n:'Grillo volante',d:'Supera 100 salti',rw:60,g:100,v:()=>troN('jumps')},
+ {id:'turbo',n:'Turbo a tutta',d:'Usa il turbo per 5 minuti in tutto',rw:60,g:300,v:()=>Math.floor(troN('turbo'))},
+ {id:'mount5',n:'Meccanico',d:'Monta 5 pezzi diversi',rw:40,g:5,v:()=>save.tro.mt.length},
+ {id:'mount20',n:'Mago del garage',d:'Monta 20 pezzi diversi',rw:150,g:20,v:()=>save.tro.mt.length},
+ {id:'cars3',n:'Collezione di auto',d:'Crea 3 auto tue nel garage',rw:40,g:3,v:()=>save.garage.list.filter(c=>c.kind==='custom').length},
+ {id:'duo',n:'Sfida in famiglia',d:'Finisci una gara a due giocatori',rw:40,g:1,v:()=>troN('duo')},
+ {id:'online',n:'Pilota del mondo',d:'Finisci una gara online',rw:50,g:1,v:()=>troN('online')},
+ {id:'mis10',n:'Missione compiuta',d:'Riscuoti 10 missioni giornaliere',rw:100,g:10,v:()=>troN('mis')},
+ {id:'tt1',n:'Contro il tempo',d:'Conquista una medaglia nella Sfida a tempo',rw:30,g:1,v:()=>ttMedals(1)},
+ {id:'ghost',n:'Batti il fantasma',d:'Nella Sfida a tempo arriva prima del tuo fantasma',rw:40,g:1,v:()=>save.tro.f.ghost?1:0},
+ {id:'tt5',n:'Cronometro d’oro',d:'Conquista 5 medaglie d’oro nella Sfida a tempo',rw:150,g:5,v:()=>ttMedals(3)},
+ {id:'ttall',n:'Tutto oro',d:'Medaglia d’oro nella Sfida a tempo su tutte le piste',rw:400,g:TRACKS.length,v:()=>ttMedals(3)}];
+function troProg(t){if(t.gf){const [a,b]=t.gf();return [a,b];}return [Math.min(t.g,t.v()),t.g];}
+const troQ=[];let troBusy=false;
+function troPopNext(){const el=$('troPop');if(troBusy||!troQ.length)return;troBusy=true;const t=troQ.shift();
+  el.innerHTML=`<span class="ti" aria-hidden="true">★</span><span class="tx"><small class="eyebrow">Trofeo sbloccato!</small><b>${esc(t.n)}</b><span>+${t.rw} crediti</span></span>`;
+  el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';beep(988,.12);setTimeout(()=>beep(1318,.18),130);
+  setTimeout(()=>{el.hidden=true;troBusy=false;setTimeout(troPopNext,250);},3200);}
+// controlla tutti i trofei: quelli raggiunti si sbloccano subito e danno il premio in crediti
+function troCheck(){const nw=[];
+  for(const t of TROPHIES){if(save.tro.got[t.id])continue;const [a,b]=troProg(t);if(b>0&&a>=b){save.tro.got[t.id]=Date.now();save.credits+=t.rw;nw.push(t);}}
+  if(nw.length){persist();const c=$('credits');if(c)c.textContent=save.credits;troQ.push(...nw);setTimeout(troPopNext,race?1500:300);if(curScr==='tracks')renderTrophies();}
+  return nw;}
+function renderTrophies(){const el=$('trophies');if(!el)return;
+  const got=TROPHIES.filter(t=>save.tro.got[t.id]).length,open=!!save.troOpen;
+  const card=t=>{const g=!!save.tro.got[t.id],[a,b]=troProg(t);
+    return `<div class="tro ${g?'got':''}"><span class="ti" aria-hidden="true">${g?'★':'☆'}</span><span class="tn">${esc(t.n)}</span><span class="trw">+${t.rw} cr</span><span class="td">${esc(t.d)}</span>${g?'':`<span class="tb"><i style="width:${Math.min(100,a/b*100)}%"></i></span><span class="tp">${a}/${b}</span>`}</div>`;};
+  // chiuso: i tre trofei più vicini al traguardo
+  const list=open?TROPHIES:TROPHIES.filter(t=>!save.tro.got[t.id]).map(t=>{const [a,b]=troProg(t);return [t,a/b];}).sort((x,y)=>y[1]-x[1]).slice(0,3).map(x=>x[0]);
+  el.innerHTML=`<div class="thead"><h3>Trofei</h3><span class="tcount">${got}/${TROPHIES.length}</span><span class="tbar"><i style="width:${got/TROPHIES.length*100}%"></i></span><button class="ttog" id="troTog" aria-expanded="${open}">${open?'Nascondi':'Mostra tutti'}</button></div>
+    ${!open&&list.length?'<div class="eyebrow" style="margin-bottom:8px">Prossimi trofei</div>':''}<div class="tgrid">${list.map(card).join('')}</div>`;}
+$('trophies').addEventListener('click',e=>{if(e.target.closest('#troTog')){save.troOpen=!save.troOpen;persist();renderTrophies();}});
+function troRaceEnd(r,st,fin,pl,lp){
+  const me=r.cars[0],won=pl.length&&Math.min(...pl)===0;
+  if(fin.length){troCount('races',1);if(r.duo)troCount('duo',1);if(r.online)troCount('online',1);}
+  if(won)troCount('wins',1);
+  troCount('laps',lp);troCount('jumps',lp*r.tr.zones.J.length);troCount('turbo',r.turboT||0);
+  if(won&&!r.duo&&!r.online&&me.state==='done'){
+    if(!(r.turboT>0))save.tro.f.noturbo=1;
+    if(me.emax&&me.energy/me.emax>.5)save.tro.f.saver=1;
+    const second=st[1];if(!second||second.state!=='done'||second.finishT-me.finishT>=3)save.tro.f.margin=1;}
+  for(const c of r.cars)if(c.isPlayer)troAddEq(c.eq);
+  persist();setTimeout(troCheck,900);}
+function troAddEq(eq){for(const k in eq||{}){const i=BYID[eq[k]];if(i&&i.cost&&!save.tro.mt.includes(i.id))save.tro.mt.push(i.id);}}
+// pezzi già montati nelle auto del garage (salvataggi precedenti)
+try{troAddEq(save.eq);for(const c of save.garage.list)troAddEq(c.eq);}catch(e){}
+
+// ---------- sfida a tempo ----------
+const GH_HZ=15,GKEY=SKEY+'-ghost',TT_REF={},MED=['','Bronzo','Argento','Oro'],MEDC=['','b','s','g'],MED_RW=[0,15,25,40];
+const ghostAll=()=>{try{return JSON.parse(localStorage.getItem(GKEY)||'{}')||{};}catch(e){return {};}};
+function ghostSave(id,g){const a=ghostAll();a[id]=g;try{localStorage.setItem(GKEY,JSON.stringify(a));}catch(e){}}
+// tempi delle medaglie: l'avversario più forte della pista corre da solo (con un caso fisso, sempre uguale); oro = un filo sotto il suo tempo
+const TT_RK=SKEY+'-ttref';
+function ttRef(ti){if(TT_REF[ti])return TT_REF[ti];const def=TRACKS[ti],tr=trackFor(ti,5),R0=Math.random;let base=null;
+  // il calcolo si fa una volta sola e si ricorda (cambia solo se cambiano pista o avversari)
+  const ck='f2|'+def.id+'|'+Math.round(tr.L)+'|'+JSON.stringify(def.ai.map(a=>[a.eq,a.caution]));let cache={};try{cache=JSON.parse(localStorage.getItem(TT_RK)||'{}')||{};}catch(e){}
+  if(cache[def.id]&&cache[def.id].k===ck&&Array.isArray(cache[def.id].r))return TT_REF[ti]=cache[def.id].r;
+  try{for(let k=0;k<3&&base==null;k++){Math.random=rng(4242+ti*31+k);
+    const cars=def.ai.map((a,i)=>makeCar({...a,caution:(a.caution||.8)*(1-k*.08),isPlayer:false,lane:i+1}));
+    cars.forEach(c=>{c.s=tr.L-26;c.off=laneO(c.lane,NLof(tr));posCar(c,tr);c.estT=tr.L*LAPS/c.st.top;c.emax=c.st.cap+BATT_IDLE*c.st.drain*c.estT+.12*c.estT;c.energy=c.emax;});
+    const r={ti,def,tr,cars,t:0,clock:0,finished:0,duo:false},H=1/120;
+    for(let n=0;n<120*600&&cars.some(c=>c.state==='run');n++){r.t+=H;r.clock+=H;for(const c of cars)stepCar(c,H,r);}
+    const ts=cars.filter(c=>c.state==='done').map(c=>c.finishT);if(ts.length)base=Math.min(...ts);}}
+  catch(e){}finally{Math.random=R0;}
+  if(base==null)base=tr.L*LAPS/BASE_V*1.05;
+  const q=x=>Math.ceil(x*10)/10;TT_REF[ti]=[0,q(base*1.1),q(base*1.03),q(base*.97)];
+  cache[def.id]={k:ck,r:TT_REF[ti]};try{localStorage.setItem(TT_RK,JSON.stringify(cache));}catch(e){}return TT_REF[ti];}
+const ttMedalFor=(ti,t)=>{const R=ttRef(ti);return t<=R[3]?3:t<=R[2]?2:t<=R[1]?1:0;};
+function ttCardRow(i){const id=TRACKS[i].id,R=ttRef(i),me=save.tt[id]||{};
+  return `<div class="ttrow"><span class="ttl">Sfida a tempo</span>${[3,2,1].map(m=>`<span class="md ${MEDC[m]} ${me.m>=m?'on':''}" title="${MED[m]}">${fmtT(R[m])}</span>`).join('')}${me.t?`<span class="md ttbest">Il tuo tempo <b>${fmtT(me.t)}</b></span>`:''}</div>`;}
+$('tracks').addEventListener('click',e=>{const b=e.target.closest('[data-tt]');if(b)ttStart(+b.dataset.tt);});
+function ttStart(ti){if(!unlocked(ti))return;startRace(ti,null,{tt:true});}
+function ttBegin(r){const lab=$('hPos').previousElementSibling;if(lab)lab.textContent=r.tt?'Fantasma':'Posizione';$('hPos').style.color='';
+  if(!r.tt)return;r.ttRec=[];const g=ghostAll()[r.def.id];
+  if(g&&Array.isArray(g.d)&&g.d.length>=4&&g.L===Math.round(r.tr.L)){
+    const car=makeCar({name:'Fantasma',color:'#cfe8ff',livery:liveryFor(save.livery,save.color),look:playerLook(),eq:save.eq,isPlayer:false,lane:2});
+    r.ghost={t:g.t,d:g.d,car,vis:true};ttGhostPos(r);}}
+function ttStep(r){if(r.t<0)return;const me=r.cars[0];if(me.state!=='run')return;const L=r.tr.L;
+  while(r.clock>=r.ttRec.length/2/GH_HZ)r.ttRec.push(Math.round(me.lap*L+me.s),Math.round(me.off*10)/10);}
+function ttGhostPos(r){const G=r.ghost;if(!G)return;const n=G.d.length/2,f=Math.max(0,r.clock)*GH_HZ,i=Math.floor(f);
+  if(i>=n-1){G.vis=false;return;}G.vis=true;const a=f-i,p=G.d[2*i]+(G.d[2*i+2]-G.d[2*i])*a,o=G.d[2*i+1]+(G.d[2*i+3]-G.d[2*i+1])*a,L=r.tr.L;
+  G.s=((p%L)+L)%L;const [x,y,h]=r.tr.pt(G.s,o);const c=G.car;c.x=x;c.y=y;c.h=h;c.s=G.s;}
+// distacco dal fantasma: quando il fantasma era nello stesso punto della pista
+function ttGhostTimeAt(G,p){const d=G.d,n=d.length/2;if(p<=d[0])return 0;if(p>=d[2*n-2])return null;let lo=0,hi=n-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(d[2*m]<=p)lo=m;else hi=m;}const a=(p-d[2*lo])/Math.max(1e-6,d[2*hi]-d[2*lo]);return (lo+a)/GH_HZ;}
+function ttHud(r){ttGhostPos(r);const me=r.cars[0],G=r.ghost;let txt='—';
+  if(me.state==='out')txt='Fuori';
+  else if(G&&r.t>=0){if(me.state==='done'){const dl=me.finishT-G.t;txt=(dl<0?'−':'+')+Math.abs(dl).toFixed(2)+' s';}
+    else{const tg=ttGhostTimeAt(G,me.lap*r.tr.L+me.s);if(tg!=null){const dl=r.clock-tg;txt=(dl<0?'−':'+')+Math.abs(dl).toFixed(2)+' s';}}}
+  $('hPos').textContent=txt;$('hPos').style.color=txt[0]==='−'?'var(--ok)':txt[0]==='+'?'#ff8b74':'';}
+function ttDrawGhost(ctx,r,mode,v){const G=r.ghost;if(!G||!G.vis)return;const c=G.car,sc=mode==='full'?Math.max(1,24/(34*v.sc)):1;
+  ctx.save();ctx.globalAlpha=.42;ctx.translate(c.x,c.y);ctx.rotate(c.h);ctx.scale(sc,sc);drawCarFast(ctx,c);ctx.restore();
+  if(mode==='full'){ctx.save();ctx.globalAlpha=.8;ctx.translate(c.x,c.y);ctx.rotate(v.rot?-Math.PI/2:0);ctx.translate(0,-28*sc);ctx.font='700 12px "Chakra Petch", monospace';ctx.textAlign='center';ctx.fillStyle='#cfe8ff';ctx.fillText(T('Fantasma'),0,0);ctx.restore();}
+  ctx.globalAlpha=1;}
+function ttGhost3D(r){if(!g3||!g3.scene)return;
+  if(g3.ttFor!==r){if(g3.ttG){g3.scene.remove(g3.ttG.g);g3.ttG.g.traverse(m=>{if(m.isMesh&&m.userData.ttClone)(Array.isArray(m.material)?m.material:[m.material]).forEach(x=>x.dispose());});}g3.ttG=null;g3.ttFor=r;
+    if(r.tt&&r.ghost){try{const o=carMesh(r.ghost.car,true);
+      o.g.traverse(m=>{if(!m.isMesh)return;if(m.userData.inner){m.visible=false;return;}m.castShadow=false;const mk=x=>{const y=x.clone();y.transparent=true;y.opacity=.35;y.depthWrite=false;return y;};
+        m.material=Array.isArray(m.material)?m.material.map(mk):mk(m.material);m.userData.ttClone=true;});
+      o.flame.visible=false;g3.scene.add(o.g);g3.ttG=o;}catch(e){g3.ttG=null;}}}
+  const o=g3.ttG,G=r.ghost;if(!o||!G)return;o.g.visible=!!G.vis;if(!G.vis)return;const tr=r.tr,c=G.car;
+  const y=trackHeight(tr,G.s),pitch=Math.atan2(trackHeight(tr,(G.s+6)%tr.L)-trackHeight(tr,(G.s-6+tr.L)%tr.L),12);
+  o.g.position.set(c.x,y+.75,c.y);o.g.rotation.set(0,-c.h,pitch);}
+function ttResults(r){
+  const me=r.cars[0],def=r.def,ti=r.ti,id=def.id,R=ttRef(ti),prev=save.tt[id]||{},done=me.state==='done',t=done?me.finishT:null;
+  const m=done?ttMedalFor(ti,t):0,old=prev.m||0;let gain=0;for(let k=old+1;k<=m;k++)gain+=MED_RW[k];
+  const rec=done&&(!prev.t||t<prev.t),beatGhost=done&&r.ghost&&t<r.ghost.t;
+  if(done){save.tt[id]={t:rec?Math.round(t*1000)/1000:prev.t,m:Math.max(old,m)};
+    if(rec)ghostSave(id,{t:Math.round(t*1000)/1000,L:Math.round(r.tr.L),d:r.ttRec});if(beatGhost)save.tro.f.ghost=1;}
+  save.credits+=gain;troCount('tt',done?1:0);
+  {const lp=me.laps.length;troCount('laps',lp);troCount('jumps',lp*r.tr.zones.J.length);troCount('turbo',r.turboT||0);troAddEq(me.eq);}
+  persist();$('credits').textContent=save.credits;
+  missionProgress({kind:'race',finished:done,place:null,laps:me.laps.length,jumps:me.laps.length*r.tr.zones.J.length,turbo:r.turboT||0,track:id,record:false});
+  setTimeout(troCheck,900);
+  $('mTitle').textContent=!done?'Course out!':m===3?'Medaglia d’oro!':m===2?'Medaglia d’argento!':m===1?'Medaglia di bronzo!':'Nessuna medaglia';
+  $('mTitle').className=done?'':'bad';
+  const best=save.tt[id]&&save.tt[id].t,bl=me.laps.length?Math.min(...me.laps):null;
+  const row=(a,b,cls='')=>`<tr class="${cls}"><td>${a}</td><td class="t">${b}</td></tr>`;
+  $('mBody').innerHTML=`${!done?'<p style="margin:0 0 10px;color:var(--muted)">Troppo veloce in curva o sul salto. Prova rulli migliori, una zavorra o rilascia il turbo prima.</p>':''}
+    ${rec&&prev.t?'<p style="margin:0;font-weight:700;color:var(--yellow)">Nuovo record! Il fantasma ora corre con questo tempo.</p>':''}
+    ${rec&&!prev.t?'<p style="margin:0;font-weight:700">Primo tempo registrato: la prossima volta corri contro il tuo fantasma.</p>':''}
+    <table class="res ttres">${done?row('Il tuo tempo',fmtT(t),'me'):''}${bl!=null?row('Giro migliore',fmtT(bl)):''}${best?row('Record',fmtT(best)):''}
+    ${done&&r.ghost?row('Fantasma',(t<r.ghost.t?'−':'+')+Math.abs(t-r.ghost.t).toFixed(2)+' s'):''}
+    ${[3,2,1].map(k=>row(`<span class="medal ${MEDC[k]}"></span>${MED[k]}`,fmtT(R[k]),done&&t<=R[k]?'me':'')).join('')}</table>
+    ${gain?`<p class="gain" style="margin:12px 0 0">+${gain} crediti</p>`:'<p class="hint" style="margin:8px 0 0">Ogni medaglia dà crediti solo la prima volta che la conquisti.</p>'}`;
+  $('mBtns').innerHTML=`<button class="cta tt" id="bTT">Riprova</button><button class="cta" id="bRace">Gara</button><button class="ghost" id="bTracks">Piste</button>`;
+  $('modal').hidden=false;
+  $('bTT').onclick=()=>ttStart(ti);$('bRace').onclick=()=>startRace(ti);$('bTracks').onclick=()=>{hideModal();show('tracks');};
+  $('bTT').focus();}
+setTimeout(()=>{try{troCheck();}catch(e){}},1200);
+window.__TCdesign={TROPHIES,troCheck,ttRef,ttStart,ttMedalFor,ghostAll,GKEY,get race(){return race;}};
 
 // ---------- avvio ----------
 $('carName').value=save.name;
