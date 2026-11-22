@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="bb56acb2fc";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="780bcf7183";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -3364,8 +3364,9 @@ function build3D(tr){
    const bc=document.createElement('canvas');bc.width=1024;bc.height=128;const bx=bc.getContext('2d');bx.fillStyle='#14161c';bx.fillRect(0,0,1024,128);
    for(let i=0;i<64;i++)for(let j=0;j<2;j++){bx.fillStyle=(i+j)%2?'#ffffff':'#14161c';bx.fillRect(i*16,j*16,16,16);bx.fillRect(i*16,96+j*16,16,16);}
    bx.fillStyle='#ffd23f';bx.font='900 56px Bungee, Impact, Arial Black, sans-serif';bx.textAlign='center';bx.textBaseline='middle';bx.fillText('TURBO CORSIE',512,66);
-   const bt=new T.CanvasTexture(bc);const beam=new T.Mesh(new T.BoxGeometry(5,16,W*2+7),[red,red,red,red,new T.MeshStandardMaterial({map:bt,roughness:.6}),new T.MeshStandardMaterial({map:bt,roughness:.6})]);
-   beam.geometry.rotateY(Math.PI/2);beam.position.set(0,62,0);beam.castShadow=true;G.add(beam);}
+   const bt=new T.CanvasTexture(bc);// la traversa va da un palo all'altro (asse z), con lo striscione sulle due facce rivolte alla pista
+   const bm=new T.MeshStandardMaterial({map:bt,roughness:.6});const beam=new T.Mesh(new T.BoxGeometry(5,16,W*2+7),[bm,bm,red,red,red,red]);
+   beam.position.set(0,62,0);beam.castShadow=true;G.add(beam);}
   // numeri delle corsie dipinti dietro il traguardo
   {for(let l=0;l<nl;l++){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#ffffff';x.font='700 52px Arial Black, Arial';x.textAlign='center';x.textBaseline='middle';x.fillText(String(l+1),32,34);
     const m=new T.Mesh(new T.PlaneGeometry(16,16),new T.MeshBasicMaterial({map:new T.CanvasTexture(c),transparent:true,depthWrite:false}));const q=tr.L-16,[px,py,h]=tr.pt(q,laneO(l,nl));
