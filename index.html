@@ -296,8 +296,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 :root{--hdr:52px;--navh:62px}
 html,body{overscroll-behavior:none}
 body{-webkit-tap-highlight-color:transparent}
-button,select,input,canvas{touch-action:manipulation}
-html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,select,input,canvas{touch-action:pan-x pan-y}
+html,body{touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .app{max-width:520px;padding-block:8px calc(var(--navh) + 18px + env(safe-area-inset-bottom,0px))}
@@ -2057,6 +2057,10 @@ function champAfterRace(r,st){const ch=save.champ;if(!ch||r.mode!=='champ')retur
   document.addEventListener('selectstart',e=>{if(!isField(e.target))e.preventDefault();});
   document.addEventListener('dblclick',e=>{if(!isField(e.target))e.preventDefault();},{passive:false});
   for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+  // niente zoom con due dita sulla pagina (iPhone e iPad ignorano user-scalable=no); il garage 3D gestisce da sé il pizzico
+  document.addEventListener('touchmove',e=>{if(e.touches.length>1&&!(e.target.closest&&e.target.closest('#gv')))e.preventDefault();},{passive:false});
+  document.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault();},{passive:false});
+  for(const k of ['keydown'])document.addEventListener(k,e=>{if((e.ctrlKey||e.metaKey)&&['+','-','=','0'].includes(e.key))e.preventDefault();});
 })();
 // ---------- navigazione ----------
 let curScr='garage',rotateNeed=false;
