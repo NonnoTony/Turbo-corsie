@@ -1,3 +1,4 @@
 __pycache__/
 *.png.tmp
 anteprima_*.png
+.claude/
