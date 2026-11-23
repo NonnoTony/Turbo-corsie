@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="description" content="Turbo Corsie: corse di mini 4WD su piste giocattolo. Modifica e colora le tue auto nel garage 3D, gioca in due sullo stesso telefono o online con chi vuoi.">
 <meta name="theme-color" content="#1b4a3a">
-<script>(function(){var V="0cde6037d1";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
+<script>(function(){var V="e8815d3de6";function chk(){try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){if(!j||!j.v||j.v===V)return;var k="tc-upd-"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}var u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()})})();</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -261,6 +261,8 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance
 .netstatus{font-family:var(--f-data);font-size:13px;color:var(--muted)}
 .netstatus.bad{color:#ff8b74}
 .duopanel{padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-bottom:16px}
+.wk{margin:6px 0 12px}.wk h4{margin:0 0 4px;font-size:14px}.wk ol{margin:0;padding-inline-start:22px;font-size:14px}.wk li{display:flex;justify-content:space-between;gap:10px}.wk li.me{color:var(--yellow);font-weight:700}.wk .t{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.perft{font-size:13px;width:100%;table-layout:fixed}.perft td{padding:4px 3px}.perft td:first-child{width:30%}
 .duo2{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;flex:1 1 280px;min-width:0}
 .duo2 select{background:var(--panel-2);border:2px solid var(--line);border-radius:4px;color:var(--ink);font:600 15px var(--f-body);padding:7px 10px;max-width:100%}
 .duo2 .hint{flex-basis:100%}
@@ -579,7 +581,7 @@ body.land .race.duo #turboBtn2{grid-column:3;grid-row:2;align-self:stretch;min-h
 .turbo-btn.p2.on{background:linear-gradient(180deg,#a9c0ff,#6b93ff 50%,#3b6fe0);box-shadow:0 2px 0 #0c1a3a,0 0 26px 6px rgba(80,140,255,.6)}
 
 /* risultati di fine gara */
-#modal .sheet{width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;gap:12px;padding:16px;border:3px solid #1a1a12;border-radius:18px;box-shadow:0 0 0 3px var(--yellow),0 18px 50px rgba(0,0,0,.6);
+#modal .sheet{box-sizing:border-box;width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;gap:12px;padding:16px;border:3px solid #1a1a12;border-radius:18px;box-shadow:0 0 0 3px var(--yellow),0 18px 50px rgba(0,0,0,.6);
   background:radial-gradient(rgba(255,255,255,.05) 1.2px,transparent 1.6px) 0 0/10px 10px,var(--panel)}
 #mBody{display:contents}
 #modal .rx-a{order:0;display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -589,6 +591,8 @@ body:not(.land) #modal .rx-b{order:3}
 body:not(.land) #mBtns{order:4}
 #mTitle{order:1;position:relative;z-index:2;align-self:center;text-align:center;margin-top:-34px;max-width:100%;font-size:28px;line-height:1.1;color:#1a1a12;background:var(--yellow);padding:7px 18px 5px;border:3px solid #1a1a12;border-radius:6px;transform:rotate(-2deg) skewX(-6deg);box-shadow:5px 5px 0 #1a1a12;animation:titleIn .5s cubic-bezier(.2,1.5,.4,1) .15s both}
 #mTitle.bad{color:var(--ink);background:var(--red)}
+/* senza podio (sfida a tempo, prove): il titolo va in cima e non copre il testo */
+#modal .sheet:not(:has(.rx-hero)) #mTitle{order:-1;margin-top:2px}
 @keyframes titleIn{from{opacity:0;transform:scale(2.2) rotate(-8deg)}}
 #modal .rx-b{order:2;display:flex;flex-direction:column;gap:10px;min-width:0}
 #mBtns{order:3;justify-content:center}
@@ -739,6 +743,9 @@ body.land #mBtns{grid-column:2;grid-row:3}
         <div id="frReq"></div>
         <ul class="players" id="frList"></ul>
         <p class="hint" id="frStatus"></p>
+        <h3>Classifica della settimana</h3>
+        <p class="hint">Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.</p>
+        <div id="frWeek"></div>
       </div>
       <div class="panel" id="onJoin">
         <div class="eyebrow">Gara online</div>
@@ -772,6 +779,7 @@ body.land #mBtns{grid-column:2;grid-row:3}
       <div class="panel setp"><h3>Lingua</h3><div class="views seg langs" id="setLang"><button data-v="it">Italiano</button><button data-v="en">English</button><button data-v="de">Deutsch</button><button data-v="es">Español</button><button data-v="ja">日本語</button><button data-v="ar">العربية</button><button data-v="ru">Русский</button></div></div>
       <div class="panel setp"><h3>Qualità grafica</h3><div class="views seg" id="setGfx"><button data-v="alta">Alta</button><button data-v="media">Media</button><button data-v="leggera">Leggera</button></div>
         <p class="hint">Alta: ombre e massima nitidezza. Media: senza ombre, più fluida. Leggera: per i dispositivi meno potenti.</p></div>
+      <div class="panel setp"><h3>Prova prestazioni</h3><p class="hint">Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.</p><button class="cta alt" id="perfBtn" type="button">Avvia la prova</button></div>
       <div class="panel setp"><h3>Stile grafico</h3><div class="views seg" id="setStyle"><button data-v="real">Realistico</button><button data-v="anime">Anime</button></div>
         <p class="hint">Anime: colori piatti con ombre nette, contorni neri e linee di velocità quando usi il turbo, come in un cartone animato.</p></div>
       <div class="panel setp"><h3>Volume</h3><div class="volrow"><input type="range" id="setVol" min="0" max="100" step="5" aria-label="Volume"><span class="volval" id="volVal">80%</span></div></div>
@@ -1231,6 +1239,13 @@ Object.assign(I18N.es,{"Riconnetti":"Reconectar","Controllo…":"Comprobando…"
 Object.assign(I18N.ja,{"Riconnetti":"再接続","Controllo…":"確認中…","Riconnessione agli amici…":"フレンドに再接続中…"});
 Object.assign(I18N.ar,{"Riconnetti":"إعادة الاتصال","Controllo…":"جارٍ التحقق…","Riconnessione agli amici…":"جارٍ إعادة الاتصال بالأصدقاء…"});
 Object.assign(I18N.ru,{"Riconnetti":"Переподключить","Controllo…":"Проверка…","Riconnessione agli amici…":"Переподключение к друзьям…"});
+Object.assign(EN,{"Classifica della settimana": "Weekly leaderboard", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "Time challenge: your best times and your friends' since Monday. They update when you and your friends have the game open.", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "No times yet this week: run a time challenge.", "Prova prestazioni": "Performance test", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "The game races by itself for about 30 seconds (in 3D and Chase) and measures how smooth it is on this device.", "Avvia la prova": "Start the test", "Prova prestazioni: non toccare niente per 30 secondi": "Performance test: don't touch anything for 30 seconds", "Vista": "View", "Fluidità": "Smoothness", "Più lento": "Slowest", "Scatti": "Stutters", "Chiudi": "Close", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60 fps is perfect, above 45 is fine. “Stutters” counts frames over 50 ms. Take a screenshot of this screen and send it in the chat."});
+Object.assign(I18N.de,{"Classifica della settimana": "Wochenrangliste", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "Zeitchallenge: deine Bestzeiten und die deiner Freunde seit Montag. Sie werden aktualisiert, wenn du und deine Freunde das Spiel geöffnet habt.", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "Diese Woche noch keine Zeiten: fahr eine Zeitchallenge.", "Prova prestazioni": "Leistungstest", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "Das Spiel fährt etwa 30 Sekunden allein (in 3D und Verfolgung) und misst, wie flüssig es auf diesem Gerät läuft.", "Avvia la prova": "Test starten", "Prova prestazioni: non toccare niente per 30 secondi": "Leistungstest: 30 Sekunden nichts berühren", "Vista": "Ansicht", "Fluidità": "Flüssigkeit", "Più lento": "Langsamstes", "Scatti": "Ruckler", "Chiudi": "Schließen", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60 fps ist perfekt, über 45 ist gut. „Ruckler“ zählt Bilder über 50 ms. Mach ein Foto von diesem Bildschirm und schick es in den Chat."});
+Object.assign(I18N.es,{"Classifica della settimana": "Clasificación semanal", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "Desafío contrarreloj: tus mejores tiempos y los de tus amigos desde el lunes. Se actualizan cuando tú y tus amigos tenéis el juego abierto.", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "Aún no hay tiempos esta semana: corre un desafío contrarreloj.", "Prova prestazioni": "Prueba de rendimiento", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "El juego corre solo durante unos 30 segundos (en 3D y Persecución) y mide lo fluido que va en este dispositivo.", "Avvia la prova": "Iniciar la prueba", "Prova prestazioni: non toccare niente per 30 secondi": "Prueba de rendimiento: no toques nada durante 30 segundos", "Vista": "Vista", "Fluidità": "Fluidez", "Più lento": "Más lento", "Scatti": "Tirones", "Chiudi": "Cerrar", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60 fps es perfecto, por encima de 45 está bien. «Tirones» cuenta los fotogramas de más de 50 ms. Haz una captura de esta pantalla y envíala al chat."});
+Object.assign(I18N.ja,{"Classifica della settimana": "今週のランキング", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "タイムチャレンジ：月曜日からのあなたとフレンドのベストタイム。あなたとフレンドがゲームを開いているときに更新されます。", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "今週のタイムはまだありません。タイムチャレンジを走ろう。", "Prova prestazioni": "パフォーマンステスト", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "ゲームが約30秒間（3Dと追跡）自動で走り、この端末でのなめらかさを測ります。", "Avvia la prova": "テスト開始", "Prova prestazioni: non toccare niente per 30 secondi": "パフォーマンステスト：30秒間何も触らないでください", "Vista": "ビュー", "Fluidità": "なめらかさ", "Più lento": "最も遅い", "Scatti": "カクつき", "Chiudi": "閉じる", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60fpsが理想、45以上なら十分です。「カクつき」は50ms超のフレーム数です。この画面を撮ってチャットに送ってください。"});
+Object.assign(I18N.ar,{"Classifica della settimana": "ترتيب الأسبوع", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "تحدي الوقت: أفضل أوقاتك وأوقات أصدقائك منذ الاثنين. تتحدث عندما تكون اللعبة مفتوحة عندك وعند أصدقائك.", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "لا توجد أوقات هذا الأسبوع بعد: خض تحدي الوقت.", "Prova prestazioni": "اختبار الأداء", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "تتسابق اللعبة وحدها نحو 30 ثانية (ثلاثي الأبعاد والمطاردة) وتقيس مدى سلاستها على هذا الجهاز.", "Avvia la prova": "ابدأ الاختبار", "Prova prestazioni: non toccare niente per 30 secondi": "اختبار الأداء: لا تلمس شيئًا لمدة 30 ثانية", "Vista": "العرض", "Fluidità": "السلاسة", "Più lento": "الأبطأ", "Scatti": "تقطعات", "Chiudi": "إغلاق", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60 إطارًا في الثانية ممتاز، وفوق 45 جيد. «التقطعات» تعدّ الإطارات الأطول من 50 مللي ثانية. التقط صورة لهذه الشاشة وأرسلها في المحادثة."});
+Object.assign(I18N.ru,{"Classifica della settimana": "Рейтинг недели", "Sfida a tempo: i migliori tempi tuoi e dei tuoi amici da lunedì. Si aggiornano quando tu e i tuoi amici avete il gioco aperto.": "Гонка на время: лучшие результаты твои и друзей с понедельника. Обновляются, когда у тебя и друзей открыта игра.", "Ancora nessun tempo questa settimana: corri una Sfida a tempo.": "На этой неделе ещё нет результатов: пройди гонку на время.", "Prova prestazioni": "Тест производительности", "Il gioco corre da solo per circa 30 secondi (in 3D e in Inseguimento) e misura quanto è fluido su questo dispositivo.": "Игра около 30 секунд едет сама (в 3D и в погоне) и измеряет плавность на этом устройстве.", "Avvia la prova": "Начать тест", "Prova prestazioni: non toccare niente per 30 secondi": "Тест производительности: ничего не трогай 30 секунд", "Vista": "Вид", "Fluidità": "Плавность", "Più lento": "Самый медленный", "Scatti": "Рывки", "Chiudi": "Закрыть", "60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.": "60 fps — идеально, выше 45 — хорошо. «Рывки» — кадры дольше 50 мс. Сделай снимок этого экрана и отправь в чат."});
+RX.push([/^Classifica della settimana con gli amici: (\d+)° su (\d+)$/,{"en":"Weekly leaderboard with friends: $1 of $2","de":"Wochenrangliste mit Freunden: Platz $1 von $2","es":"Clasificación semanal con amigos: $1.º de $2","ja":"フレンドとの今週のランキング：$2人中$1位","ar":"ترتيب الأسبوع مع الأصدقاء: $1 من $2","ru":"Рейтинг недели с друзьями: $1 из $2"}]);
 Object.assign(EN,{"TU":"YOU"});Object.assign(I18N.de,{"TU":"DU"});Object.assign(I18N.es,{"TU":"TÚ"});Object.assign(I18N.ja,{"TU":"キミ"});Object.assign(I18N.ar,{"TU":"أنت"});Object.assign(I18N.ru,{"TU":"ТЫ"});
 Object.assign(EN,{"SCATTO PERFETTO!":"PERFECT START!","PARTENZA ANTICIPATA":"JUMP START","SCIA":"DRAFT"});
 Object.assign(I18N.de,{"SCATTO PERFETTO!":"PERFEKTER START!","PARTENZA ANTICIPATA":"FRÜHSTART","SCIA":"WINDSCHATTEN"});
@@ -2112,6 +2127,7 @@ function renderSettings(){
   $('setVol').value=Math.round((save.vol??.8)*100);$('volVal').textContent=Math.round((save.vol??.8)*100)+'%';
 }
 $('setLang').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;setLang(b.dataset.v);renderSettings();});
+$('perfBtn').onclick=perfTest;
 $('setGfx').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.gfx=b.dataset.v;persist();applyGfx();renderSettings();});
 $('setStyle').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.style=b.dataset.v;persist();applyStyle();renderSettings();});
 $('setOrient').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;save.orient=b.dataset.v;persist();updateOrientation();lockPortrait();renderSettings();});
@@ -2130,6 +2146,27 @@ $('navGarage').onclick=()=>show('garage');$('navTracks').onclick=()=>show('track
 $('navOnline').onclick=()=>show('online');$('navSettings').onclick=()=>show('settings');
 // ritiro: al primo tocco chiede conferma per 2,5 s (come Elimina nel garage); a metà campionato lo annulla
 function champLive(){return !!(race&&race.mode==='champ'&&save.champ&&!race.resDone);}
+// prova prestazioni: il gioco corre da solo 12 s in 3D e 12 s in Inseguimento e misura i fotogrammi
+const pt={on:false,res:[]};
+function perfTest(){if(pt.on)return;pt.on=true;pt.res=[];pt.prev=save.view;toast('Prova prestazioni: non toccare niente per 30 secondi');ptRun(['3d','follow'],0);}
+function ptRun(views,k){
+  if(k>=views.length){save.view=pt.prev;pt.on=false;show('settings');ptShow();return;}
+  save.view=views[k];startRace(Math.min(3,TRACKS.length-1));const f=[];let last=0,t0=0;
+  const step=now=>{if(!pt.on)return;if(!race||$('scrRace').hidden){pt.on=false;save.view=pt.prev;return;}
+    if(race.t>=0){if(t0)f.push(now-last);else t0=now;}last=now;
+    if(t0&&now-t0>12000){const n=Math.max(1,f.length),avg=f.reduce((a,b)=>a+b,0)/n,srt=[...f].sort((a,b)=>a-b);
+      const g=curMode()==='3d'&&g3&&g3.renderer;pt.res.push({v:views[k],fps:Math.round(1000/avg),p95:Math.round(srt[Math.floor(n*.95)]||0),slow:f.filter(x=>x>50).length,
+        q:g?`nitidezza ${g.getPixelRatio().toFixed(1)}${g.shadowMap.enabled?', ombre':', senza ombre'}`:`nitidezza ${(view&&view.dpr||1).toFixed(1)}`});
+      hideModal();ptRun(views,k+1);return;}
+    requestAnimationFrame(step);};
+  requestAnimationFrame(step);}
+function ptShow(){const ua=navigator.userAgent,dev=/iPhone/.test(ua)?'iPhone':/iPad|Macintosh.*Mobile/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?'iPad':/Android/.test(ua)?'Android':'Computer';
+  const rows=pt.res.map(r=>`<tr><td>${r.v==='3d'?'3D':'Inseguimento'}</td><td class="t">${r.fps} fps</td><td class="t">${r.p95} ms</td><td class="t">${r.slow}</td></tr>`).join('');
+  $('mTitle').textContent='Prova prestazioni';$('mTitle').className='';
+  $('mBody').innerHTML=`<table class="res perft"><tr><td class="eyebrow">Vista</td><td class="eyebrow t">Fluidità</td><td class="eyebrow t">Più lento</td><td class="eyebrow t">Scatti</td></tr>${rows}</table>
+    <p class="hint" style="margin:10px 0 0">${dev} · schermo ${screen.width}×${screen.height} · grafica ${save.gfx||'alta'} · ${pt.res.map(r=>r.q).join(' / ')}</p>
+    <p style="margin:10px 0 0">60 fps è perfetto, sopra 45 va bene. «Scatti» conta i fotogrammi oltre 50 ms. Fai una foto a questa schermata e mandala nella chat.</p>`;
+  $('mBtns').innerHTML='<button class="cta" id="bPerfOk">Chiudi</button>';$('modal').hidden=false;$('bPerfOk').onclick=hideModal;}
 function doQuit(){const r=race,on=r&&r.online;if(on)netSendRace(true);
   if(champLive()){save.champ=null;persist();toast('Campionato annullato');}
   hideModal();show(on?'online':'tracks');}
@@ -4290,10 +4327,21 @@ async function frStart(){
       pe.on('disconnected',()=>{try{pe.reconnect();}catch(_){}});
       setTimeout(()=>{if(fr.ok==null){fr.ok=false;frRender();res();}},10000);});})();
   return fr.starting;}
-function frHello(){return {t:'hello',code:save.profile.code,name:myName().slice(0,16)};}
+// classifica settimanale della Sfida a tempo: ognuno tiene i suoi migliori tempi da lunedì e li manda agli amici col saluto
+function weekKey(d=new Date()){const m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));return m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0')+'-'+String(m.getDate()).padStart(2,'0');}
+function myWeek(){const wk=weekKey();if(!save.ttw||save.ttw.wk!==wk)save.ttw={wk,t:{}};return save.ttw;}
+function weekTimes(t){const o={};if(t&&typeof t==='object')for(const tr of TRACKS){const v=+t[tr.id];if(isFinite(v)&&v>3&&v<900)o[tr.id]=Math.round(v*1000)/1000;}return o;}
+function frWeekRender(){const el=$('frWeek');if(!el)return;const wk=weekKey(),me=myWeek(),F=save.ttwF||{};
+  const html=TRACKS.map(tr=>{const rows=[];if(me.t[tr.id])rows.push({n:myName(),t:me.t[tr.id],me:true});
+    for(const f of save.friends){const w=F[f.code];if(w&&w.wk===wk&&w.t[tr.id])rows.push({n:f.name||'Amico',t:w.t[tr.id]});}
+    if(!rows.length)return '';rows.sort((a,b)=>a.t-b.t);
+    return `<div class="wk"><h4>${esc(tr.name)}</h4><ol>${rows.slice(0,8).map(r=>`<li class="${r.me?'me':''}"><span${r.me?'':' translate="no"'}>${r.me?'Tu':esc(r.n)}</span><span class="t">${fmtT(r.t)}</span></li>`).join('')}</ol></div>`;}).join('');
+  el.innerHTML=html||'<p class="hint">Ancora nessun tempo questa settimana: corri una Sfida a tempo.</p>';}
+function frHello(){const w=myWeek();return {t:'hello',code:save.profile.code,name:myName().slice(0,16),w:{wk:w.wk,t:w.t}};}
 function frMsg(m,c){if(!m||typeof m!=='object'||!/^[A-Z0-9]{6}$/.test(m.code||''))return;const name=String(m.name||'Pilota').slice(0,16);fr.online[m.code]=true;
   const f=save.friends.find(x=>x.code===m.code);if(f&&f.name!==name){f.name=name;persist();}
-  if(m.t==='hello'){try{c.send({t:'hi',code:save.profile.code,name:myName().slice(0,16)});}catch(_){}
+  if(m.w&&typeof m.w==='object'&&m.w.wk===weekKey()){if(!save.ttwF)save.ttwF={};save.ttwF[m.code]={wk:m.w.wk,t:weekTimes(m.w.t)};persist();}
+  if(m.t==='hello'){try{const w=myWeek();c.send({t:'hi',code:save.profile.code,name:myName().slice(0,16),w:{wk:w.wk,t:w.t}});}catch(_){}
     if(!f&&!fr.req.some(r=>r.code===m.code))fr.req.push({code:m.code,name});}
   else if(m.t==='invite'&&/^[A-Z0-9]{4,5}$/.test(m.room||''))frShowInvite(name,m.room);
   frRender();}
@@ -4306,6 +4354,7 @@ function frRender(){if(!$('frPanel'))return;$('frCode').textContent=fmtCode(save
   if(document.activeElement!==$('frName'))$('frName').value=save.profile.name||'';$('frName').placeholder=save.name||'';
   $('frReq').innerHTML=fr.req.map(r=>`<div class="req"><b translate="no">${esc(r.name)}</b> <span>ti ha aggiunto agli amici</span><button class="cta alt frinv" data-acc="${r.code}">Aggiungi anche tu</button><button class="ghost" data-rej="${r.code}">No</button></div>`).join('');
   $('frList').innerHTML=save.friends.length?save.friends.map(f=>{const on=fr.online[f.code];return `<li><span class="frdot ${on?'on':''}"></span><span class="nm"${f.name?' translate="no"':''}>${esc(f.name||'Amico')}</span><span class="sub">${on?'Online':on===false||fr.ok===false?'Offline':'Controllo…'} · ${fmtCode(f.code)}</span>${on?`<button class="cta frinv" data-inv="${f.code}">Invita</button>`:''}<button class="frx" data-del="${f.code}" aria-label="Rimuovi">×</button></li>`;}).join(''):'<li><span class="nm" style="font-weight:500;white-space:normal">Nessun amico ancora: scambiatevi i codici amico.</span></li>';
+  frWeekRender();
   $('frStatus').innerHTML=(fr.ok===false?'<span>Collegamento agli amici non disponibile: controlla la connessione.</span> ':'')+(save.friends.length||fr.ok===false?'<button class="ghost" id="frRetry" type="button">Riconnetti</button>':'');}
 // riconnessione a mano: se il collegamento è caduto si riparte da zero, altrimenti si richiede subito lo stato degli amici
 document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#frRetry'))return;fr.online={};
@@ -4583,7 +4632,8 @@ function ttResults(r){
   const m=done?ttMedalFor(ti,t):0,old=prev.m||0;let gain=0;for(let k=old+1;k<=m;k++)gain+=MED_RW[k];
   const rec=done&&(!prev.t||t<prev.t),beatGhost=done&&r.ghost&&t<r.ghost.t;
   if(done){save.tt[id]={t:rec?Math.round(t*1000)/1000:prev.t,m:Math.max(old,m)};
-    if(rec)ghostSave(id,{t:Math.round(t*1000)/1000,L:Math.round(r.tr.L),d:r.ttRec});if(beatGhost)save.tro.f.ghost=1;}
+    if(rec)ghostSave(id,{t:Math.round(t*1000)/1000,L:Math.round(r.tr.L),d:r.ttRec});if(beatGhost)save.tro.f.ghost=1;
+    {const w=myWeek();if(!w.t[id]||t<w.t[id]){w.t[id]=Math.round(t*1000)/1000;if(fr.ok)frPoll();}}}
   save.credits+=gain;troCount('tt',done?1:0);
   {const lp=me.laps.length;troCount('laps',lp);troCount('jumps',lp*r.tr.zones.J.length);troCount('turbo',r.turboT||0);troAddEq(me.eq);}
   persist();$('credits').textContent=save.credits;
@@ -4599,7 +4649,9 @@ function ttResults(r){
     <table class="res ttres">${done?row('Il tuo tempo',fmtT(t),'me'):''}${bl!=null?row('Giro migliore',fmtT(bl)):''}${best?row('Record',fmtT(best)):''}
     ${done&&r.ghost?row('Fantasma',(t<r.ghost.t?'−':'+')+Math.abs(t-r.ghost.t).toFixed(2)+' s'):''}
     ${[3,2,1].map(k=>row(`<span class="medal ${MEDC[k]}"></span>${MED[k]}`,fmtT(R[k]),done&&t<=R[k]?'me':'')).join('')}</table>
-    ${gain?`<p class="gain" style="margin:12px 0 0">+${gain} crediti</p>`:'<p class="hint" style="margin:8px 0 0">Ogni medaglia dà crediti solo la prima volta che la conquisti.</p>'}`;
+    ${gain?`<p class="gain" style="margin:12px 0 0">+${gain} crediti</p>`:'<p class="hint" style="margin:8px 0 0">Ogni medaglia dà crediti solo la prima volta che la conquisti.</p>'}
+    ${(()=>{const w=myWeek(),F=save.ttwF||{},mt=w.t[id];if(!mt)return '';const ts=save.friends.map(f=>F[f.code]).filter(x=>x&&x.wk===w.wk&&x.t[id]).map(x=>x.t[id]);
+      if(!ts.length)return '';const pos=ts.filter(x=>x<mt).length+1;return `<p class="hint" style="margin:8px 0 0">Classifica della settimana con gli amici: ${pos}° su ${ts.length+1}</p>`;})()}`;
   $('mBtns').innerHTML=`<button class="cta tt" id="bTT">Riprova</button><button class="cta" id="bRace">Gara</button><button class="ghost" id="bTracks">Piste</button>`;
   $('modal').hidden=false;
   $('bTT').onclick=()=>ttStart(ti);$('bRace').onclick=()=>startRace(ti);$('bTracks').onclick=()=>{hideModal();show('tracks');};
