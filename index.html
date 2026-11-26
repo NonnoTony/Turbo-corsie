@@ -579,6 +579,25 @@ body:not(.land) #mBtns{order:4}
 #mTitle{order:1;position:relative;z-index:2;align-self:center;text-align:center;margin-top:-34px;max-width:100%;font-size:28px;line-height:1.1;color:#1a1a12;background:var(--yellow);padding:7px 18px 5px;border:3px solid #1a1a12;border-radius:6px;transform:rotate(-2deg) skewX(-6deg);box-shadow:5px 5px 0 #1a1a12;animation:titleIn .5s cubic-bezier(.2,1.5,.4,1) .15s both}
 #mTitle.bad{color:var(--ink);background:var(--red)}
 @media (max-width:360px){.logo{font-size:17px}.logo .ver{display:none}.wallet{font-size:14px;padding:4px 7px}.wallet small{display:none}.top{gap:6px}}
+.mech{display:flex;flex-direction:column;gap:10px;border-color:var(--yellow)!important}
+.mech h3 svg{width:20px;height:20px;vertical-align:-3px}
+.mrow{display:flex;gap:8px}.mrow select{flex:1;min-width:0;min-height:40px;background:var(--panel-2);color:var(--ink);border:2px solid var(--line);border-radius:6px;padding:6px 8px;font:600 15px var(--f-body,inherit)}
+.mrow .cta{padding:8px 16px;font-size:16px}
+.tchar{display:flex;flex-wrap:wrap;gap:6px}.tchar:empty{display:none}
+.ch{font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:999px;border:2px solid currentColor;line-height:1.3}
+.ch-vel{color:#ff8a5c}.ch-pile{color:#ffd23f}.ch-ten{color:#7fd6ff}.ch-salti{color:#9be37a}
+.mbar{height:10px;border-radius:99px;background:var(--panel-2);overflow:hidden;border:2px solid var(--line)}.mbar i{display:block;height:100%;background:var(--yellow);transition:width .2s}
+.mtimes{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-size:14px;color:var(--muted)}.mtimes b{color:var(--ink);font-family:var(--f-data)}
+.mstep{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px;border:2px solid var(--line);border-radius:8px;background:var(--panel-2)}
+.mstep .mtx{display:flex;flex-direction:column;min-width:0}.mstep small{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.mstep b{font-size:15px}.mstep .mg{color:var(--ok,#5fd896);font:700 13px var(--f-data)}
+.mstep .cta{padding:8px 12px;font-size:14px;white-space:nowrap}.mstep .hint{grid-column:1/-1;margin:0}
+.mstep.done{opacity:.65}.mok{color:var(--ok,#5fd896);font-weight:700;font-size:14px}
+.mverd{margin:0;font-size:14.5px}.mverd.ok{color:var(--yellow);font-weight:700}
+.mechbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:8px;min-height:40px}.mechbtn svg{width:18px;height:18px}
+.tut{position:fixed;z-index:40;max-width:min(300px,calc(100vw - 16px));background:var(--yellow);color:#1a1a12;border:3px solid #1a1a12;border-radius:10px;padding:8px 12px;font:400 17px/1.2 var(--f-display);box-shadow:4px 4px 0 rgba(0,0,0,.45);pointer-events:none;animation:tutIn .3s cubic-bezier(.2,1.6,.4,1)}
+.tut::after{content:"";position:absolute;left:50%;bottom:-11px;margin-left:-9px;border:9px solid transparent;border-top-color:#1a1a12;border-bottom:0}
+@keyframes tutIn{from{transform:scale(.6);opacity:0}}
 /* senza podio (sfida a tempo, prove): il titolo va in cima e non copre il testo */
 #modal .sheet:not(:has(.rx-hero)) #mTitle{order:-1;margin-top:2px}
 @keyframes titleIn{from{opacity:0;transform:scale(2.2) rotate(-8deg)}}
@@ -794,6 +813,7 @@ body.land #mBtns{grid-column:2;grid-row:3}
           <div class="mrow"><span class="mico bat" aria-hidden="true"></span><div class="meter" title="Carica delle pile"><i id="mTurbo"></i></div></div>
           <div class="mrow"><span class="mico grip" aria-hidden="true"></span><div class="meter" title="Rischio course out"><i id="mRisk"></i></div></div>
         </div>
+        <div class="tut" id="tut" hidden role="status"></div>
         <button class="turbo-btn" id="turboBtn">TURBO<small>tieni premuto</small></button>
         <button class="turbo-btn p2" id="turboBtn2" hidden>TURBO G2<small>tieni premuto</small></button>
       </div>
@@ -1106,6 +1126,7 @@ function defaultSave(){const owned=[];PARTS.forEach(c=>c.items.forEach(i=>{if(!i
   return {credits:150,owned,eq,color:COLORS[0],livery:'solid',name:'Auto',wins:{},best:{},mute:false};}
 let save=defaultSave();
 try{const raw=localStorage.getItem(SKEY);if(raw){const s=JSON.parse(raw);save={...save,...s,eq:{...save.eq,...(s.eq||{})}};}}catch(e){}
+if(save.tutDone==null)save.tutDone=Object.keys(save.wins||{}).length>0;  // la prima gara guidata solo per chi non ha mai vinto
 if(!Array.isArray(save.owned))save.owned=[];PARTS.forEach(c=>c.items.forEach(i=>{if(!i.cost&&!save.owned.includes(i.id))save.owned.push(i.id);}));
 if(!save.pc||typeof save.pc!=='object')save.pc={};
 // campi nuovi (salvataggi vecchi: valori di default)
@@ -1238,6 +1259,13 @@ Object.assign(I18N.es,{"Versione del gioco": "Versión del juego", "Macchina in 
 Object.assign(I18N.ja,{"Versione del gioco": "ゲームのバージョン", "Macchina in 3D: trascina per ruotare": "3Dの車：ドラッグで回転", "Sezioni del garage": "ガレージのセクション", "Nome di questa auto": "この車の名前", "Numero di giocatori": "プレイヤー数", "CODICE": "コード", "Visuale": "視点", "Tutta la pista dall'alto": "上からコース全体", "Camera che segue la tua macchina": "あなたの車を追うカメラ", "Camera 3D dietro la macchina": "車の後ろの3Dカメラ", "Pista di gara": "レースコース", "Rischio course out": "コースアウトの危険"});
 Object.assign(I18N.ar,{"Versione del gioco": "إصدار اللعبة", "Macchina in 3D: trascina per ruotare": "سيارة ثلاثية الأبعاد: اسحب للتدوير", "Sezioni del garage": "أقسام المرآب", "Nome di questa auto": "اسم هذه السيارة", "Numero di giocatori": "عدد اللاعبين", "CODICE": "الرمز", "Visuale": "العرض", "Tutta la pista dall'alto": "المسار كله من الأعلى", "Camera che segue la tua macchina": "كاميرا تتبع سيارتك", "Camera 3D dietro la macchina": "كاميرا ثلاثية الأبعاد خلف السيارة", "Pista di gara": "مسار السباق", "Rischio course out": "خطر الخروج من المسار"});
 Object.assign(I18N.ru,{"Versione del gioco": "Версия игры", "Macchina in 3D: trascina per ruotare": "Машина в 3D: перетащи, чтобы повернуть", "Sezioni del garage": "Разделы гаража", "Nome di questa auto": "Название этой машины", "Numero di giocatori": "Количество игроков", "CODICE": "КОД", "Visuale": "Вид", "Tutta la pista dall'alto": "Вся трасса сверху", "Camera che segue la tua macchina": "Камера следует за твоей машиной", "Camera 3D dietro la macchina": "3D-камера за машиной", "Pista di gara": "Гоночная трасса", "Rischio course out": "Риск вылета"});
+Object.assign(EN,{"Consiglio del meccanico": "Mechanic's advice", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "Pick a track: the mechanic tests the parts and tells you what to fit to win.", "Chiedi": "Ask", "Pista": "Track", "Il meccanico prova i pezzi sulla pista…": "The mechanic is testing the parts on the track…", "Il tuo tempo stimato": "Your estimated time", "Rivale più veloce": "Fastest rival", "Montato ✓": "Fitted ✓", "Monta": "Fit", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "With these parts you can already win: use the turbo in bursts and let go in the corners!", "Con questi pezzi:": "With these parts:", "Puoi vincere!": "You can win!", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "Earn credits on the tracks you've already won and ask again.", "Serve velocità: motore più forte": "Needs speed: stronger motor", "Pista lunga: servono pile buone": "Long track: good batteries needed", "Serve tenuta: gomme morbide, niente slick": "Needs grip: soft tyres, no slicks", "Salti e dossi: ammortizzatori, e non esagerare col motore": "Jumps and bumps: shock absorbers, and don't overdo the motor", "Tieni premuto TURBO sul dritto": "Hold TURBO on the straights", "Rischio alto: molla il turbo in curva!": "High risk: let go of the turbo in the corners!", "Le pile si scaricano: usa il turbo a impulsi": "The batteries are running down: use the turbo in bursts"});
+Object.assign(I18N.de,{"Consiglio del meccanico": "Tipp vom Mechaniker", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "Wähle eine Strecke: Der Mechaniker testet die Teile und sagt dir, was du zum Sieg einbauen sollst.", "Chiedi": "Fragen", "Pista": "Strecke", "Il meccanico prova i pezzi sulla pista…": "Der Mechaniker testet die Teile auf der Strecke…", "Il tuo tempo stimato": "Deine geschätzte Zeit", "Rivale più veloce": "Schnellster Gegner", "Montato ✓": "Eingebaut ✓", "Monta": "Einbauen", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "Mit diesen Teilen kannst du schon gewinnen: Turbo stoßweise nutzen und in Kurven loslassen!", "Con questi pezzi:": "Mit diesen Teilen:", "Puoi vincere!": "Du kannst gewinnen!", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "Verdiene Credits auf schon gewonnenen Strecken und frag erneut.", "Serve velocità: motore più forte": "Braucht Tempo: stärkerer Motor", "Pista lunga: servono pile buone": "Lange Strecke: gute Batterien nötig", "Serve tenuta: gomme morbide, niente slick": "Braucht Grip: weiche Reifen, keine Slicks", "Salti e dossi: ammortizzatori, e non esagerare col motore": "Sprünge und Hügel: Stoßdämpfer, und den Motor nicht übertreiben", "Tieni premuto TURBO sul dritto": "Halte TURBO auf den Geraden gedrückt", "Rischio alto: molla il turbo in curva!": "Hohes Risiko: Turbo in Kurven loslassen!", "Le pile si scaricano: usa il turbo a impulsi": "Die Batterien werden leer: Turbo stoßweise nutzen"});
+Object.assign(I18N.es,{"Consiglio del meccanico": "Consejo del mecánico", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "Elige una pista: el mecánico prueba las piezas y te dice qué montar para ganar.", "Chiedi": "Preguntar", "Pista": "Pista", "Il meccanico prova i pezzi sulla pista…": "El mecánico prueba las piezas en la pista…", "Il tuo tempo stimato": "Tu tiempo estimado", "Rivale più veloce": "Rival más rápido", "Montato ✓": "Montado ✓", "Monta": "Montar", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "Con estas piezas ya puedes ganar: usa el turbo a golpes y suéltalo en las curvas.", "Con questi pezzi:": "Con estas piezas:", "Puoi vincere!": "¡Puedes ganar!", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "Gana créditos en las pistas ya ganadas y vuelve a preguntar.", "Serve velocità: motore più forte": "Hace falta velocidad: motor más fuerte", "Pista lunga: servono pile buone": "Pista larga: hacen falta buenas pilas", "Serve tenuta: gomme morbide, niente slick": "Hace falta agarre: neumáticos blandos, nada de slicks", "Salti e dossi: ammortizzatori, e non esagerare col motore": "Saltos y baches: amortiguadores, y no te pases con el motor", "Tieni premuto TURBO sul dritto": "Mantén pulsado TURBO en las rectas", "Rischio alto: molla il turbo in curva!": "Riesgo alto: ¡suelta el turbo en las curvas!", "Le pile si scaricano: usa il turbo a impulsi": "Las pilas se gastan: usa el turbo a golpes"});
+Object.assign(I18N.ja,{"Consiglio del meccanico": "メカニックのアドバイス", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "コースを選ぼう：メカニックがパーツを試して、勝つために付けるものを教えてくれます。", "Chiedi": "聞く", "Pista": "コース", "Il meccanico prova i pezzi sulla pista…": "メカニックがコースでパーツを試しています…", "Il tuo tempo stimato": "あなたの予想タイム", "Rivale più veloce": "最速のライバル", "Montato ✓": "装着済み ✓", "Monta": "装着", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "このパーツでもう勝てます：ターボは小刻みに、カーブでは離そう！", "Con questi pezzi:": "このパーツで：", "Puoi vincere!": "勝てます！", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "勝ったコースでクレジットを稼いで、もう一度聞こう。", "Serve velocità: motore più forte": "スピード重視：強いモーター", "Pista lunga: servono pile buone": "長いコース：良い電池が必要", "Serve tenuta: gomme morbide, niente slick": "グリップ重視：柔らかいタイヤ、スリックは不可", "Salti e dossi: ammortizzatori, e non esagerare col motore": "ジャンプと段差：ショックを付けて、モーターは強すぎないように", "Tieni premuto TURBO sul dritto": "直線ではTURBOを長押し", "Rischio alto: molla il turbo in curva!": "危険！カーブではターボを離そう！", "Le pile si scaricano: usa il turbo a impulsi": "電池が減っていく：ターボは小刻みに"});
+Object.assign(I18N.ar,{"Consiglio del meccanico": "نصيحة الميكانيكي", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "اختر مسارًا: يجرّب الميكانيكي القطع ويخبرك بما تركّبه لتفوز.", "Chiedi": "اسأل", "Pista": "المسار", "Il meccanico prova i pezzi sulla pista…": "الميكانيكي يجرّب القطع على المسار…", "Il tuo tempo stimato": "وقتك المتوقع", "Rivale più veloce": "أسرع منافس", "Montato ✓": "مركّب ✓", "Monta": "ركّب", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "بهذه القطع يمكنك الفوز الآن: استخدم التيربو على دفعات واتركه في المنعطفات!", "Con questi pezzi:": "بهذه القطع:", "Puoi vincere!": "يمكنك الفوز!", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "اجمع رصيدًا من المسارات التي فزت بها واسأل مجددًا.", "Serve velocità: motore più forte": "تحتاج سرعة: محرك أقوى", "Pista lunga: servono pile buone": "مسار طويل: تحتاج بطاريات جيدة", "Serve tenuta: gomme morbide, niente slick": "تحتاج تماسكًا: إطارات ناعمة، بلا إطارات ملساء", "Salti e dossi: ammortizzatori, e non esagerare col motore": "قفزات ومطبات: ممتصات صدمات، ولا تبالغ في المحرك", "Tieni premuto TURBO sul dritto": "اضغط مطولًا على TURBO في الطرق المستقيمة", "Rischio alto: molla il turbo in curva!": "خطر مرتفع: اترك التيربو في المنعطفات!", "Le pile si scaricano: usa il turbo a impulsi": "البطاريات تنفد: استخدم التيربو على دفعات"});
+Object.assign(I18N.ru,{"Consiglio del meccanico": "Совет механика", "Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.": "Выбери трассу: механик проверит детали и скажет, что поставить для победы.", "Chiedi": "Спросить", "Pista": "Трасса", "Il meccanico prova i pezzi sulla pista…": "Механик проверяет детали на трассе…", "Il tuo tempo stimato": "Твоё расчётное время", "Rivale più veloce": "Самый быстрый соперник", "Montato ✓": "Установлено ✓", "Monta": "Поставить", "Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!": "С этими деталями уже можно победить: жми турбо рывками и отпускай в поворотах!", "Con questi pezzi:": "С этими деталями:", "Puoi vincere!": "Можно победить!", "Guadagna crediti sulle piste già vinte e chiedi di nuovo.": "Заработай кредиты на пройденных трассах и спроси снова.", "Serve velocità: motore più forte": "Нужна скорость: мотор посильнее", "Pista lunga: servono pile buone": "Длинная трасса: нужны хорошие батареи", "Serve tenuta: gomme morbide, niente slick": "Нужно сцепление: мягкие шины, без сликов", "Salti e dossi: ammortizzatori, e non esagerare col motore": "Прыжки и горки: амортизаторы, и не перебарщивай с мотором", "Tieni premuto TURBO sul dritto": "Держи ТУРБО на прямых", "Rischio alto: molla il turbo in curva!": "Опасно: отпусти турбо в повороте!", "Le pile si scaricano: usa il turbo a impulsi": "Батареи садятся: жми турбо рывками"});
+RX.push([/^Compra · (\d+) cr$/,{"en":"Buy · $1 cr","de":"Kaufen · $1 cr","es":"Comprar · $1 cr","ja":"購入 · $1 cr","ar":"شراء · $1","ru":"Купить · $1 кр"}],[/^Ti mancano (\d+) crediti$/,{"en":"You need $1 more credits","de":"Dir fehlen $1 Credits","es":"Te faltan $1 créditos","ja":"あと$1クレジット必要","ar":"ينقصك $1 رصيد","ru":"Не хватает $1 кредитов"}],[/^Ancora ([\d.,]+) s dietro\.$/,{"en":"Still $1 s behind.","de":"Noch $1 s zurück.","es":"Aún $1 s por detrás.","ja":"まだ$1秒遅れ。","ar":"ما زلت متأخرًا $1 ث.","ru":"Ещё $1 с позади."}]);
 Object.assign(EN,{"TU":"YOU"});Object.assign(I18N.de,{"TU":"DU"});Object.assign(I18N.es,{"TU":"TÚ"});Object.assign(I18N.ja,{"TU":"キミ"});Object.assign(I18N.ar,{"TU":"أنت"});Object.assign(I18N.ru,{"TU":"ТЫ"});
 Object.assign(EN,{"SCATTO PERFETTO!":"PERFECT START!","PARTENZA ANTICIPATA":"JUMP START","SCIA":"DRAFT"});
 Object.assign(I18N.de,{"SCATTO PERFETTO!":"PERFEKTER START!","PARTENZA ANTICIPATA":"FRÜHSTART","SCIA":"WINDSCHATTEN"});
@@ -1853,7 +1881,7 @@ function renderShop(){
       PC_SLOTS.map(([k,lab])=>{const cur=hexOk(save.pc[k]);return `<div class="panel cat"><div class="cat-h"><h3>${lab}</h3><p>${cur?'Colore scelto':'Colore di serie'}</p></div>
       <div class="pcsw big"><button class="sw2 auto" data-slot="${k}" data-c="" aria-pressed="${!cur}" title="Colore di serie">A</button>${PC_COLORS.map(c=>`<button class="sw2" style="background:${c}" data-slot="${k}" data-c="${c}" aria-pressed="${cur===c}" aria-label="${lab}: ${c}"></button>`).join('')}</div></div>`;}).join('');
     return;}
-  $('shop').innerHTML=schedaHTML()+`<div class="resetrow"><button class="ghost resetbtn" data-clip="copy">Copia modifiche</button><button class="ghost resetbtn" data-clip="paste" ${save.clip?'':'disabled'}>Incolla modifiche${save.clip&&save.clip.from?' da «'+esc(save.clip.from)+'»':''}</button><button class="ghost resetbtn" data-reset="parts">Ripristina pezzi di serie</button></div>`+PARTS.map(c=>`<div class="panel cat"><div class="cat-h"><h3>${c.label}</h3><p>${c.hint}</p></div><div class="opts">${
+  $('shop').innerHTML=schedaHTML()+mechHTML()+`<div class="resetrow"><button class="ghost resetbtn" data-clip="copy">Copia modifiche</button><button class="ghost resetbtn" data-clip="paste" ${save.clip?'':'disabled'}>Incolla modifiche${save.clip&&save.clip.from?' da «'+esc(save.clip.from)+'»':''}</button><button class="ghost resetbtn" data-reset="parts">Ripristina pezzi di serie</button></div>`+PARTS.map(c=>`<div class="panel cat"><div class="cat-h"><h3>${c.label}</h3><p>${c.hint}</p></div><div class="opts">${
     c.items.map(i=>{const owned=save.owned.includes(i.id),on=save.eq[c.key]===i.id,afford=save.credits>=i.cost;
       const st=on?'Montato':owned?'In garage · monta':`Compra · ${i.cost} cr`;
       return `<button class="opt" data-id="${i.id}" aria-pressed="${on}" ${!owned&&!afford?'disabled':''}><span class="n">${i.name}</span><span class="d">${i.d}</span><span class="specs">${specChips(i)}</span><span class="st ${owned?'':'buy'}">${st}</span></button>`;}).join('')
@@ -1899,6 +1927,64 @@ $('gtabs').addEventListener('click',e=>{const g=e.target.closest('.gtab');if(!g|
 function refreshGarage(){$('credits').textContent=save.credits;const sy=$('gscroll').scrollTop;renderShop();$('gscroll').scrollTop=sy;renderStats();renderPreview();renderLiveries();updateLockUI();}
 
 // ---------- PISTE ----------
+// carattere delle piste, ricavato dalle gare virtuali: cosa fa guadagnare (o perdere) di più su ogni pista
+const CHAR={anello:['vel'],garage:['vel'],parco:['vel'],osso:['vel'],serpente:['vel','pile'],gp:['vel','pile'],tramonto:['vel','pile'],autunno:['vel','ten'],ghiaccio:['vel','ten'],notte:['vel','ten'],
+  tornanti:['ten','vel'],preistoria:['ten','vel'],luna:['ten','salti'],alieni:['ten','salti'],finale:['ten','salti']};
+const CHT={vel:'Serve velocità: motore più forte',pile:'Pista lunga: servono pile buone',ten:'Serve tenuta: gomme morbide, niente slick',salti:'Salti e dossi: ammortizzatori, e non esagerare col motore'};
+function charHTML(i){const k=CHAR[TRACKS[i].id]||[];return k.map(x=>`<span class="ch ch-${x}">${CHT[x]}</span>`).join('');}
+// consiglio del meccanico: prova ogni pezzo in una gara virtuale e propone al massimo 3 cambi, preferendo quelli che puoi già permetterti
+const mech={ti:null,res:null,busy:false,prog:0};
+function mechDefault(){const i=TRACKS.findIndex((t,k)=>unlocked(k)&&!save.wins[t.id]);if(i>=0)return i;let j=0;TRACKS.forEach((t,k)=>{if(unlocked(k))j=k;});return j;}
+function mechHTML(){const ti=mech.ti==null?mechDefault():mech.ti,R=mech.res&&mech.res.ti===ti?mech.res:null;
+  const opts=TRACKS.map((t,i)=>unlocked(i)?`<option value="${i}" ${i===ti?'selected':''}>${i+1}. ${esc(t.name)}${save.wins[t.id]?' ✓':''}</option>`:'').join('');
+  let body='';
+  if(mech.busy)body=`<div class="mbar"><i id="mechBar" style="width:${mech.prog}%"></i></div><p class="hint">Il meccanico prova i pezzi sulla pista…</p>`;
+  else if(R){const win=R.final<R.target,already=R.base<R.target;
+    body=`<div class="mtimes"><span>Il tuo tempo stimato <b>${fmtT(R.base)}</b></span><span>Rivale più veloce <b>${fmtT(R.target)}</b></span></div>`
+      +(R.steps.length?R.steps.map(st=>{const done=save.eq[st.c.key]===st.it.id,own=save.owned.includes(st.it.id),miss=own?0:st.it.cost-save.credits;
+        return `<div class="mstep${done?' done':''}"><div class="mtx"><small>${st.c.label}</small><b>${esc(st.it.name)}</b>${st.gain!=null&&st.gain>=.05?`<span class="mg">−${st.gain.toFixed(1)} s</span>`:''}</div>`
+          +(done?'<span class="mok">Montato ✓</span>':`<button class="cta ${own?'alt':''}" data-mechapply="${st.it.id}" ${miss>0?'disabled':''}>${own?'Monta':'Compra · '+st.it.cost+' cr'}</button>`)
+          +(miss>0&&!done?`<p class="hint">Ti mancano ${miss} crediti</p>`:'')+`</div>`;}).join(''):'')
+      +(already&&!R.steps.length?'<p class="mverd ok">Con questi pezzi puoi già vincere: usa il turbo a impulsi e molla in curva!</p>'
+        :win?`<p class="mverd ok"><span>Con questi pezzi:</span> <b>${fmtT(R.final)}</b> <span>Puoi vincere!</span></p>`
+        :`<p class="mverd"><span>Con questi pezzi:</span> <b>${fmtT(R.final)}</b> <span>Ancora ${(R.final-R.target).toFixed(1)} s dietro.</span> <span>Guadagna crediti sulle piste già vinte e chiedi di nuovo.</span></p>`);}
+  return `<div class="panel mech" id="mech"><div class="cat-h"><h3>${MICON.wrench} Consiglio del meccanico</h3><p>Scegli una pista: il meccanico prova i pezzi e ti dice cosa montare per vincere.</p></div>
+    <div class="mrow"><select id="mechTrack" aria-label="Pista">${opts}</select><button class="cta" data-mechgo-now ${mech.busy?'disabled':''}>Chiedi</button></div>
+    <div class="tchar">${charHTML(ti)}</div>${body}</div>`;}
+function renderMech(){const el=$('mech');if(el)el.outerHTML=mechHTML();}
+async function mechRun(ti){if(mech.busy)return;mech.ti=ti;mech.busy=true;mech.res=null;mech.prog=0;renderMech();
+  const pause=()=>new Promise(r=>setTimeout(r,0)),sig=e=>JSON.stringify(carStats(e));
+  let target=999;for(const a of aiFive(TRACKS[ti],ti))target=Math.min(target,virtRace(ti,null,a));
+  let eq={...save.eq},cur=virtRace(ti,eq),money=save.credits;const base=cur,steps=[];
+  let pool=[];for(const c of PARTS)for(const it of c.items)pool.push([c,it]);const total=pool.length*1.4;let done=0,slice=performance.now();   // lavora a fette di 40 ms per non bloccare lo schermo
+  for(let k=0;k<3&&cur>=target-.4;k++){let best=null;const helped=[],s0=sig(eq);
+    for(let n=0;n<pool.length;n++){const [c,it]=pool[n];done++;
+      if(eq[c.key]!==it.id&&!steps.some(x=>x.c===c)){const e2={...eq,[c.key]:it.id};
+        if(sig(e2)!==s0){const t=virtRace(ti,e2),gain=cur-t,own=save.owned.includes(it.id),price=own?0:it.cost,afford=price<=money;
+          if(gain>=.15){helped.push([c,it]);const score=cur>=999?gain:gain/(price+60)*(afford?1:.35);/* se ora esci di pista conta solo restare in pista */if(!best||score>best.score)best={c,it,t,gain,price,own,afford,score};}}}
+      if(performance.now()-slice>40){mech.prog=Math.min(99,Math.round(done/total*100));const b=$('mechBar');if(b)b.style.width=mech.prog+'%';await pause();slice=performance.now();}}
+    if(!best)break;steps.push(best);eq={...eq,[best.c.key]:best.it.id};cur=best.t;if(best.afford)money-=best.price;pool=helped.filter(([c])=>c!==best.c);}
+  // seconda strada: copiare l'assetto completo di un rivale di questa pista (serve quando bisogna cambiare più pezzi insieme, es. motore e gomme)
+  if(cur>=target-.4){let bestAI=null;const seen=new Set();
+    for(const a of aiFive(TRACKS[ti],ti)){const k=JSON.stringify(a.eq);if(seen.has(k))continue;seen.add(k);const e2={...save.eq,...a.eq},t=virtRace(ti,e2);if(!bestAI||t<bestAI.t)bestAI={e2,t};await pause();}
+    if(bestAI&&bestAI.t<cur-.2){const diff=PARTS.filter(c=>bestAI.e2[c.key]!==save.eq[c.key]).map(c=>({c,it:BYID[bestAI.e2[c.key]]}));
+      diff.sort((x,y)=>(save.owned.includes(x.it.id)?0:x.it.cost)-(save.owned.includes(y.it.id)?0:y.it.cost));
+      let e3={...save.eq},prev=base;const st2=[];for(const d of diff){e3={...e3,[d.c.key]:d.it.id};const t=virtRace(ti,e3);st2.push({...d,gain:prev<999&&t<999?prev-t:null,t});prev=t;}
+      steps.length=0;steps.push(...st2);cur=bestAI.t;}}
+  mech.res={ti,target,base,final:cur,steps};mech.busy=false;renderMech();}
+function mechApply(id){const i=BYID[id];if(!i)return;
+  if(!save.owned.includes(i.id)){if(save.credits<i.cost)return;save.credits-=i.cost;save.owned.push(i.id);toast(`Comprato: ${i.name}`);missionProgress({kind:'buy'});}
+  {const before=schRaw(save.eq),after=schRaw({...save.eq,[i.cat]:i.id});lastMod={name:i.name,d:SCH.map((l,k)=>[l,Math.round((after[k]/before[k]-1)*100)]).filter(([,v])=>v!==0)};}
+  save.eq[i.cat]=i.id;troMount(i.id);persist();refreshGarage();netPublishProfile();}
+// prima gara guidata: tre fumetti, una volta sola (chi ha già vinto una pista non li vede)
+const tut={a:0,b:0,c:0,until:0};
+function tutShow(el,txt,ms){const b=$('tut');if(!el||!b||!el.getBoundingClientRect().width)return;b.textContent=txt;b.hidden=false;const r=el.getBoundingClientRect();
+  b.style.left=Math.max(8,Math.min(innerWidth-8-b.offsetWidth,r.left+r.width/2-b.offsetWidth/2))+'px';b.style.top=Math.max(8,r.top-b.offsetHeight-14)+'px';tut.until=performance.now()+ms;}
+function tutTick(r,me){if(r.online||r.duo||r.tt||save.tutDone)return;
+  if(!tut.a&&r.t>-2.6){tut.a=1;tutShow($('turboBtn'),'Tieni premuto TURBO sul dritto',4500);}
+  else if(tut.a&&!tut.b&&r.t>2&&me.wobble>.45){tut.b=1;tutShow($('mRisk'),'Rischio alto: molla il turbo in curva!',3500);}
+  else if(tut.a&&!tut.c&&r.t>2&&me.emax&&me.energy/me.emax<.6){tut.c=1;tutShow($('mTurbo'),'Le pile si scaricano: usa il turbo a impulsi',4000);}
+  const b=$('tut');if(b&&!b.hidden&&performance.now()>tut.until)b.hidden=true;}
 function unlocked(i){return i===0||!!save.wins[TRACKS[i-1].id]||!!save.wins[TRACKS[i].id];}
 function drawMini(canvas,tr){
   const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,b=tr.bbox,sc=Math.min(W/b.w,H/b.h)*.95;
@@ -1959,7 +2045,7 @@ function missionProgress(ev){
 function updateMissionDot(){const d=save.daily;$('mDot').hidden=!(d&&d.day===dayKey()&&d.list.some(m=>!m.claimed&&m.p>=m.goal));}
 // icone disegnate (niente immagini esterne) per missioni, piste e risultati
 const svgI=(d,c='')=>`<svg viewBox="0 0 24 24" class="ic ${c}" aria-hidden="true">${d}</svg>`;
-const MICON={race:svgI('<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>'),win:svgI('<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M10 17h4v3h-4z"/>'),
+const MICON={wrench:svgI('<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>'),race:svgI('<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>'),win:svgI('<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M10 17h4v3h-4z"/>'),
   top2:svgI('<circle cx="12" cy="15" r="5"/><path d="M8 3l3 7M16 3l-3 7M11.5 13.5l1-.5v4"/>'),laps:svgI('<path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/>'),
   turbo:svgI('<path class="fl" d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),jumps:svgI('<path d="M2 20h6M16 20h6"/><path d="M5 16q7-14 14 0" stroke-dasharray="2.5 3"/>'),
   track:svgI('<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),record:svgI('<path class="fl" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
@@ -1989,10 +2075,16 @@ function renderTracks(){
     <div class="len"><span><b>${meters(tr.L)}</b> al giro</span><span>${LAPS} giri · ${meters(tr.L*LAPS)} in totale</span></div>
     <div class="tags"><span class="win" style="border-color:var(--muted);color:var(--ink)">${habOf(tr).name}</span><span>${tr.curves} curve</span><span>${tr.zones.J.length} ${tr.zones.J.length===1?'salto':'salti'}</span>${tr.zones.O.length?`<span>${tr.zones.O.length} ${tr.zones.O.length===1?'giro della morte':'giri della morte'}</span>`:''}${tr.zones.H.filter(z=>z.p<40).length?`<span>${tr.zones.H.filter(z=>z.p<40).length} ${tr.zones.H.filter(z=>z.p<40).length===1?'salita':'salite'}</span>`:''}${tr.zones.H.filter(z=>z.p>=40).length?`<span>${tr.zones.H.filter(z=>z.p>=40).length} ${tr.zones.H.filter(z=>z.p>=40).length===1?'ponte':'ponti'}</span>`:''}${best?`<span class="rec">Record ${fmtT(best)}</span>`:''}</div>
     <div class="prize">Premi: ${t.prize[0]} / ${t.prize[1]} / ${t.prize[2]} / ${prizeAt(t,3)} / ${prizeAt(t,4)} cr</div>
-    ${un?ttCardRow(i)+`<div class="trbtns"><button class="cta" data-race="${i}">Corri</button><button class="cta tt" data-tt="${i}">Sfida a tempo</button></div>`:`<div class="locked">${MICON.lock}<span>Vinci «${TRACKS[i-1].name}» per sbloccarla</span></div>`}</div>`;}).join('');
+    <div class="tchar">${charHTML(i)}</div>
+    ${un?ttCardRow(i)+`<div class="trbtns"><button class="cta" data-race="${i}">Corri</button><button class="cta tt" data-tt="${i}">Sfida a tempo</button></div><button class="ghost mechbtn" data-mechgo="${i}">${MICON.wrench}<span>Consiglio del meccanico</span></button>`:`<div class="locked">${MICON.lock}<span>Vinci «${TRACKS[i-1].name}» per sbloccarla</span></div>`}</div>`;}).join('');
   document.querySelectorAll('#tracks canvas').forEach(c=>drawMini(c,trackFor(+c.dataset.i,5)));
 }
-$('tracks').addEventListener('click',e=>{const b=e.target.closest('[data-race]');if(b){startRace(+b.dataset.race);return;}});
+$('tracks').addEventListener('click',e=>{const b=e.target.closest('[data-race]');if(b){startRace(+b.dataset.race);return;}
+  const m=e.target.closest('[data-mechgo]');if(m){const i=+m.dataset.mechgo;mech.ti=i;mech.res=null;show('garage');const g=document.querySelector('[data-g="modifiche"]');if(g)g.click();
+    setTimeout(()=>{const el=$('mech');if(el){const sc=$('gscroll');if(sc&&sc.contains(el))sc.scrollTop=el.offsetTop-90;else el.scrollIntoView({block:'center'});}mechRun(i);},60);}});
+$('shop').addEventListener('click',e=>{if(e.target.closest('[data-mechgo-now]')){const v=$('mechTrack');mechRun(v?+v.value:mechDefault());return;}
+  const a=e.target.closest('[data-mechapply]');if(a&&!a.disabled){const sc=$('gscroll'),y=sc?sc.scrollTop:0;mechApply(a.dataset.mechapply);if(sc)sc.scrollTop=y;}});
+$('shop').addEventListener('change',e=>{if(e.target.id==='mechTrack'){mech.ti=+e.target.value;mech.res=null;renderMech();}});
 
 // ---------- campionato: tre coppe da 4 gare in singolo contro le IA ----------
 const CUPS=[{id:'bronzo',name:'Coppa Bronzo',tracks:['anello','garage','parco','osso'],bonus:300,col:'#cd7f32'},
@@ -2318,7 +2410,7 @@ function startRace(ti,online,kind){
   requestAnimationFrame(()=>{if(save.view==='3d')setView('3d');else resizeRace();cancelAnimationFrame(raf);let last=performance.now();
     const loop=(now)=>{const dt=Math.min(.05,(now-last)/1000);last=now;tick(dt);drawRace();perfWatch(dt);raf=requestAnimationFrame(loop);};raf=requestAnimationFrame(loop);});
 }
-function stopRace(){cancelAnimationFrame(raf);raf=0;race=null;resetInput();if(typeof updateOrientation==='function')updateOrientation();audioHush();fxReset();}
+function stopRace(){{const b=$('tut');if(b)b.hidden=true;}if(tut.a&&!save.tutDone){save.tutDone=true;persist();}cancelAnimationFrame(raf);raf=0;race=null;resetInput();if(typeof updateOrientation==='function')updateOrientation();audioHush();fxReset();}
 function posCar(c,tr){const [x,y,h]=tr.pt(c.s,c.off);c.x=x;c.y=y;c.h=h;}
 
 // pile: BATT_EXTRA = carica in più per ogni secondo di gara stimato (quanto turbo ci si può permettere),
@@ -2326,6 +2418,11 @@ function posCar(c,tr){const [x,y,h]=tr.pt(c.s,c.off);c.x=x;c.y=y;c.h=h;}
 const BATT_IDLE=.1,BATT_LOW=.15,BATT_WARN=.3,BATT_EXTRA=.25,BATT_FLOOR=.87;
 // sulle piste Facili le IA hanno meno carica extra per il turbo, così chi usa bene il turbo con l'auto di serie può vincere
 const AI_BATT={Facile:.5};
+// ---------- consiglio del meccanico: gare virtuali da soli ----------
+// il giocatore virtuale usa il turbo a impulsi come un buon pilota (molla quando il rischio sale o le pile sono basse); i rivali guidano come in gara
+function virtRace(ti,eq,ai){const tr=trackFor(ti,5),c=ai?makeCar({...ai,look:{},isPlayer:false,lane:2}):makeCar({name:'v',color:'#000',eq,look:{},isPlayer:true,lane:2});
+  c.virt=!ai;c.s=tr.L-26;c.off=laneO(2,NLof(tr));emaxOf(c,tr);const r={tr,cars:[c],t:0,clock:0,finished:0,def:TRACKS[ti],ti},H=1/120;
+  for(let i=0;i<120*400&&c.state==='run';i++){r.clock+=H;r.t+=H;stepCar(c,H,r);}return c.state==='out'?999:c.finishT;}
 function emaxOf(c,tr){c.estT=tr.L*LAPS/c.st.top;const ai=!c.isPlayer&&!c.p2&&!c.isRemote,lv=tr.def&&tr.def.lv;
   c.emax=c.st.cap+BATT_IDLE*c.st.drain*c.estT+BATT_EXTRA*(ai&&AI_BATT[lv]!=null?AI_BATT[lv]:1)*c.estT;c.energy=c.emax;}
 function battFactor(c){if(!c.emax)return 1;const f=c.energy/c.emax;return f>=BATT_LOW?1:BATT_FLOOR+(1-BATT_FLOOR)*f/BATT_LOW;}
@@ -2423,7 +2520,7 @@ function stepCar(c,dt,r){
   if(c.state==='out'){c.outT+=dt;c.x+=c.vx*dt;c.y+=c.vy*dt;c.vx*=1-1.2*dt;c.vy*=1-1.2*dt;c.vz-=1100*dt;c.z=Math.max(0,c.z+c.vz*dt);if(c.z===0)c.vz=Math.abs(c.vz)*.35;c.rot+=c.spin*dt;c.spin*=1-1.5*dt;c.alpha=Math.max(.25,1-Math.max(0,c.outT-1.2));return;}
   const n5=NLof(tr)===5,p=tr.at(c.s),k=p.k,fac=n5?1:1-k*c.off,kl=k/fac;
   const racing=r.t>=0&&c.state==='run';
-  const want=racing&&(c.isPlayer?input.turbo:c.p2?input.turbo2:aiWant(c,r));
+  const want=racing&&(c.virt?(c.energy>(c.emax||c.st.cap)*.2&&c.wobble<.35):c.isPlayer?input.turbo:c.p2?input.turbo2:aiWant(c,r));
   const turbo=want&&c.energy>.02&&!(c.holdT>0);c.turbo=turbo;
   if(r.t>=0&&racing&&c.holdT>0){c.holdT-=dt;c.v=0;}   // partenza anticipata: ferma per un attimo
   else if(r.t>=0){
@@ -2518,6 +2615,7 @@ function tick(dt){
   const w=Math.min(1,me.wobble);hudSet('mRisk','w',(Math.max(.03,w)*100).toFixed(1)+'%');
   hudSet('mRisk','b',w>.66?'var(--red)':w>.33?'var(--yellow)':'var(--ok)');
   engUpdate(r,humansOf(r));
+  if(!save.tutDone)tutTick(r,me);
 }
 
 // ---------- effetti (suoni di evento, particelle, scossa) ----------
@@ -4655,7 +4753,7 @@ window.__TCdesign={TROPHIES,troCheck,ttRef,ttStart,ttMedalFor,ghostAll,GKEY,get 
 $('carName').value=save.name;
 document.documentElement.lang=LANG;document.documentElement.dir=LANG==='ar'?'rtl':'ltr';updateOrientation();show('garage');if(LANG!=='it')trTree(document.body);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderPreview();});
-window.__TC={raceStep,PARTS,get g3(){return g3;},input,TR,TRACKS,carStats,makeCar,stepCar,standings,BYID,showResults,hideModal,startRace,show,get save(){return save;},get race(){return race;}};
+window.__TC={raceStep,PARTS,virtRace,aiFive,mechRun,mechApply,mech,get g3(){return g3;},input,TR,TRACKS,carStats,makeCar,stepCar,standings,BYID,showResults,hideModal,startRace,show,get save(){return save;},get race(){return race;}};
 })();
 /* ===== aggiornamento automatico: quando esce una versione nuova il gioco si ricarica da solo ===== */
 (function(){
