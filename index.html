@@ -3305,7 +3305,9 @@ function drawRace(){
   const mode=curMode(),me=r.cars[0],hs=humansOf(r);
   // una camera per ogni giocatore (inseguimento 2D e 3D)
   if(!v.cams||v.cams.length!==hs.length)v.cams=hs.map(h=>({x:h.x,y:h.y,h:h.h}));
-  hs.forEach((h,i)=>{const cam=v.cams[i];cam.x+=(h.x-cam.x)*.18;cam.y+=(h.y-cam.y)*.18;if(h.state!=='out')cam.h+=wrapA(h.h+h.yaw*.5-cam.h)*.09;});
+  // inseguimento legato al tempo (non ai fotogrammi): la camera resta vicina all'auto anche se il telefono va più lento
+  const nowV=performance.now(),dtv=Math.min(.25,Math.max(.001,(nowV-(v._lt||nowV-16.7))/1000));v._lt=nowV;const kv=b=>1-Math.pow(1-b,dtv*60);
+  hs.forEach((h,i)=>{const cam=v.cams[i];cam.x+=(h.x-cam.x)*kv(.18);cam.y+=(h.y-cam.y)*kv(.18);if(h.state!=='out')cam.h+=wrapA(h.h+h.yaw*.5-cam.h)*kv(.09);});
   v.cam=v.cams[0];
   const rects=splitRects(v,r.duo,mode);
   ctx.setTransform(1,0,0,1,0,0);
@@ -4193,16 +4195,22 @@ function render3D(r,rects,hs){
   rects=rects||[{x:0,y:0,w:view.cw,h:view.ch}];hs=hs||[r.cars[0]];
   if(!g3.camPos||g3.camPos.length!==hs.length)g3.camPos=hs.map(()=>null);if(!g3.fovs||g3.fovs.length!==hs.length)g3.fovs=hs.map(()=>60);
   const multi=rects.length>1;g3.renderer.setScissorTest(multi);
+  // inseguimento legato al tempo e non ai fotogrammi: la camera segue allo stesso modo a 60 fps e su un telefono più lento
+  const nowC=performance.now(),dtc=Math.min(.25,Math.max(.001,(nowC-(g3._lt||nowC-16.7))/1000));g3._lt=nowC;const kf=b=>1-Math.pow(1-b,dtc*60);
   rects.forEach((R,i)=>{const me=hs[i],cam=view.cams?view.cams[i]:view.cam,ch=cam.h;
     const fy=trackHeight(tr,me.state==='out'?0:me.s);
     // vettori di appoggio riusati: niente oggetti nuovi a ogni fotogramma
     const want=(g3._want||(g3._want=new T.Vector3())).set(cam.x-Math.cos(ch)*95,fy+44,cam.y-Math.sin(ch)*95),look=(g3._look||(g3._look=new T.Vector3())).set(cam.x+Math.cos(ch)*100,fy+4,cam.y+Math.sin(ch)*100);
+    // guarda dove va la pista: in curva la camera punta un po' verso il tratto che arriva
+    if(me.state!=='out'){const sa=me.s+120,[ax,ay]=tr.pt(((sa%tr.L)+tr.L)%tr.L,me.off||0);look.x=look.x*.45+ax*.55;look.z=look.z*.45+ay*.55;look.y=look.y*.45+(trackHeight(tr,((sa%tr.L)+tr.L)%tr.L)+4)*.55;}
     {const lz=loopNear(tr,me);if(lz){const R=lz.p,mid=tr.at(lz.s0+lz.len/2),sx=-Math.sin(mid.h),sy=Math.cos(mid.h),d=R*4.6+halfW(tr)*1.2;
       want.set(mid.x+sx*d-Math.cos(mid.h)*R*.3,R*1.15,mid.y+sy*d-Math.sin(mid.h)*R*.3);look.set(mid.x,R*.95,mid.y);}}
-    if(!g3.camPos[i])g3.camPos[i]=want.clone();else g3.camPos[i].lerp(want,.1);
-    if(!g3.camLook)g3.camLook=[];if(!g3.camLook[i])g3.camLook[i]=look.clone();else g3.camLook[i].lerp(look,.12);
+    if(!g3.camPos[i])g3.camPos[i]=want.clone();else g3.camPos[i].lerp(want,kf(.1));
+    if(!g3.camLook)g3.camLook=[];if(!g3.camLook[i])g3.camLook[i]=look.clone();else g3.camLook[i].lerp(look,kf(.12));
     g3.camera.position.copy(g3.camPos[i]);g3.camera.lookAt(g3.camLook[i]);
-    const fov=60+(me.turbo&&me.state==='run'?8:0);g3.fovs[i]+=(fov-g3.fovs[i])*.08;
+    // telefono in verticale: angolo più ampio, così le corsie ai lati non vengono tagliate
+    const asp=R.w/R.h,base=asp<1.15?Math.min(74,2*Math.atan(Math.tan(30*Math.PI/180)*1.15/asp)*180/Math.PI):60;
+    const fov=base+(me.turbo&&me.state==='run'?8:0);g3.fovs[i]+=(fov-g3.fovs[i])*kf(.08);
     g3.camera.fov=g3.fovs[i];g3.camera.aspect=R.w/R.h;g3.camera.updateProjectionMatrix();
     g3.sun.target.position.set(cam.x,0,cam.y);g3.sun.position.set(cam.x-220,520,cam.y+160);
     const yb=view.ch-R.y-R.h;g3.renderer.setViewport(R.x,yb,R.w,R.h);if(multi)g3.renderer.setScissor(R.x,yb,R.w,R.h);
