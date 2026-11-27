@@ -3070,7 +3070,8 @@ function fxOf(tr){const C=trackCache(tr);if(C.fx)return C.fx;const hab=habOf(tr)
     else if(m.type==='spire'||m.type==='ufo'||m.type==='dome')add(m.x,m.y,3,m.r*.5,m.r*.5,'#ffffff',m.type==='ufo'?m.r*1.15:m.type==='spire'?m.r*1.5:m.r*.7);else if(m.type==='tower')add(m.x,m.y,1,0,0,'#ff6a5a',m.r*4.05);}
   for(const d of S.decals)if(d.type==='ice'||d.type==='goo')add(d.x,d.y,1,0,0,'#ffffff');
   const open=!hab.space&&!hab.dim&&hab.floor!=='wood'&&hab.floor!=='concrete';
-  C.fx={fall:FX_FALL[id]||null,sp,clouds:open,wind:id==='serpente'||id==='osso'?1:0};return C.fx;}
+  C.fx={fall:null,sp,   // niente più pioggia di petali, foglie, neve, sabbia o scintille (richiesta del titolare)
+  clouds:open,wind:id==='serpente'||id==='osso'?1:0};return C.fx;}
 const fract=x=>x-Math.floor(x);
 // disegnato sopra lo sfondo già pronto, in coordinate mondo; cull = zona visibile, px = unità mondo per pixel
 function ambientFX(ctx,tr,cull,px){
